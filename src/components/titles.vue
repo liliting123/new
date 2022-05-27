@@ -50,6 +50,7 @@ export default {
   background: $white;
   border-bottom: 1px $hr solid;
   position: fixed;
+  z-index: 999;
   .title_main {
     padding: 18px 0;
     padding-left: 25px;

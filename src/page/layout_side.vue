@@ -100,7 +100,7 @@ export default {
     font-size: 14px;
   }
   .layout-main-view {
-    min-height: 79.9vh;
+    min-height: 72.4vh;
     background-color: #f7f7f7;
   }
   .dialog {
