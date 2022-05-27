@@ -32,7 +32,9 @@
       </router-link>
     </div>
 
-    <span><i class="el-icon-s-fold"></i></span>
+    <span @click="$store.state.sider_show_flag = !$store.state.sider_show_flag"
+      ><i class="el-icon-s-fold"></i
+    ></span>
     <el-select v-model="value" placeholder="请选择" class="shopSelect">
       <el-option
         v-for="item in options"
@@ -112,7 +114,7 @@ export default {
   }
   .toggle {
     font-size: 16px;
-    height: 76px;
+    height: 80px;
     padding-top: 12px;
     width: 172px;
     color: #fff;

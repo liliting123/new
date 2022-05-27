@@ -51,7 +51,7 @@ export default {
   width: 100%;
   background: $white;
   border-bottom: 1px $hr solid;
-  position: fixed;
+  position: relative;
   z-index: 999;
   .title_main {
     padding: 18px 0;

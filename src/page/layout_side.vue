@@ -4,7 +4,11 @@
       <my-top v-on:forLoyout="showLoyout = !showLoyout"></my-top>
     </div>
     <div>
-      <slide class="layout-side-left" :structure="navData"></slide>
+      <slide
+        class="layout-side-left"
+        :structure="navData"
+        v-show="$store.state.sider_show_flag"
+      ></slide>
     </div>
 
     <div
@@ -94,7 +98,7 @@ export default {
     padding-top: 50px;
   }
   .layout-side-right {
-    padding-top: 76px;
+    // padding-top: 76px;
     margin-left: 200px;
     z-index: 88;
     font-size: 14px;
@@ -142,6 +146,39 @@ export default {
         outline: none;
       }
     }
+  }
+  .title-class {
+    position: fixed;
+    z-index: 2001;
+    top: 80px;
+  }
+  .title-show {
+    left: 200px;
+    width: calc(100% - 200px);
+    transition: all 0.5s ease;
+  }
+  .title-hidden {
+    left: 0;
+    width: 100%;
+    transition: all 0.5s ease;
+  }
+  .layout-side-right {
+    height: calc(100% - 148px);
+    margin-top: 148px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    background: $bg-gray;
+    .layout-main-view {
+      min-height: 67vh;
+    }
+  }
+  .side-show {
+    margin-left: 200px;
+    transition: margin-left 0.5s ease;
+  }
+  .side-hidden {
+    margin-left: 0;
+    transition: margin-left 0.5s ease;
   }
 }
 </style>
