@@ -16,7 +16,6 @@
                 <el-input
                   v-model="email"
                   placeholder="请输入邮箱"
-                  style="width:360px"
                   class="input"
                 ></el-input>
                 <img class="userImg" src="../assets/images/user.png" alt="user" />
@@ -160,7 +159,7 @@ export default {
   margin-top: 30px;
 }
 .paddingTwenty {
-  padding: 20px;
+  padding: 20px 40px;
 }
 .paddingTopTwenty {
   padding-top: 20px;
@@ -244,25 +243,25 @@ export default {
   margin-top: 10px;
   .userImg {
     position: absolute;
-    left: 27px;
+    left: 47px;
     top: 76px;
   }
   .passwordImg {
     width: 22px;
     height: 22px;
     position: absolute;
-    left: 25px;
+    left: 47px;
     top: 136px;
   }
   .codeImg {
     width: 22px;
     height: 22px;
     position: absolute;
-    left: 25px;
+    left: 47px;
     top: 198px;
   }
   .codeNumber {
-    width: 165px;
+    width: 45%;
     height: 40px;
     margin-top: 10px;
     background: #d7d7d7;
@@ -275,7 +274,7 @@ export default {
   margin: 10px 0;
   border-radius: 0px;
   outline: none;
-  width: 360px;
+  width: 320px;
 }
 .login_border .input:focus {
   outline: none;

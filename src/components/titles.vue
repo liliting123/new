@@ -1,12 +1,14 @@
 <template>
-  <div class="my-title">
-    <div class="title_main">
-      <h3>{{ $t($route.name) }}</h3>
-      <div class="back" @click="$router.go(-1)">
-        <div class="icon-box">
-          <i class="iconfont icon-fanhui"></i>
+  <div style="height:71px">
+    <div class="my-title">
+      <div class="title_main">
+        <h3>{{ $t($route.name) }}</h3>
+        <div class="back" @click="$router.go(-1)">
+          <div class="icon-box">
+            <i class="iconfont icon-fanhui"></i>
+          </div>
+          <span>{{ $t('back') }}</span>
         </div>
-        <span>{{ $t('back') }}</span>
       </div>
     </div>
   </div>
