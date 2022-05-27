@@ -7,7 +7,8 @@ const loadOnDemand = function(file) {
   return () => import(/* webpackChunkName: "chunk" */ '@/page/' + file)
 }
 const LayoutSide = loadOnDemand('layout_side') // 侧边二级导航栏
-
+// 登录
+const Login = loadOnDemand('login') // 首页
 // 我的
 const Home = loadOnDemand('my_home/home') // 首页
 // 用户管理
@@ -18,6 +19,11 @@ const OrderList = loadOnDemand('order_manage/order_list/order_list')
 const RefundList = loadOnDemand('order_manage/refund_list/refund_list')
 var router = new Router({
   routes: [
+    {
+      path: '/login',
+      name: 'Login',
+      component: Login
+    },
     {
       path: '/',
       redirect: '/my_home/home',

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="home list-main">
-      <div class="boxWrap">
+      <div class="boxWrap border-radius">
         <span>数据概览</span>
         <el-date-picker
           class="pickerDate"
@@ -12,10 +12,9 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           :picker-options="pickerOptions"
-          @change="handleChange"
         />
       </div>
-      <div class="data_box">
+      <div class="data_box border-radius">
         <p>整体情况</p>
         <el-descriptions style="padding:16px" :column="6" direction="vertical">
           <el-descriptions-item label="销售金额">￥0.00</el-descriptions-item>
@@ -31,13 +30,21 @@
           <el-descriptions-item label="退款单价">00</el-descriptions-item>
           <el-descriptions-item label="退款率">0.00%</el-descriptions-item>
         </el-descriptions>
-        <div id="myCharts" style="width: 100%; height: 100%" />
       </div>
 
       <div class="box_echarts">
-        <el-row>
-          <el-col :span="12"><p>商品销量前十</p></el-col>
-          <el-col :span="12"><p>会员人数</p></el-col>
+        <el-row :gutter="10">
+          <el-col :md="12" :sm="12">
+            <div class="leftEcharts data_box border-radius" style="background:#fff">
+              <p>商品销量前十</p>
+              <div id="myCharts" style="width: 100%; height: 100%" />
+            </div>
+          </el-col>
+          <el-col :md="12" :sm="12">
+            <div class="leftEcharts data_box border-radius" style="background:#fff">
+              <p>会员人数</p>
+            </div>
+          </el-col>
         </el-row>
         <div id="myCharts" style="width: 100%; height: 100%" />
       </div>
@@ -45,8 +52,8 @@
   </div>
 </template>
 <script>
-import * as echarts from 'echarts'
-import moment from 'moment'
+// import * as echarts from 'echarts'
+// import moment from 'moment'
 import MyTitle from '../../components/titles.vue'
 function onClick(picker, time) {
   const start = new Date()
@@ -93,10 +100,10 @@ export default {
   },
 
   mounted() {
-    setTimeout(() => {
-      // this.initCharts()
-      this.getEcharsData()
-    }, 100)
+    // setTimeout(() => {
+    //   // this.initCharts()
+    //   this.getEcharsData()
+    // }, 100)
     // 切换界面时有概率echarts图表会变得很小,强行等待100毫秒让dom生成
   },
 
@@ -106,107 +113,121 @@ export default {
     this.getGoodsMsg()
   },
   methods: {
-    initCharts() {
-      this.myCharts = echarts.init(document.getElementById('myCharts'))
-      window.onresize = this.myCharts.resize
-    },
-    // 柱状图
-    async getEcharsData(
-      start_date = moment(new Date().getTime() - 3600 * 1000 * 24 * 7).format(
-        'YYYY-MM-DD'
-      ),
-      end_date = moment(new Date()).format('YYYY-MM-DD')
-    ) {
-      const res = await this.$http.get(`api/home/statistics`, {
-        params: {
-          start_date,
-          end_date
-        }
-      })
-      if (res.ret) {
-        this.setCharts(res.data)
-      }
-    },
     setCharts(data) {
-      this.myCharts.setOption({
+      this.myCharts.setCharts({
         tooltip: {
           trigger: 'axis',
           axisPointer: {
-            type: 'cross',
-            crossStyle: {
-              color: '#999'
-            }
+            type: 'shadow'
           }
         },
-        toolbox: {
-          right: '20',
-          feature: {
-            dataView: { show: true, readOnly: false },
-            magicType: { show: true, type: ['line', 'bar'] },
-            restore: { show: true },
-            saveAsImage: { show: true }
-          }
-        },
+        legend: {},
         grid: {
-          top: '80'
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
         },
-        legend: {
-          data: [this.$t('order'), this.$t('registerUser')]
+        xAxis: {
+          type: 'value',
+          boundaryGap: [0, 0.01]
         },
-        xAxis: [
-          {
-            type: 'category',
-            data: data.data.map(item => item.time),
-            axisPointer: {
-              type: 'shadow'
-            }
-          }
-        ],
-        yAxis: [
-          {
-            type: 'value',
-            name: this.$t('order'),
-            min: 0,
-            max: data.maxOrderCount,
-            interval: 50,
-            axisLabel: {
-              formatter: '{value}'
-            }
-          },
-          {
-            type: 'value',
-            name: this.$t('registerUser'),
-            min: 0,
-            max: data.maxRegisterCount,
-            interval: 50,
-            axisLabel: {
-              formatter: '{value}'
-            }
-          }
-        ],
+        yAxis: {
+          type: 'category',
+          data: ['Brazil', 'Indonesia', 'USA', 'India', 'China', 'World']
+        },
         series: [
           {
-            name: this.$t('order'),
+            name: '2011',
             type: 'bar',
-            data: data.data.map(item => item.orderCount)
+            data: [18203, 23489, 29034, 104970, 131744, 630230]
           },
           {
-            name: this.$t('registerUser'),
-            type: 'line',
-            yAxisIndex: 1,
-            data: data.data.map(item => item.registerCount)
+            name: '2012',
+            type: 'bar',
+            data: [19325, 23438, 31000, 121594, 134141, 681807]
           }
         ]
       })
+      // this.myCharts.setOption({
+      //   tooltip: {
+      //     trigger: 'axis',
+      //     axisPointer: {
+      //       type: 'cross',
+      //       crossStyle: {
+      //         color: '#999'
+      //       }
+      //     }
+      //   },
+      //   toolbox: {
+      //     right: '20',
+      //     feature: {
+      //       dataView: { show: true, readOnly: false },
+      //       magicType: { show: true, type: ['line', 'bar'] },
+      //       restore: { show: true },
+      //       saveAsImage: { show: true }
+      //     }
+      //   },
+      //   grid: {
+      //     top: '80'
+      //   },
+      //   legend: {
+      //     data: [this.$t('order'), this.$t('registerUser')]
+      //   },
+      //   xAxis: [
+      //     {
+      //       type: 'category',
+      //       data: data.data.map(item => item.time),
+      //       axisPointer: {
+      //         type: 'shadow'
+      //       }
+      //     }
+      //   ],
+      //   yAxis: [
+      //     {
+      //       type: 'value',
+      //       name: this.$t('order'),
+      //       min: 0,
+      //       max: data.maxOrderCount,
+      //       interval: 50,
+      //       axisLabel: {
+      //         formatter: '{value}'
+      //       }
+      //     },
+      //     {
+      //       type: 'value',
+      //       name: this.$t('registerUser'),
+      //       min: 0,
+      //       max: data.maxRegisterCount,
+      //       interval: 50,
+      //       axisLabel: {
+      //         formatter: '{value}'
+      //       }
+      //     }
+      //   ],
+      //   series: [
+      //     {
+      //       name: this.$t('order'),
+      //       type: 'bar',
+      //       data: data.data.map(item => item.orderCount)
+      //     },
+      //     {
+      //       name: this.$t('registerUser'),
+      //       type: 'line',
+      //       yAxisIndex: 1,
+      //       data: data.data.map(item => item.registerCount)
+      //     }
+      //   ]
+      // })
     },
-    async handleChange() {
-      console.log(this.time)
-      if (this.time == null) {
-        this.getEcharsData()
-      } else {
-        this.getEcharsData(this.time[0], this.time[1])
-      }
-    },
+    // async handleChange() {
+    //   console.log(this.time)
+    //   if (this.time == null) {
+    //     this.getEcharsData()
+    //   } else {
+    //     this.getEcharsData(this.time[0], this.time[1])
+    //   }
+    // },
     // 用户信息
     async getVIPMsg() {
       const res = await this.$http.get(`api/home/user`)
@@ -243,7 +264,7 @@ export default {
 <style lang="scss" scoped>
 @import '../../style/communalVariate.scss';
 .home {
-  background-color: #eaecf0;
+  background-color: #f7f7f7;
   .boxWrap {
     display: flex;
     justify-content: space-between;
@@ -313,7 +334,7 @@ export default {
   }
   .data_box {
     // height: 470px;
-    padding: 20px 10px;
+    padding: 15px 10px;
     background-color: $white;
     p {
       border-bottom: 1px solid #ccc;
@@ -332,6 +353,9 @@ export default {
     margin-top: 10px;
     el-col {
       background-color: #fff;
+    }
+    .leftEcharts {
+      min-height: 40vh;
     }
   }
 }

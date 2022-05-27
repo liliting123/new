@@ -7,10 +7,10 @@
         $t('cn')
       }}</span>
     </p>
-    <p>
-      © {{ year }} EU Techne B.V. (ver {{ version }}) {{ $t('TechnicalSupport') }}
-      <img src="../assets/images/nle-tech-footer.png" />
-    </p>
+
+    <p>Copyrihgt © {{ year }} MyEUShop B.V. All Rights Reserved.</p>
+
+    <p style="margin-top:5px">Powered By NLETECH</p>
   </div>
 </template>
 <script>
@@ -47,9 +47,7 @@ export default {
 @import '../style/communalVariate.scss';
 .copyright {
   text-align: center;
-  border-top: 1px solid $hr;
-  border-bottom: 1px solid $hr;
-  background: $white;
+  background: #f7f7f7;
   p:first-child {
     padding: 1.5em 0 1em;
     span {

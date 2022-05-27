@@ -27,7 +27,9 @@
           <router-view class="layout-main-view"></router-view>
         </keep-alive>
       </transition>
-      <m-copy-right></m-copy-right>
+      <div class="bottom">
+        <m-copy-right></m-copy-right>
+      </div>
     </div>
     <!-- <el-dialog :title="$t('warmprompt')" v-model="showLoyout" size="tiny">
       <span>{{ $t('confirmlogout') }}</span>
@@ -98,7 +100,8 @@ export default {
     font-size: 14px;
   }
   .layout-main-view {
-    min-height: 67vh;
+    min-height: 79.9vh;
+    background-color: #f7f7f7;
   }
   .dialog {
     border: 15px solid #c4e0d4;
