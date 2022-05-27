@@ -82,6 +82,10 @@ textarea {
 .el-picker-panel {
   z-index: 3010 !important;
 }
+.table_list {
+  padding: 50px;
+  background: #ffffff;
+}
 
 // 按钮公共样式
 @mixin action-btn ($color) {
