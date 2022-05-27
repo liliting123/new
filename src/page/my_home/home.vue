@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="home list-main">
+    <div class="home">
       <div class="boxWrap border-radius">
         <span>数据概览</span>
         <el-date-picker

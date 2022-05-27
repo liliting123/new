@@ -268,6 +268,8 @@ export default {
     text-align: center;
     line-height: 40px;
     letter-spacing: 15px;
+    font-size: 17px;
+    font-style: italic;
   }
 }
 .login_border .input {

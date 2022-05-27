@@ -24,7 +24,7 @@
       ></my-title>
       <transition name="fade" mode="out-in">
         <keep-alive :include="/List/">
-          <router-view class="layout-main-view"></router-view>
+          <router-view class="layout-main-view list-main"></router-view>
         </keep-alive>
       </transition>
       <div class="bottom">
