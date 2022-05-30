@@ -71,8 +71,8 @@ export default {
   props: {
     visible: {
       type: Boolean,
-      require: true,
-    },
+      require: true
+    }
   },
   computed: {
     visibleRefund: {
@@ -81,8 +81,8 @@ export default {
       },
       set(val) {
         this.$emit('update:visible', val)
-      },
-    },
+      }
+    }
   },
   data() {
     return {

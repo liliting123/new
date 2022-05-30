@@ -157,28 +157,27 @@ export default {
         id: 3,
         date: '2016-05-01',
         name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄',
+        address: '上海市普陀区金沙江路 1519 弄'
       }, {
         id: 4,
         date: '2016-05-03',
         name: '王小虎',
         address: '上海市普陀区金沙江路 1516 弄'
       }],
-      visibleOrderRefund: false,
+      visibleOrderRefund: false
     }
   },
   methods: {
-    //跳转订单详情
+    // 跳转订单详情
     showOrderDetail() {
       this.$router.push({
-        path:'order_list/orderDetail'
+        path: 'order_list/orderDetail'
       })
     },
-    //退款弹窗
+    // 退款弹窗
     showDiglog() {
       this.visibleOrderRefund = true
-    },
-
+    }
   }
 }
 </script>
