@@ -14,12 +14,14 @@ const Home = loadOnDemand('my_home/home') // 首页
 // 用户管理
 const UserList = loadOnDemand('user_manage/user_list/user_list')
 const UserGroupList = loadOnDemand('user_manage/user_group_list/user_group_list')
-// 订单管理
+// 订单列表
 const OrderList = loadOnDemand('order_manage/order_list/order_list')
 // 查看订单
 const OrderDetail = loadOnDemand('order_manage/order_list/orderDetail')
-
+// 退款列表
 const RefundList = loadOnDemand('order_manage/refund_list/refund_list')
+// 普通商品列表
+const NormalProductList = loadOnDemand('product_manage/normal_product_list/normal_product_list')
 var router = new Router({
   routes: [
     {
@@ -77,6 +79,18 @@ var router = new Router({
           path: 'refund_list',
           name: 'refund_list',
           component: RefundList
+        }
+      ]
+    },
+    {
+      path: '/product_manage',
+      component: LayoutSide,
+      children: [
+        {
+          path: 'normal_product_list/normal_product_list',
+          name: 'normal_product_list',
+          component: NormalProductList,
+          meta: { keepAlive: true }
         }
       ]
     }
