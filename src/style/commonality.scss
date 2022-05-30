@@ -32,29 +32,6 @@ textarea {
   color: $white;
 }
 
-// 表格公共样式
-.el-table {
-  tr th.is-leaf {
-    border-bottom: $hr 4px solid;
-    background-color: $white;
-
-    div {
-      background-color: $white;
-      color: $font-color;
-    }
-  }
-
-  td {
-    border-right: solid 1px $hr;
-    color: $font-color;
-  }
-
-  .el-table--border td,
-  .el-table--border th {
-    border-right: solid 1px $hr;
-  }
-}
-
 .el-notification {
   z-index: 3011 !important;
 }

@@ -18,7 +18,7 @@
 <style lang="scss" scoped>
 .search {
   width: 100%;
-  height: 100px;
+  /*height: 100px;*/
   background: white;
   line-height: 100px;
   margin-bottom: 15px;
