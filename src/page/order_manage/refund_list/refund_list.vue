@@ -11,8 +11,9 @@
           end-placeholder="结束日期">
         </el-date-picker>
         <el-select
+          style="margin-left: 20px;"
           v-model="value"
-          placeholder="请选择">
+          placeholder="退款状态">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -21,8 +22,9 @@
           </el-option>
         </el-select>
         <el-select
+          style="margin-left: 20px;"
           v-model="value"
-          placeholder="请选择">
+          placeholder="是否已退款">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -36,7 +38,7 @@
           placeholder="请输入内容"
           v-model="input3"
           class="input-with-select">
-          <el-select v-model="select" slot="prepend" placeholder="请选择" >
+          <el-select v-model="select" slot="prepend" placeholder="订单编号" >
             <el-option label="餐厅名" value="1"></el-option>
             <el-option label="订单号" value="2"></el-option>
             <el-option label="用户电话" value="3"></el-option>
@@ -61,29 +63,58 @@
             <el-table :header-cell-style="{background:'#F7F7F7'}" :data="tableData" border style="width: 80%;margin-left: 48px">
               <el-table-column prop="name" label="商品图片">
               </el-table-column>
-              <el-table-column prop="name" label="价格">
+              <el-table-column prop="name" label="商品名称">
               </el-table-column>
-              <el-table-column prop="address" label="数量"> </el-table-column>
-              <el-table-column prop="name" label="库存"> </el-table-column>
-              <el-table-column prop="address" label="操作"> </el-table-column>
+              <el-table-column prop="address" label="商品编号"> </el-table-column>
+              <el-table-column prop="name" label="EAN"> </el-table-column>
+              <el-table-column prop="address" label="规格"> </el-table-column>
+              <el-table-column prop="address" label="单价"> </el-table-column>
+              <el-table-column prop="name" label="数量"> </el-table-column>
+              <el-table-column prop="address" label="退款金额"> </el-table-column>
             </el-table>
           </template>
         </el-table-column>
         <el-table-column
           prop="date"
-          label="日期"
+          label="会员ID"
           sortable
           width="180">
         </el-table-column>
         <el-table-column
           prop="name"
-          label="姓名"
+          label="订单编号"
           sortable
           width="180">
         </el-table-column>
         <el-table-column
           prop="address"
-          label="地址">
+          label="退款状态">
+        </el-table-column>
+        <el-table-column
+          prop="name"
+          label="退款金额"
+          sortable
+          width="180">
+        </el-table-column>
+        <el-table-column
+          prop="address"
+          label="退款备注">
+        </el-table-column>
+        <el-table-column
+          prop="name"
+          label="申请时间"
+          sortable
+          width="180">
+        </el-table-column>
+        <el-table-column
+          prop="address"
+          label="是否已退款">
+        </el-table-column>
+        <el-table-column
+          prop="name"
+          label="操作人"
+          sortable
+          width="180">
         </el-table-column>
         <el-table-column
           prop="address"
@@ -92,11 +123,42 @@
           <template slot-scope="scope">
             <el-button type="text" size="small">重推</el-button>
             <el-button type="text" size="small">确认已退款</el-button>
-            <el-button type="text" size="small">确认已退款</el-button>
+            <el-button type="text" size="small" @click="dialogRefund = true">退款审核</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
+<!--    退款审核弹窗-->
+    <el-dialog title="退款审核" :visible.sync="dialogRefund" width="400px">
+      <div style="padding: 0 40px 0 40px">
+        <el-form :model="form">
+          <el-form-item label="审核状态">
+            <el-select
+              v-model="form.region"
+              placeholder="请选择活动区域"
+              style="margin-left: 0;width: 279px">
+              <el-option label="区域一" value="shanghai"></el-option>
+              <el-option label="区域二" value="beijing"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="退款金额">
+            <el-input v-model="form.name"></el-input>
+          </el-form-item>
+          <el-form-item label="退款备注">
+            <el-input
+              type="textarea"
+              :rows="3"
+              placeholder="请输入内容"
+              v-model="form.desc">
+            </el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogRefund = false">取 消</el-button>
+        <el-button type="primary" @click="dialogRefund = false">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -150,7 +212,13 @@ export default {
         date: '2016-05-03',
         name: '王小虎',
         address: '上海市普陀区金沙江路 1516 弄'
-      }]
+      }],
+      form: {
+        name: '',
+        region: '',
+        desc: ''
+      },
+      dialogRefund: false
     }
   },
   methods: {
@@ -162,15 +230,15 @@ export default {
 .input-with-select {
   width: 400px;
 }
-/deep/ .el-select {
-  display: inline-block;
-  position: relative;
-  margin-left: 20px;
+.order-table {
+  border-radius: 8px;
 }
 /deep/ .el-date-editor .el-range-separator {
   padding: 0 0px;
 }
-.order-table {
-  border-radius: 8px;
+/deep/ .el-input-group__prepend {
+  width: 100px;
+  background: white;
+  padding: 0 10px;
 }
 </style>
