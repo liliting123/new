@@ -50,5 +50,19 @@ export default [
     iconClassName: 'el-icon-document',
     iconClassNameTop: 'el-icon-arrow-down',
     iconClassNameBottom: 'el-icon-arrow-up'
+  },
+  {
+    name: '商品管理',
+    subRoutes: [
+      {
+        name: '普通商品列表',
+        path: '/product_manage/normal_product_list/normal_product_list',
+        subname: 'normal_product_list'
+      }
+    ],
+    expanded: false,
+    iconClassName: 'el-icon-document',
+    iconClassNameTop: 'el-icon-arrow-down',
+    iconClassNameBottom: 'el-icon-arrow-up'
   }
 ]
