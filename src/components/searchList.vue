@@ -10,9 +10,9 @@
 </template>
 
 <script>
-  export default {
-    name: 'searchList'
-  }
+export default {
+  name: 'searchList'
+}
 </script>
 
 <style lang="scss" scoped>
