@@ -29,11 +29,11 @@ var router = new Router({
     },
     {
       path: '/',
-      redirect: '/my_home/home',
+      redirect: '/home',
       component: LayoutSide,
       children: [
         {
-          path: '/my_home/home',
+          path: '/home',
           name: 'home',
           component: Home
         }
@@ -45,13 +45,13 @@ var router = new Router({
       component: LayoutSide,
       children: [
         {
-          path: '/user_manage/user_list/user_list',
+          path: '/user_list',
           name: 'user_list',
           component: UserList,
           meta: { keepAlive: true }
         },
         {
-          path: '/user_manage/user_group_list/user_group_list',
+          path: '/user_group_list',
           name: 'user_group_list',
           component: UserGroupList
         }
