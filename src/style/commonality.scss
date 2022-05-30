@@ -63,7 +63,14 @@ textarea {
   padding: 50px;
   background: #ffffff;
 }
-
+.table_index {
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  border-radius: 25px;
+  background: rgba(162, 162, 162, 0.53);
+  text-align: center;
+}
 // 按钮公共样式
 @mixin action-btn ($color) {
   padding: 7px 9px !important;
