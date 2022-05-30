@@ -66,51 +66,51 @@
 </template>
 
 <script>
-  export default {
-    name: 'orderRefundDialog',
-    props: {
-      visible: {
-        type: Boolean,
-        require: true,
+export default {
+  name: 'orderRefundDialog',
+  props: {
+    visible: {
+      type: Boolean,
+      require: true,
+    },
+  },
+  computed: {
+    visibleRefund: {
+      get() {
+        return this.visible
+      },
+      set(val) {
+        this.$emit('update:visible', val)
       },
     },
-    computed: {
-      visibleRefund: {
-        get() {
-          return this.visible
-        },
-        set(val) {
-          this.$emit('update:visible', val)
-        },
-      },
-    },
-    data() {
-      return {
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }]
-      }
-    },
-    methods: {
-      handleClose() {
-        this.visibleRefund = false
-      }
+  },
+  data() {
+    return {
+      tableData: [{
+        date: '2016-05-02',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        date: '2016-05-04',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1517 弄'
+      }, {
+        date: '2016-05-01',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1519 弄'
+      }, {
+        date: '2016-05-03',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1516 弄'
+      }]
+    }
+  },
+  methods: {
+    handleClose() {
+      this.visibleRefund = false
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>

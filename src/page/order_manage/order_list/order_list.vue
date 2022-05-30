@@ -111,90 +111,90 @@
   </div>
 </template>
 <script>
-  import searchList from '@/components/searchList.vue'
-  import orderRefundDialog from './components/orderRefundDialog.vue'
-  export default {
-    name: 'orderList',
-    components: {
-      searchList,
-      orderRefundDialog
-    },
-    data() {
-      return {
-        value1: '',
-        options: [{
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
-        }],
-        value: '',
-        input1: '',
-        input2: '',
-        input3: '',
-        select: '',
-        tableData: [{
-          id: 1,
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          id: 2,
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          id: 3,
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄',
-        }, {
-          id: 4,
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }],
-        visibleOrderRefund: false,
-      }
-    },
-    methods: {
-      //跳转订单详情
-      showOrderDetail() {
-        this.$router.push({
-          path:'order_list/orderDetail'
-        })
-      },
-      //退款弹窗
-      showDiglog() {
-        this.visibleOrderRefund = true
-      },
-
+import searchList from '@/components/searchList.vue'
+import orderRefundDialog from './components/orderRefundDialog.vue'
+export default {
+  name: 'orderList',
+  components: {
+    searchList,
+    orderRefundDialog
+  },
+  data() {
+    return {
+      value1: '',
+      options: [{
+        value: '选项1',
+        label: '黄金糕'
+      }, {
+        value: '选项2',
+        label: '双皮奶'
+      }, {
+        value: '选项3',
+        label: '蚵仔煎'
+      }, {
+        value: '选项4',
+        label: '龙须面'
+      }, {
+        value: '选项5',
+        label: '北京烤鸭'
+      }],
+      value: '',
+      input1: '',
+      input2: '',
+      input3: '',
+      select: '',
+      tableData: [{
+        id: 1,
+        date: '2016-05-02',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        id: 2,
+        date: '2016-05-04',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1517 弄'
+      }, {
+        id: 3,
+        date: '2016-05-01',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1519 弄',
+      }, {
+        id: 4,
+        date: '2016-05-03',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1516 弄'
+      }],
+      visibleOrderRefund: false,
     }
+  },
+  methods: {
+    //跳转订单详情
+    showOrderDetail() {
+      this.$router.push({
+        path:'order_list/orderDetail'
+      })
+    },
+    //退款弹窗
+    showDiglog() {
+      this.visibleOrderRefund = true
+    },
+
   }
+}
 </script>
 <style scoped>
-  .input-with-select {
-    width: 400px;
-  }
-  /deep/ .el-select {
-    display: inline-block;
-    position: relative;
-    margin-left: 20px;
-  }
-  /deep/ .el-date-editor .el-range-separator {
-    padding: 0 0px;
-  }
-  .order-table {
-    border-radius: 8px;
-  }
+.input-with-select {
+  width: 400px;
+}
+/deep/ .el-select {
+  display: inline-block;
+  position: relative;
+  margin-left: 20px;
+}
+/deep/ .el-date-editor .el-range-separator {
+  padding: 0 0px;
+}
+.order-table {
+  border-radius: 8px;
+}
 </style>
