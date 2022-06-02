@@ -22,14 +22,14 @@ const OrderList = loadOnDemand('order_manage/order_list/order_list')
 const OrderDetail = loadOnDemand('order_manage/order_list/orderDetail')
 // 退款列表
 const RefundList = loadOnDemand('order_manage/refund_list/refund_list')
-// 普通商品列表
-const NormalProductList = loadOnDemand(
-  'product_manage/normal_product_list/normal_product_list'
-)
 // 店铺设置
 const StoreSettings = loadOnDemand('configuration_manage/store_settings')
 // 支付设置
 const PaymentSettings = loadOnDemand('configuration_manage/payment_settings')
+// 普通商品列表
+const NormalProductList = loadOnDemand('product_manage/normal_product_list/normal_product_list')
+// 普通商品列表-添加商品
+const AddProduct = loadOnDemand('product_manage/normal_product_list/add_product')
 var router = new Router({
   routes: [
     {
@@ -103,6 +103,12 @@ var router = new Router({
           path: 'normal_product_list/normal_product_list',
           name: 'normal_product_list',
           component: NormalProductList,
+          meta: { keepAlive: true }
+        },
+        {
+          path: 'normal_product_list/add_product',
+          name: 'add_product',
+          component: AddProduct,
           meta: { keepAlive: true }
         }
       ]

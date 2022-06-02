@@ -36,8 +36,8 @@
             :value="item.value">
           </el-option>
         </el-select>
-        <el-button type="info">结算密码</el-button>
-        <el-button type="info">添加商品</el-button>
+        <el-button type="info" @click="settlementPassword()">结算密码</el-button>
+        <el-button type="info" @click="addProduct()">添加商品</el-button>
         <el-button type="info">拉取后台商品</el-button>
       </div>
       <div slot="right">
@@ -79,55 +79,47 @@
                   <span class="table_index">1</span>
                 </template>
               </el-table-column>
-              <el-table-column prop="name" label="商品图片">
-              </el-table-column>
-              <el-table-column prop="name" label="商品名称">
-              </el-table-column>
-              <el-table-column prop="address" label="商品编号"> </el-table-column>
-              <el-table-column prop="name" label="EAN"> </el-table-column>
-              <el-table-column prop="address" label="规格"> </el-table-column>
-              <el-table-column prop="name" label="单价"> </el-table-column>
-              <el-table-column prop="address" label="数量"> </el-table-column>
-              <el-table-column prop="address" label="实付"> </el-table-column>
+              <el-table-column prop="name" label="商品编码"></el-table-column>
+              <el-table-column prop="name" label="EAN"></el-table-column>
+              <el-table-column prop="address" label="供应商"> </el-table-column>
+              <el-table-column prop="name" label="规格"> </el-table-column>
+              <el-table-column prop="address" label="价格"> </el-table-column>
+              <el-table-column prop="name" label="会员价"> </el-table-column>
+              <el-table-column prop="address" label="税率"> </el-table-column>
+              <el-table-column prop="address" label="BBD"> </el-table-column>
+              <el-table-column prop="address" label="可售库存"> </el-table-column>
+              <el-table-column prop="address" label="已售库存"> </el-table-column>
             </el-table>
           </template>
         </el-table-column>
         <el-table-column
           prop="date"
-          label="会员名称"
+          label="商品名称"
           width="180">
         </el-table-column>
         <el-table-column
           prop="name"
-          label="会员ID">
+          label="商品分类">
         </el-table-column>
         <el-table-column
           prop="address"
-          label="订单编号">
+          label="分类标签">
         </el-table-column>
         <el-table-column
           prop="date"
-          label="订单状态">
+          label="商品图片">
         </el-table-column>
         <el-table-column
           prop="name"
-          label="订单金额">
+          label="可售库存">
         </el-table-column>
         <el-table-column
           prop="address"
-          label="客户来源">
+          label="已售库存">
         </el-table-column>
         <el-table-column
           prop="date"
-          label="收银员">
-        </el-table-column>
-        <el-table-column
-          prop="name"
-          label="支付方式">
-        </el-table-column>
-        <el-table-column
-          prop="address"
-          label="支付时间">
+          label="创建时间">
         </el-table-column>
         <el-table-column
           prop="address"
@@ -140,15 +132,20 @@
         </el-table-column>
       </el-table>
     </div>
+    <!--  结算密码弹窗-->
+    <setPasswordDialog
+      :visible.sync="dialogPassword"/>
   </div>
 </template>
 
 <script>
 import searchList from '@/components/searchList.vue'
+import setPasswordDialog from './components/setPasswordDialog'
 export default {
   name: 'orderList',
   components: {
-    searchList
+    searchList,
+    setPasswordDialog
   },
   data() {
     return {
@@ -180,10 +177,18 @@ export default {
         name: '王小虎',
         address: '上海市普陀区金沙江路 1518 弄'
       }],
-      visibleOrderRefund: false
+      dialogPassword: false
     }
   },
   methods: {
+    settlementPassword() {
+      this.dialogPassword = true
+    },
+    addProduct() {
+      this.$router.push({
+        name: 'add_product'
+      })
+    }
   }
 }
 </script>
