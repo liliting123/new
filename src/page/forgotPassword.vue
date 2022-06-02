@@ -13,7 +13,7 @@
         <img src="../assets/images/login_logo.png" alt="logo" class="login-logo" />
 
         <div class="login_subbox">
-          <div class="login_title">收银管理系统</div>
+          <div class="login_title">忘记密码</div>
           <div class="login_border">
             <div class=" login_title_back"></div>
             <div class="paddingTwenty">
@@ -26,38 +26,30 @@
                 <img class="userImg" src="../assets/images/user.png" alt="user" />
               </div>
               <div>
-                <!-- <input
-                  class="input"
-                  type="password"
-                  v-model="password"
-                  placeholder="请输入密码"
-                  @keyup.enter="login"
-                /> -->
                 <el-input
                   v-model="password"
-                  placeholder="请输入密码"
+                  placeholder="请输入邮箱验证码"
                   class="input"
                 ></el-input>
-                <img
-                  class="passwordImg"
-                  src="../assets/images/password.png"
-                  alt="password"
-                />
+                <img class="codeImg" src="../assets/images/code.png" alt="code" />
+                <span class="verification sendOut border-radius">发送</span>
+                <span class="verification sendOutTime border-radius">60s</span>
                 <div>
                   <el-input
                     v-model="password"
-                    placeholder="请输入验证码"
+                    placeholder="请输入新密码"
                     class="input"
-                    style="width: 50%;"
                   ></el-input>
-                  <img class="codeImg" src="../assets/images/code.png" alt="code" />
-                  <span class="codeNumber forgetPsd">wxmf</span>
+                  <img
+                    class="passwordImg"
+                    src="../assets/images/password.png"
+                    alt="password"
+                  />
                 </div>
               </div>
-              <div class="marginTopTen">
-                <el-checkbox v-model="keep"></el-checkbox>&nbsp;&nbsp;保持登录记录
-                <router-link class="forgetPsd" to="/forgotPassword">忘记密码</router-link>
-              </div>
+              <h1 class="returnLogin">
+                <router-link to="/login">返回登录</router-link>
+              </h1>
               <div style="text-align:center;" class="marginTopThirty">
                 <el-button
                   id="#mouse"
@@ -157,8 +149,13 @@ export default {
 .fontSizeTwelve {
   font-size: 12px;
 }
-.marginTopTen {
+.returnLogin {
   margin-top: 10px;
+  text-align: center;
+  cursor: pointer;
+  a {
+    color: #333;
+  }
 }
 .marginTopThirty {
   margin-top: 30px;
@@ -243,13 +240,27 @@ export default {
     width: 20.5px;
     position: absolute;
     left: 47px;
-    top: 138px;
+    top: 198px;
   }
   .codeImg {
     width: 20px;
     position: absolute;
     left: 47px;
-    top: 198px;
+    top: 138px;
+  }
+  .verification {
+    position: absolute;
+    display: inline-block;
+    font-size: 12px;
+    top: 139px;
+    border: 1px solid rgba(121, 121, 121, 1);
+    padding: 3px 5px;
+  }
+  .sendOut {
+    left: 318px;
+  }
+  .sendOutTime {
+    left: 410px;
   }
   .codeNumber {
     width: 45%;
@@ -261,7 +272,6 @@ export default {
     letter-spacing: 15px;
     font-size: 17px;
     font-style: italic;
-    cursor: pointer;
   }
 }
 .login_border .input {
@@ -304,7 +314,6 @@ export default {
 }
 .forgetPsd {
   float: right;
-  color: #333;
 }
 //  @media only screen and (max-width: 1440px) {
 //     .main {

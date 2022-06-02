@@ -8,9 +8,11 @@ const loadOnDemand = function(file) {
 }
 const LayoutSide = loadOnDemand('layout_side') // 侧边二级导航栏
 // 登录
-const Login = loadOnDemand('login') // 首页
+const Login = loadOnDemand('login')
+// 忘记密码
+const ForgotPassword = loadOnDemand('forgotPassword')
 // 我的
-const Home = loadOnDemand('my_home/home') // 首页
+const Home = loadOnDemand('my_home/home')
 // 用户管理
 const UserList = loadOnDemand('user_manage/user_list/user_list')
 const UserGroupList = loadOnDemand('user_manage/user_group_list/user_group_list')
@@ -21,7 +23,13 @@ const OrderDetail = loadOnDemand('order_manage/order_list/orderDetail')
 // 退款列表
 const RefundList = loadOnDemand('order_manage/refund_list/refund_list')
 // 普通商品列表
-const NormalProductList = loadOnDemand('product_manage/normal_product_list/normal_product_list')
+const NormalProductList = loadOnDemand(
+  'product_manage/normal_product_list/normal_product_list'
+)
+// 店铺设置
+const StoreSettings = loadOnDemand('configuration_manage/store_settings')
+// 支付设置
+const PaymentSettings = loadOnDemand('configuration_manage/payment_settings')
 var router = new Router({
   routes: [
     {
@@ -30,12 +38,17 @@ var router = new Router({
       component: Login
     },
     {
+      path: '/forgotPassword',
+      name: 'ForgotPassword',
+      component: ForgotPassword
+    },
+    {
       path: '/',
-      redirect: '/home',
+      redirect: 'home',
       component: LayoutSide,
       children: [
         {
-          path: '/home',
+          path: 'home',
           name: 'home',
           component: Home
         }
@@ -47,13 +60,13 @@ var router = new Router({
       component: LayoutSide,
       children: [
         {
-          path: '/user_list',
+          path: 'user_list',
           name: 'user_list',
           component: UserList,
           meta: { keepAlive: true }
         },
         {
-          path: '/user_group_list',
+          path: 'user_group_list',
           name: 'user_group_list',
           component: UserGroupList
         }
@@ -91,6 +104,22 @@ var router = new Router({
           name: 'normal_product_list',
           component: NormalProductList,
           meta: { keepAlive: true }
+        }
+      ]
+    },
+    {
+      path: '/configuration_manage',
+      component: LayoutSide,
+      children: [
+        {
+          path: 'store_settings',
+          name: 'store_settings',
+          component: StoreSettings
+        },
+        {
+          path: 'payment_settings',
+          name: 'payment_settings',
+          component: PaymentSettings
         }
       ]
     }

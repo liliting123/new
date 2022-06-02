@@ -8,24 +8,6 @@
       <h1>收银后台</h1>
     </div>
     <div class="brand">
-      <el-popover placement="bottom" width="500" trigger="click" class="download-box">
-        <el-table :data="downloads" border stripe>
-          <el-table-column prop="name" :label="$t('Name')"></el-table-column>
-          <el-table-column prop="updated_at" :label="$t('time')"></el-table-column>
-          <el-table-column :label="$t('state')" width="90">
-            <template slot-scope="scope">
-              {{ scope.row.status ? $t('complete') : $t('inComplete') }}
-            </template>
-          </el-table-column>
-          <el-table-column :label="$t('operate')">
-            <template slot-scope="scope">
-              <el-button @click="onDownload(scope.row.file_url, scope.row.status)">{{
-                $t('Download')
-              }}</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-popover>
       <span style="padding: 10px;">Admin</span>
       <router-link to="#" @click.native="onLoyout()">
         <i class="el-icon-switch-button"></i>
@@ -44,9 +26,27 @@
       >
       </el-option>
     </el-select>
-    <el-button slot="reference" size="medium" plain @click="getDownloads()">
-      下载管理
-    </el-button>
+    <el-popover placement="bottom" width="500" trigger="click">
+      <el-table :data="downloads" border stripe>
+        <el-table-column prop="name" :label="$t('Name')"></el-table-column>
+        <el-table-column prop="updated_at" :label="$t('time')"></el-table-column>
+        <el-table-column :label="$t('state')" width="90">
+          <template slot-scope="scope">
+            {{ scope.row.status ? $t('complete') : $t('inComplete') }}
+          </template>
+        </el-table-column>
+        <el-table-column :label="$t('operate')">
+          <template slot-scope="scope">
+            <el-button @click="onDownload(scope.row.file_url, scope.row.status)">{{
+              $t('Download')
+            }}</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-button slot="reference" plain @click="getDownloads()">
+        下载管理
+      </el-button>
+    </el-popover>
   </div>
 </template>
 <script>
@@ -65,7 +65,29 @@ export default {
         }
       ],
       value: '1',
-      downloads: []
+      downloads: [],
+      gridData: [
+        {
+          date: '2016-05-02',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        },
+        {
+          date: '2016-05-04',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        },
+        {
+          date: '2016-05-01',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        },
+        {
+          date: '2016-05-03',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }
+      ]
     }
   },
   methods: {
@@ -107,11 +129,7 @@ export default {
   & > div {
     display: inline-block;
   }
-  .download-box {
-    margin-right: 20px;
-    position: relative;
-    bottom: 10px;
-  }
+
   .toggle {
     font-size: 16px;
     height: 80px;

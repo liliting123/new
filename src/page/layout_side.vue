@@ -167,7 +167,7 @@ export default {
     margin-top: 148px;
     overflow-y: scroll;
     overflow-x: hidden;
-    background: $bg-gray;
+    background: #f7f7f7;
     .layout-main-view {
       min-height: 67vh;
     }

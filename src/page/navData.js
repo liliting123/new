@@ -64,5 +64,24 @@ export default [
     iconClassName: 'el-icon-document',
     iconClassNameTop: 'el-icon-arrow-down',
     iconClassNameBottom: 'el-icon-arrow-up'
+  },
+  {
+    name: '配置管理',
+    subRoutes: [
+      {
+        name: '店铺设置',
+        path: 'configuration_manage/store_settings',
+        subname: 'store_settings'
+      },
+      {
+        name: '支付设置',
+        path: '/configuration_manage/payment_settings',
+        subname: 'payment_settings'
+      }
+    ],
+    expanded: false,
+    iconClassName: 'el-icon-setting',
+    iconClassNameTop: 'el-icon-arrow-down',
+    iconClassNameBottom: 'el-icon-arrow-up'
   }
 ]

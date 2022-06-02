@@ -20,7 +20,7 @@ export default {
   width: 100%;
   /*height: 100px;*/
   background: white;
-  line-height: 100px;
+  line-height: 73px;
   margin-bottom: 15px;
   display: flex;
   justify-content: space-between;

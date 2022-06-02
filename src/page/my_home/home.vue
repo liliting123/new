@@ -37,22 +37,22 @@
           <el-col :md="12" :sm="12">
             <div class="leftEcharts data_box border-radius" style="background:#fff">
               <p>商品销量前十</p>
-              <div id="myCharts" style="width: 100%; height: 100%" />
+              <div id="echartShop" style="width: 100%; height: 100%"></div>
             </div>
           </el-col>
           <el-col :md="12" :sm="12">
             <div class="leftEcharts data_box border-radius" style="background:#fff">
               <p>会员人数</p>
+              <div id="echartUser" style="width: 100%; height: 100%"></div>
             </div>
           </el-col>
         </el-row>
-        <div id="myCharts" style="width: 100%; height: 100%" />
       </div>
     </div>
   </div>
 </template>
 <script>
-// import * as echarts from 'echarts'
+import * as echarts from 'echarts'
 // import moment from 'moment'
 import MyTitle from '../../components/titles.vue'
 function onClick(picker, time) {
@@ -100,10 +100,10 @@ export default {
   },
 
   mounted() {
-    // setTimeout(() => {
-    //   // this.initCharts()
-    //   this.getEcharsData()
-    // }, 100)
+    setTimeout(() => {
+      // this.initCharts()
+      this.setCharts()
+    }, 100)
     // 切换界面时有概率echarts图表会变得很小,强行等待100毫秒让dom生成
   },
 
@@ -114,41 +114,109 @@ export default {
   },
   methods: {
     setCharts(data) {
-      this.myCharts.setCharts({
+      // 基于准备好的dom，初始化echarts实例
+      var myChartShop = echarts.init(document.getElementById('echartShop'))
+      var myChartUser = echarts.init(document.getElementById('echartUser'))
+      window.onresize = function() {
+        myChartShop.resize()
+        myChartUser.resize()
+      }
+      // 指定图表的配置项和数据
+      var obj = {
+        name: '苹果',
+        price: 10,
+        num: 900
+      }
+      var option = {
+        color: ['#7f7f7f'], // 柱子颜色
         tooltip: {
           trigger: 'axis',
           axisPointer: {
-            type: 'shadow'
+            type: 'shadow',
+            shadowStyle: {
+              color: 'rgba(220, 220, 220, 0.5)' // 鼠标移入的阴影颜色
+            }
+          },
+          backgroundColor: '#f2f2f2', // 背景颜色
+          borderColor: '#f2f2f2',
+          textStyle: {
+            color: '#000000', // 字体颜色
+            fontSize: 13 // 字体大小
+          },
+          formatter: function(data) {
+            var val =
+              '商品名称：' +
+              obj.name +
+              '<br>' +
+              '商品价格：' +
+              obj.price +
+              '<br>' +
+              '商品销量：' +
+              obj.num
+            return val
           }
         },
-        legend: {},
+
         grid: {
+          top: '5%',
           left: '3%',
           right: '4%',
-          bottom: '3%',
+          bottom: '8%',
           containLabel: true
         },
+
         xAxis: {
+          axisLine: {
+            show: true // 显示坐标轴线
+          },
+          splitLine: {
+            // 网格线
+            show: false
+          },
           type: 'value',
           boundaryGap: [0, 0.01]
         },
         yAxis: {
+          axisTick: {
+            show: false // 不显示坐标轴刻度线
+          },
+
           type: 'category',
-          data: ['Brazil', 'Indonesia', 'USA', 'India', 'China', 'World']
+          data: [
+            'Brazil',
+            'Indonesia',
+            'USA',
+            'India',
+            'China',
+            'World',
+            'India',
+            'China',
+            'World',
+            'India'
+          ]
         },
         series: [
           {
-            name: '2011',
             type: 'bar',
-            data: [18203, 23489, 29034, 104970, 131744, 630230]
-          },
-          {
-            name: '2012',
-            type: 'bar',
-            data: [19325, 23438, 31000, 121594, 134141, 681807]
+            data: [
+              18203,
+              23489,
+              29034,
+              104970,
+              131744,
+              630230,
+              104970,
+              131744,
+              630230,
+              430230
+            ]
           }
         ]
-      })
+      }
+
+      // 使用刚指定的配置项和数据显示图表。
+      myChartShop.setOption(option)
+      myChartUser.setOption(option)
       // this.myCharts.setOption({
       //   tooltip: {
       //     trigger: 'axis',
@@ -248,15 +316,6 @@ export default {
       if (res.ret) {
         this.goods_msg = res.data
       }
-    },
-    toVIPList() {
-      this.$router.push({ name: 'VIPList' })
-    },
-    toOrderList() {
-      this.$router.push({ name: 'orderList' })
-    },
-    toCommodityList() {
-      this.$router.push({ name: 'goodsList' })
     }
   }
 }
@@ -273,7 +332,7 @@ export default {
     line-height: 53px;
     padding-left: 20px;
     background-color: #fff;
-    margin-bottom: 1em;
+    margin-bottom: 0.5em;
     .pickerDate {
       margin-top: 5px;
       margin-right: 20px;
@@ -355,6 +414,7 @@ export default {
       background-color: #fff;
     }
     .leftEcharts {
+      height: 450px;
       min-height: 40vh;
     }
   }
