@@ -5,7 +5,7 @@
     :before-close="handleClose"
     width="500px">
     <div style="padding: 0 40px 0 40px">
-      <el-form :model="form">
+      <el-form :model="form" label-position="top">
         <el-form-item label="设置结算密码:">
           <el-input v-model="form.name"></el-input>
         </el-form-item>

@@ -38,7 +38,7 @@
         </el-select>
         <el-button type="info" @click="settlementPassword()">结算密码</el-button>
         <el-button type="info" @click="addProduct()">添加商品</el-button>
-        <el-button type="info">拉取后台商品</el-button>
+        <el-button type="info" @click="pullGoods()">拉取后台商品</el-button>
       </div>
       <div slot="right">
         <el-input placeholder="请输入内容" v-model="input3" class="input-with-select">
@@ -88,7 +88,11 @@
               <el-table-column prop="address" label="税率"> </el-table-column>
               <el-table-column prop="address" label="BBD"> </el-table-column>
               <el-table-column prop="address" label="可售库存"> </el-table-column>
-              <el-table-column prop="address" label="已售库存"> </el-table-column>
+              <el-table-column prop="address" label="已售库存">
+                <template slot-scope="scope">
+                  <span style="color: #1a79eb" @click="soldRecords()">1</span>
+                </template>
+              </el-table-column>
             </el-table>
           </template>
         </el-table-column>
@@ -116,6 +120,9 @@
         <el-table-column
           prop="address"
           label="已售库存">
+          <template slot-scope="scope">
+            <span style="color: #1a79eb" @click="soldRecords()">50</span>
+          </template>
         </el-table-column>
         <el-table-column
           prop="date"
@@ -132,20 +139,31 @@
         </el-table-column>
       </el-table>
     </div>
+    <!--  拉取后台商品弹窗-->
+    <pullGoodsDialog
+      :visible.sync="dialogPullGoods"
+    />
     <!--  结算密码弹窗-->
     <setPasswordDialog
       :visible.sync="dialogPassword"/>
+    <soldRecordsDialog
+      :visible.sync="dialogSoldRecords"
+    />
   </div>
 </template>
 
 <script>
 import searchList from '@/components/searchList.vue'
 import setPasswordDialog from './components/setPasswordDialog'
+import soldRecordsDialog from './components/soldRecordsDialog'
+import pullGoodsDialog from './components/pullGoodsDialog'
 export default {
   name: 'orderList',
   components: {
     searchList,
-    setPasswordDialog
+    setPasswordDialog,
+    soldRecordsDialog,
+    pullGoodsDialog
   },
   data() {
     return {
@@ -177,13 +195,25 @@ export default {
         name: '王小虎',
         address: '上海市普陀区金沙江路 1518 弄'
       }],
-      dialogPassword: false
+      dialogPassword: false, // 结算密码弹窗
+      dialogSoldRecords: false, // 已售库存弹窗
+      dialogPullGoods: false // 拉取后台商品弹窗
     }
   },
   methods: {
+    // 已售库存弹窗
+    soldRecords() {
+      this.dialogSoldRecords = true
+    },
+    // 结算密码弹窗
     settlementPassword() {
       this.dialogPassword = true
     },
+    // 拉取后台商品弹窗
+    pullGoods() {
+      this.dialogPullGoods = true
+    },
+    // 跳转到添加商品页面
     addProduct() {
       this.$router.push({
         name: 'add_product'

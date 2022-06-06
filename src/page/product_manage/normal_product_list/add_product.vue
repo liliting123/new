@@ -100,7 +100,14 @@
               label="* 供应商"
               width="180">
               <template slot-scope="scope">
-                <el-select size="small"></el-select>
+                <el-select v-model="value" size="small">
+                  <el-option
+                    v-for="item in specForm.options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
               </template>
             </el-table-column>
             <el-table-column
@@ -131,7 +138,14 @@
               label="* 税率"
               width="180">
               <template slot-scope="scope">
-                <el-select size="small"></el-select>
+                <el-select v-model="value" size="small">
+                  <el-option
+                    v-for="item in specForm.options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
               </template>
             </el-table-column>
             <el-table-column
@@ -139,7 +153,7 @@
               label="操作"
               width="100px">
               <template slot-scope="scope">
-                <el-button type="text" size="small">ENA</el-button>
+                <el-button type="text" size="small" @click="showEAN()">EAN</el-button>
                 <el-button type="text" size="small" @click="deleteRow(scope.$index)">删除</el-button>
               </template>
             </el-table-column>
@@ -155,22 +169,34 @@
         <span>wms分类（选择后将添加商品至WMS）</span>
       </div>
       <div style="padding: 15px">
-        <el-select style="width: 300px"></el-select>
+        <el-select v-model="value" size="small">
+          <el-option
+            v-for="item in specForm.options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
       </div>
     </div>
     <div class="bottom-btn">
       <el-button type="primary" style="width: 180px">保存</el-button>
     </div>
+<!--    EAN弹窗-->
+    <addEANDialog
+      :visible.sync="dialogENATable"/>
   </div>
 </template>
 
 <script>
 // import tabsLanguage from '@/components/tabs-language.vue'
+import addEANDialog from './components/addEANDialog.vue'
 export default {
   name: 'add_product',
-  // components: {
-  //   tabsLanguage
-  // },
+  components: {
+    // tabsLanguage,
+    addEANDialog
+  },
   data() {
     return {
       specForm: {
@@ -216,10 +242,16 @@ export default {
       },
       rules: {
         name: [{ required: true, message: '请填写商品名称', trigger: 'change' }]
-      }
+      },
+      dialogENATable: false // EAN弹窗
     }
   },
   methods: {
+    // EAN弹窗
+    showEAN() {
+      console.log(111)
+      this.dialogENATable = true
+    },
     // 添加规格
     addSpec() {
       this.specForm.tableData.push({
