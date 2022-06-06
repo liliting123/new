@@ -58,6 +58,16 @@ export default [
         name: '普通商品列表',
         path: '/product_manage/normal_product_list/normal_product_list',
         subname: 'normal_product_list'
+      },
+      {
+        name: '分类列表',
+        path: '/product_manage/classification_list/classification_list',
+        subname: 'classification_list'
+      },
+      {
+        name: '供应商列表',
+        path: '/product_manage/supplier_list/supplier_list',
+        subname: 'supplier_list'
       }
     ],
     expanded: false,

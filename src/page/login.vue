@@ -26,13 +26,6 @@
                 <img class="userImg" src="../assets/images/user.png" alt="user" />
               </div>
               <div>
-                <!-- <input
-                  class="input"
-                  type="password"
-                  v-model="password"
-                  placeholder="请输入密码"
-                  @keyup.enter="login"
-                /> -->
                 <el-input
                   v-model="password"
                   placeholder="请输入密码"
@@ -45,7 +38,7 @@
                 />
                 <div>
                   <el-input
-                    v-model="password"
+                    v-model="code"
                     placeholder="请输入验证码"
                     class="input"
                     style="width: 50%;"
@@ -82,7 +75,7 @@
 </template>
 <script>
 import Copyright from '../components/copyright.vue'
-// import {NLE} from '../lib/constant/constant'
+// import { NLE } from '../lib/constant/constant'
 export default {
   name: 'Login',
   components: { Copyright },
@@ -90,6 +83,7 @@ export default {
     return {
       email: '',
       password: '',
+      code: '',
       keep: false
     }
   },
@@ -105,6 +99,13 @@ export default {
   // },
   methods: {
     login() {
+      if (this.email === '') {
+        this.$notify({
+          title: '操作失败',
+          message: 'EMAIL不能为空',
+          type: 'warning'
+        })
+      }
       // if (this.keep) {
       //   localStorage.setItem(NLE.EMAIL, this.email)
       //   localStorage.setItem(NLE.PASSWORD, this.password)

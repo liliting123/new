@@ -32,8 +32,12 @@
                   class="input"
                 ></el-input>
                 <img class="codeImg" src="../assets/images/code.png" alt="code" />
-                <span class="verification sendOut border-radius">发送</span>
-                <span class="verification sendOutTime border-radius">60s</span>
+                <span class="verification sendOut border-radius" @click="countdowns()"
+                  >发送</span
+                >
+                <span class="verification sendOutTime border-radius" v-if="countdown"
+                  >60s</span
+                >
                 <div>
                   <el-input
                     v-model="password"
@@ -55,10 +59,10 @@
                   id="#mouse"
                   class="login_btn"
                   type="button"
-                  @click="login"
+                  @click="login()"
                   :loading="$store.state.btn_loading"
                 >
-                  登录
+                  确定
                 </el-button>
               </div>
               <div style="text-align:center;" class="paddingTopTwenty"></div>
@@ -82,7 +86,8 @@ export default {
     return {
       email: '',
       password: '',
-      keep: false
+      keep: false,
+      countdown: false // 倒计时
     }
   },
   // mounted() {
@@ -96,6 +101,9 @@ export default {
   //   }
   // },
   methods: {
+    countdowns() {
+      this.countdown = true
+    },
     login() {
       // if (this.keep) {
       //   localStorage.setItem(NLE.EMAIL, this.email)
@@ -255,6 +263,9 @@ export default {
     top: 139px;
     border: 1px solid rgba(121, 121, 121, 1);
     padding: 3px 5px;
+  }
+  .verification:hover {
+    cursor: pointer;
   }
   .sendOut {
     left: 318px;

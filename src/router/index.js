@@ -27,9 +27,18 @@ const StoreSettings = loadOnDemand('configuration_manage/store_settings')
 // 支付设置
 const PaymentSettings = loadOnDemand('configuration_manage/payment_settings')
 // 普通商品列表
-const NormalProductList = loadOnDemand('product_manage/normal_product_list/normal_product_list')
+const NormalProductList = loadOnDemand(
+  'product_manage/normal_product_list/normal_product_list'
+)
 // 普通商品列表-添加商品
 const AddProduct = loadOnDemand('product_manage/normal_product_list/add_product')
+// 分类列表
+const ClassificationList = loadOnDemand(
+  'product_manage/classification_list/classification_list'
+)
+// 供应商列表
+const SupplierList = loadOnDemand('product_manage/supplier_list/supplier_list')
+
 var router = new Router({
   routes: [
     {
@@ -110,6 +119,16 @@ var router = new Router({
           name: 'add_product',
           component: AddProduct,
           meta: { keepAlive: true }
+        },
+        {
+          path: 'classification_list',
+          name: 'classification_list',
+          component: ClassificationList
+        },
+        {
+          path: 'supplier_list',
+          name: 'supplier_list',
+          component: SupplierList
         }
       ]
     },
