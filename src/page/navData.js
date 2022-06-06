@@ -60,6 +60,11 @@ export default [
         subname: 'normal_product_list'
       },
       {
+        name: '称重商品列表',
+        path: '/product_manage/weighing_goods_list/weighing_goods_list',
+        subname: 'weighing_goods_list'
+      },
+      {
         name: '分类列表',
         path: '/product_manage/classification_list/classification_list',
         subname: 'classification_list'

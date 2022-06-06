@@ -41,7 +41,7 @@
         <el-button type="info" @click="pullGoods()">拉取后台商品</el-button>
       </div>
       <div slot="right">
-        <el-input placeholder="请输入内容" v-model="input3" class="input-with-select">
+        <el-input placeholder="请输入内容" v-model="input3">
           <el-select v-model="select" slot="prepend" placeholder="商品名称">
             <el-option label="餐厅名" value="1"></el-option>
             <el-option label="订单号" value="2"></el-option>
@@ -58,7 +58,6 @@
         <button>拉取BBD</button>
       </div>
       <el-table
-        class="order-table"
         :header-cell-style="{background:'#F7F7F7'}"
         :data="tableData"
         style="width: 100%;margin-bottom: 20px;"
@@ -147,8 +146,7 @@
     <setPasswordDialog
       :visible.sync="dialogPassword"/>
     <soldRecordsDialog
-      :visible.sync="dialogSoldRecords"
-    />
+      :visible.sync="dialogSoldRecords"/>
   </div>
 </template>
 
@@ -158,7 +156,7 @@ import setPasswordDialog from './components/setPasswordDialog'
 import soldRecordsDialog from './components/soldRecordsDialog'
 import pullGoodsDialog from './components/pullGoodsDialog'
 export default {
-  name: 'orderList',
+  name: 'normal_product_list',
   components: {
     searchList,
     setPasswordDialog,
