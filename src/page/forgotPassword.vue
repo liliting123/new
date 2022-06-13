@@ -27,20 +27,20 @@
               </div>
               <div>
                 <el-input
-                  v-model="password"
+                  v-model="emailCode"
                   placeholder="请输入邮箱验证码"
                   class="input"
                 ></el-input>
                 <img class="codeImg" src="../assets/images/code.png" alt="code" />
-                <span class="verification sendOut border-radius" @click="countdowns()"
+                <span class="verification sendOut border-radius" @click="getCode()"
                   >发送</span
                 >
                 <span class="verification sendOutTime border-radius" v-if="countdown"
-                  >60s</span
+                  >{{ count }}s</span
                 >
                 <div>
                   <el-input
-                    v-model="password"
+                    v-model="newPassword"
                     placeholder="请输入新密码"
                     class="input"
                   ></el-input>
@@ -59,7 +59,7 @@
                   id="#mouse"
                   class="login_btn"
                   type="button"
-                  @click="login()"
+                  @click="forgotPassword()"
                   :loading="$store.state.btn_loading"
                 >
                   确定
@@ -78,73 +78,68 @@
 </template>
 <script>
 import Copyright from '../components/copyright.vue'
-// import {NLE} from '../lib/constant/constant'
+
 export default {
   name: 'Login',
   components: { Copyright },
   data() {
     return {
       email: '',
-      password: '',
-      keep: false,
-      countdown: false // 倒计时
+      emailCode: '',
+      newPassword: '',
+      countdown: false, // 倒计时
+      count: '',
+      timer: null
     }
   },
-  // mounted() {
-  //   this.email = localStorage.getItem(NLE.EMAIL)
-  //   this.password = localStorage.getItem(NLE.PASSWORD)
-  //   if (!this.email || !this.password) {
-  //     this.email = ''
-  //     this.password = ''
-  //   } else {
-  //     this.keep = true
-  //   }
-  // },
+  mounted() {},
   methods: {
-    countdowns() {
-      this.countdown = true
+    // 获取验证码
+    getCode() {
+      const TIME_COUNT = 60
+      if (this.email === '') {
+        this.$notify({
+          title: '操作失败',
+          message: 'EMAIL不能为空',
+          type: 'warning'
+        })
+      } else {
+        if (!this.timer) {
+          this.count = TIME_COUNT
+          this.countdown = true
+          this.timer = setInterval(() => {
+            if (this.count > 0 && this.count <= TIME_COUNT) {
+              this.count--
+            } else {
+              this.countdown = false
+              clearInterval(this.timer)
+              this.timer = null
+            }
+          }, 1000)
+        }
+      }
     },
-    login() {
-      // if (this.keep) {
-      //   localStorage.setItem(NLE.EMAIL, this.email)
-      //   localStorage.setItem(NLE.PASSWORD, this.password)
-      // } else {
-      //   localStorage.setItem(NLE.EMAIL, '')
-      //   localStorage.setItem(NLE.PASSWORD, '')
-      // }
-      // if (this.email === '') {
-      //   this.$notify({
-      //     title: this.$t('error'),
-      //     message: this.$t('EmailCannotBeEmpty'),
-      //     type: 'warning'
-      //   })
-      // } else if (this.password === '') {
-      //   this.$notify({
-      //     title: this.$t('error'),
-      //     message: this.$t('PasswordCannotBeEmpty'),
-      //     type: 'warning'
-      //   })
-      // } else {
-      //   this.$http.post('user/login', {
-      //     userName: this.email,
-      //     password: this.password
-      //   }).then(res => {
-      //     if (res.ret) {
-      //       this.$notify({
-      //         type: 'success',
-      //         title: this.$t('success'),
-      //         message: this.$t('LoginSuccessful')
-      //       })
-      //       this.$store.commit('token/saveToken', {token: res.data.token})
-      //       this.$router.push('/')
-      //     } else {
-      //       this.$message({
-      //         message: res.msg,
-      //         type: 'error'
-      //       })
-      //     }
-      //   })
-      // }
+    forgotPassword() {
+      if (this.email === '') {
+        this.$notify({
+          title: '操作失败',
+          message: 'EMAIL不能为空',
+          type: 'warning'
+        })
+      } else if (this.emailCode === '') {
+        this.$notify({
+          title: '操作失败',
+          message: '邮箱验证码不能为空',
+          type: 'warning'
+        })
+      } else if (this.newPassword === '') {
+        this.$notify({
+          title: '操作失败',
+          message: '新密码不能为空',
+          type: 'warning'
+        })
+      } else {
+      }
     }
   }
 }

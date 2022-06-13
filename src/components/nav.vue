@@ -9,7 +9,7 @@
     </div>
     <div class="brand">
       <span style="padding: 10px;">Admin</span>
-      <router-link to="#" @click.native="onLoyout()">
+      <router-link to="" @click.native="onLoyout()">
         <i class="el-icon-switch-button"></i>
       </router-link>
     </div>
@@ -93,7 +93,18 @@ export default {
   methods: {
     // 注销
     onLoyout() {
-      this.$emit('forLoyout')
+      this.$confirm(this.$t('AreYouSureToLogOut') + '?', this.$t('tips'), {
+        confirmButtonText: this.$t('confirm'),
+        cancelButtonText: this.$t('cancel'),
+        type: 'warning'
+      }).then(() => {
+        this.$notify({
+          type: 'success',
+          message: this.$t('success')
+        })
+
+        this.$router.push('/login')
+      })
     },
     // 获取下载列表
     getDownloads(flag) {

@@ -184,16 +184,30 @@ export default {
     }
   },
   mounted() {
-    console.log('00', this.dialogFormVisible)
+    this.getList()
   },
-  updated() {
-    console.log('02', this.dialogFormVisible)
-  },
+  updated() {},
   // row,  每一行上的数据
   // column, 每一列上的数据
   // rowIndex,  行数的下标从0开始
   // columnIndex   列数下标从0开始
   methods: {
+    getList() {
+      this.tableLoading = true
+      this.$http
+        .get('api/user_wallet', {
+          params: {
+            page: 1,
+            size: 10,
+            keyword: 1
+          }
+        })
+        .then(res => {
+          if (res.ret) {
+            console.log(res)
+          }
+        })
+    },
     delect() {
       this.$confirm('确认要删除吗?', '提示', {
         confirmButtonText: '确定',

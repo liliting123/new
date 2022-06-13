@@ -17,6 +17,8 @@
     </search-list>
     <div class="table-main border-radius">
       <el-table
+        ref="table"
+        row-key="id"
         :data="tableData"
         :header-cell-style="{
           background: '#F7F7F7'
@@ -33,10 +35,10 @@
             <span class="table_index">1</span>
           </template>
         </el-table-column>
-        <el-table-column prop="date" label="分类名称"> </el-table-column>
+        <el-table-column prop="code" label="分类名称"> </el-table-column>
         <el-table-column prop="name" label="是否称重分类"> </el-table-column>
 
-        <el-table-column prop="address" label="创建时间"> </el-table-column>
+        <el-table-column prop="postcode" label="创建时间"> </el-table-column>
         <el-table-column label="操作" width="200">
           <template slot-scope="">
             <el-button type="text" @click="dialogFormVisible = true">编辑</el-button>
@@ -78,40 +80,43 @@
   </div>
 </template>
 <script>
+import Sortable from 'sortablejs'
 import searchList from '@/components/searchList.vue'
 // import PaginationAndButtons from '@/components/pagination_and_buttons.vue'
 // import { pagination } from '@/mixin/pagination.js'
 export default {
   // mixins: [pagination],
   components: {
-    searchList
+    searchList,
+    Sortable
   },
   data() {
     return {
       searchValue: '',
       page_params: 1,
-      tableData: [
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        },
-        {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        },
-        {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }
-      ],
+      tableData: [],
+      // tableData: [
+      //   {
+      //     date: '1',
+      //     name: '王小虎',
+      //     address: '上海市普陀区金沙江路 1518 弄'
+      //   },
+      //   {
+      //     date: '2',
+      //     name: '王小虎',
+      //     address: '上海市普陀区金沙江路 1517 弄'
+      //   },
+      //   {
+      //     date: '3',
+      //     name: '王小虎',
+      //     address: '上海市普陀区金沙江路 1519 弄'
+      //   },
+      //   {
+      //     date: '4',
+      //     name: '王小虎',
+      //     address: '上海市普陀区金沙江路 1516 弄'
+      //   }
+      // ],
       dialogFormVisible: false,
       form: {
         classificationName: '',
@@ -122,10 +127,20 @@ export default {
       }
     }
   },
-  mounted() {},
+  mounted() {
+    this.dragSort()
+    this.getList()
+  },
   updated() {},
 
   methods: {
+    async getList() {
+      const res = await this.$http.get(`api/countries`)
+      console.log(res)
+      if (res.ret === 1) {
+        this.tableData = res.data
+      }
+    },
     delect() {
       this.$confirm('确认要删除吗?', '提示', {
         confirmButtonText: '确定',
@@ -140,6 +155,41 @@ export default {
           })
         })
         .catch(() => {})
+    },
+    // 拖拽排序
+    dragSort() {
+      const el = this.$refs.table.$el.querySelectorAll(
+        '.el-table__body-wrapper > table > tbody'
+      )[0]
+      this.sortable = Sortable.create(el, {
+        ghostClass: 'sortable-ghost',
+        setData: function(dataTransfer) {
+          dataTransfer.setData('Text', '')
+        },
+        onEnd: async e => {
+          // e.oldIndex为拖动一行原来的位置，e.newIndex为拖动后新的位置
+          const targetRow = this.tableData.splice(e.oldIndex, 1)[0] // 拖拽后的行
+          console.log(targetRow)
+          this.tableData.splice(e.newIndex, 0, targetRow) // 得到拖拽后的数组
+          let sortData = this.tableData.map((item, index) => {
+            item.index_sort = index
+            return {
+              id: item.id,
+              index_sort: item.index_sort
+            }
+          })
+          const res = await this.$http.post(`api/countries/sort`, {
+            sort_data: sortData
+          })
+          if (res.ret) {
+            this.$notify({
+              title: this.$t('success'),
+              message: res.msg,
+              type: 'success'
+            })
+          }
+        }
+      })
     }
   }
 }

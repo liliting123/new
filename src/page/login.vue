@@ -75,7 +75,7 @@
 </template>
 <script>
 import Copyright from '../components/copyright.vue'
-// import { NLE } from '../lib/constant/constant'
+import { NLE } from '../lib/constant/constant'
 export default {
   name: 'Login',
   components: { Copyright },
@@ -87,24 +87,71 @@ export default {
       keep: false
     }
   },
-  // mounted() {
-  //   this.email = localStorage.getItem(NLE.EMAIL)
-  //   this.password = localStorage.getItem(NLE.PASSWORD)
-  //   if (!this.email || !this.password) {
-  //     this.email = ''
-  //     this.password = ''
-  //   } else {
-  //     this.keep = true
-  //   }
-  // },
+  mounted() {
+    this.email = localStorage.getItem(NLE.EMAIL)
+    this.password = localStorage.getItem(NLE.PASSWORD)
+    if (!this.email || !this.password) {
+      this.email = ''
+      this.password = ''
+    } else {
+      this.keep = true
+    }
+  },
   methods: {
     login() {
+      if (this.keep) {
+        localStorage.setItem(NLE.EMAIL, this.email)
+        localStorage.setItem(NLE.PASSWORD, this.password)
+        // localStorage.setItem(
+        //   'TOKEN',
+        //   '262181e7e5f1182323f5846ce8b8ef53f20cbc5174d24f1b0244b31de7c9f847904544'
+        // )
+      } else {
+        localStorage.setItem(NLE.EMAIL, '')
+        localStorage.setItem(NLE.PASSWORD, '')
+      }
       if (this.email === '') {
         this.$notify({
           title: '操作失败',
           message: 'EMAIL不能为空',
           type: 'warning'
         })
+      } else if (this.password === '') {
+        this.$notify({
+          title: '操作失败',
+          message: '密码不能为空',
+          type: 'warning'
+        })
+      } else if (this.code === '') {
+        this.$notify({
+          title: '操作失败',
+          message: '验证码不能为空',
+          type: 'warning'
+        })
+      } else {
+        this.$http
+          .post('user/login', {
+            userName: this.email,
+            password: this.password
+          })
+          .then(res => {
+            console.log(res)
+            if (res.ret) {
+              this.$notify({
+                type: 'success',
+                title: this.$t('success'),
+                message: this.$t('LoginSuccessful')
+              })
+              this.$store.commit('token/saveToken', { token: res.data.token })
+              this.$router.push('/')
+            } else {
+              this.$message({
+                message: res.msg,
+                type: 'error'
+              })
+            }
+          })
+        // this.$router.push('/')
       }
       // if (this.keep) {
       //   localStorage.setItem(NLE.EMAIL, this.email)
@@ -241,7 +288,7 @@ export default {
     top: 79px;
   }
   .passwordImg {
-    width: 20.5px;
+    width: 18.5px;
     position: absolute;
     left: 47px;
     top: 138px;
@@ -290,7 +337,7 @@ export default {
 .login_btn {
   height: 42px;
   width: 100%;
-  background-color: #7f7f7f;
+  background-color: #43495f;
   color: #fff;
   border-radius: 5px;
   border: none;
