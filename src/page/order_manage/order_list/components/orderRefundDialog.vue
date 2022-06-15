@@ -5,7 +5,7 @@
     width="71%"
     :before-close="handleClose">
     <div class="top">
-      <span>已选 1 件商品，将退款€2.50</span>
+      <span>已选 {{selectList.length}} 件商品，将退款€{{refundMoney}}</span>
       <el-input style="width: 270px">
         <template slot="append">搜索</template>
       </el-input>
@@ -13,7 +13,10 @@
     <el-table
       :header-cell-style="{background:'#F7F7F7'}"
       :data="tableData"
-      style="width: 100%">
+      ref="tableData"
+      row-key="id"
+      style="width: 100%"
+      @selection-change="zqy()">
       <el-table-column
         type="selection"
         width="55"/>
@@ -52,14 +55,14 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="name"
+        prop="num"
         label="实付">
       </el-table-column>
     </el-table>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visibleRefund = false">取 消</el-button>
       <el-button type="primary" @click="visibleRefund = false">确 定</el-button>
-      </span>
+    </span>
   </el-dialog>
 </template>
 
@@ -85,27 +88,41 @@ export default {
   data() {
     return {
       tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
+        id: 1,
+        date: '图片',
+        name: '上海青',
+        address: 'EWDQ1232FDDSF1221213',
+        num: 10.00
       }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
+        id: 2,
+        date: '图片',
+        name: '白菜',
+        address: 'QQ11278218ff198',
+        num: 5.00
       }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
+        id: 3,
+        date: '图片',
+        name: '辣椒',
+        address: 'QER165453232323',
+        num: 2.68
       }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }]
+        id: 4,
+        date: '图片',
+        name: '茄子',
+        address: 'JQR121232677887',
+        num: 4.36
+      }],
+      selectList: [], // 选中的商品
+      refundMoney: 0 // 退款金额
     }
   },
   methods: {
     handleClose() {
       this.visibleRefund = false
+    },
+    zqy() {
+      this.selectList = this.$refs.tableData.selection // 选中的退款商品
+      this.refundMoney = this.selectList.reduce((sum3, obj) => (sum3 += obj.num), 0) // 计算选中的退款商品总价
     }
   }
 }

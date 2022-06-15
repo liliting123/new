@@ -77,23 +77,21 @@
         <el-table-column
           prop="date"
           label="会员ID"
-          sortable
-          width="180">
+          width="130">
         </el-table-column>
         <el-table-column
           prop="name"
           label="订单编号"
-          sortable
           width="180">
         </el-table-column>
         <el-table-column
           prop="address"
-          label="退款状态">
+          label="退款状态"
+          width="130">
         </el-table-column>
         <el-table-column
           prop="name"
           label="退款金额"
-          sortable
           width="180">
         </el-table-column>
         <el-table-column
@@ -102,24 +100,22 @@
         </el-table-column>
         <el-table-column
           prop="name"
-          label="申请时间"
-          sortable
-          width="180">
+          label="申请时间">
         </el-table-column>
         <el-table-column
           prop="address"
-          label="是否已退款">
+          label="是否已退款"
+          width="100">
         </el-table-column>
         <el-table-column
           prop="name"
           label="操作人"
-          sortable
-          width="180">
+          width="100">
         </el-table-column>
         <el-table-column
           prop="address"
           label="操作"
-          width="150">
+          width="200">
           <template slot-scope="scope">
             <el-button type="text" size="small">重推</el-button>
             <el-button type="text" size="small">确认已退款</el-button>
@@ -129,20 +125,25 @@
       </el-table>
     </div>
 <!--    退款审核弹窗-->
-    <el-dialog title="退款审核" :visible.sync="dialogRefund" width="400px">
+    <el-dialog
+      title="退款审核"
+      :visible.sync="dialogRefund"
+      width="400px">
       <div style="padding: 0 40px 0 40px">
-        <el-form :model="form">
-          <el-form-item label="审核状态">
+        <el-form :model="form" label-position="top" :rules="formRules">
+          <el-form-item label="审核状态" prop="region">
             <el-select
+              style="width: 280px"
               v-model="form.region"
-              placeholder="请选择活动区域"
-              style="margin-left: 0;width: 279px">
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
+              placeholder="请选择活动区域">
+              <el-option label="区域一" value="shanghai"/>
+              <el-option label="区域二" value="beijing"/>
             </el-select>
           </el-form-item>
-          <el-form-item label="退款金额">
-            <el-input v-model="form.name"></el-input>
+          <el-form-item label="退款金额" prop="name">
+            <el-input v-model="form.name">
+              <span slot="suffix" style="font-size: 16px">€</span>
+            </el-input>
           </el-form-item>
           <el-form-item label="退款备注">
             <el-input
@@ -188,41 +189,42 @@ export default {
         label: '北京烤鸭'
       }],
       value: '',
-      input1: '',
-      input2: '',
       input3: '',
       select: '',
       tableData: [{
         id: 1,
         date: '2016-05-02',
         name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
+        address: '是'
       }, {
         id: 2,
         date: '2016-05-04',
         name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
+        address: '是'
       }, {
         id: 3,
         date: '2016-05-01',
         name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
+        address: '否'
       }, {
         id: 4,
         date: '2016-05-03',
         name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
+        address: '是'
       }],
       form: {
         name: '',
         region: '',
         desc: ''
       },
-      dialogRefund: false
+      dialogRefund: false,
+      formRules: {
+        region: [{ required: true, message: '请输入活动名称', trigger: 'blur' }],
+        name: [{ required: true, message: '请输入退款金额', trigger: 'blur' }]
+      }
     }
   },
   methods: {
-
   }
 }
 </script>
