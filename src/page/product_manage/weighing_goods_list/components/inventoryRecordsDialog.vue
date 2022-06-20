@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="库存记录"
+    :title="$t('库存记录')"
     :visible="inventoryRecords"
     width="60%"
     :before-close="handleClose">
@@ -8,13 +8,13 @@
       <el-date-picker
         v-model="value1"
         type="daterange"
-        range-separator="至"
-        start-placeholder="开始日期"
-        end-placeholder="结束日期">
+        :range-separator="$t('至')"
+        :start-placeholder="$t('开始日期')"
+        :end-placeholder="$t('结束日期')">
       </el-date-picker>
       <el-select
         v-model="value1"
-        placeholder="全部">
+        :placeholder="$t('全部')">
         <el-option
           v-for="item in options"
           :key="item.value"
@@ -34,40 +34,40 @@
       </el-table-column>
       <el-table-column
         prop="date"
-        label="类型"
+        :label="$t('类型')"
         width="180">
       </el-table-column>
       <el-table-column
         prop="name"
-        label="操作前库存">
+        :label="$t('操作前库存')">
       </el-table-column>
       <el-table-column
       prop="address"
-      label="当前库存">
+      :label="$t('当前库存')">
     </el-table-column>
       <el-table-column
         prop="date"
-        label="操作库存"
+        :label="$t('操作库存')"
         width="180">
       </el-table-column>
       <el-table-column
         prop="address"
-        label="操作人">
+        :label="$t('操作人')">
       </el-table-column>
       <el-table-column
         prop="date"
-        label="操作时间"
+        :label="$t('操作时间')"
         width="180">
       </el-table-column>
       <el-table-column
         prop="name"
-        label="关联单号">
+        :label="$t('关联单号')">
       </el-table-column>
     </el-table>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="inventoryRecords = false">取 消</el-button>
-      <el-button type="primary" @click="inventoryRecords = false">确 定</el-button>
-      </span>
+      <el-button @click="inventoryRecords = false">{{$t('取消')}}</el-button>
+      <el-button type="primary" @click="inventoryRecords = false">{{$t('确定')}}</el-button>
+    </span>
   </el-dialog>
 </template>
 

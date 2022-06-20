@@ -6,7 +6,7 @@
         <el-select
           style="margin-left: 10px;"
           v-model="value"
-          placeholder="商品分类">
+          :placeholder="$t('商品分类')">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -17,7 +17,7 @@
         <el-select
           style="margin-left: 10px;"
           v-model="value"
-          placeholder="分类标签">
+          :placeholder="$t('分类标签')">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -28,7 +28,7 @@
         <el-select
           style="margin:0 10px 0 10px;"
           v-model="value"
-          placeholder="供应商">
+          :placeholder="$t('供应商')">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -36,26 +36,26 @@
             :value="item.value">
           </el-option>
         </el-select>
-        <el-button type="info" @click="settlementPassword()">结算密码</el-button>
-        <el-button type="info" @click="addProduct()">添加商品</el-button>
-        <el-button type="info" @click="pullGoods()">拉取后台商品</el-button>
+        <el-button type="info" @click="settlementPassword()">{{$t('结算密码')}}</el-button>
+        <el-button type="info" @click="addProduct()">{{$t('添加商品')}}</el-button>
+        <el-button type="info" @click="pullGoods()">{{$t('拉取后台商品')}}</el-button>
       </div>
       <div slot="right">
-        <el-input placeholder="请输入内容" v-model="input3">
-          <el-select v-model="select" slot="prepend" placeholder="商品名称">
+        <el-input v-model="input3">
+          <el-select v-model="select" slot="prepend" :placeholder="$t('商品名称')">
             <el-option label="餐厅名" value="1"></el-option>
             <el-option label="订单号" value="2"></el-option>
             <el-option label="用户电话" value="3"></el-option>
           </el-select>
-          <el-button slot="append">搜索</el-button>
+          <el-button slot="append">{{$t('搜索')}}</el-button>
         </el-input>
       </div>
     </search-list>
     <!--    table列表-->
     <div class="table_list" style="padding-top: 10px">
       <div class="top_btn">
-        <button>拉取库存</button>
-        <button>拉取BBD</button>
+        <button>{{$t('拉取库存')}}</button>
+        <button>{{$t('拉取BBD')}}</button>
       </div>
       <el-table
         :header-cell-style="{background:'#F7F7F7'}"
@@ -78,16 +78,16 @@
                   <span class="table_index">1</span>
                 </template>
               </el-table-column>
-              <el-table-column prop="name" label="商品编码"></el-table-column>
-              <el-table-column prop="name" label="EAN"></el-table-column>
-              <el-table-column prop="address" label="供应商"> </el-table-column>
-              <el-table-column prop="name" label="规格"> </el-table-column>
-              <el-table-column prop="address" label="价格"> </el-table-column>
-              <el-table-column prop="name" label="会员价"> </el-table-column>
-              <el-table-column prop="address" label="税率"> </el-table-column>
-              <el-table-column prop="address" label="BBD"> </el-table-column>
-              <el-table-column prop="address" label="可售库存"> </el-table-column>
-              <el-table-column prop="address" label="已售库存">
+              <el-table-column prop="name" :label="$t('商品编码')"></el-table-column>
+              <el-table-column prop="name" :label="$t('EAN')"></el-table-column>
+              <el-table-column prop="address" :label="$t('供应商')"> </el-table-column>
+              <el-table-column prop="name" :label="$t('规格')"> </el-table-column>
+              <el-table-column prop="address" :label="$t('价格')"> </el-table-column>
+              <el-table-column prop="name" :label="$t('会员价')"> </el-table-column>
+              <el-table-column prop="address" :label="$t('税率')"> </el-table-column>
+              <el-table-column prop="address" :label="$t('BBD')"> </el-table-column>
+              <el-table-column prop="address" :label="$t('可售库存')"> </el-table-column>
+              <el-table-column prop="address" :label="$t('已售库存')">
                 <template slot-scope="scope">
                   <span style="color: #1a79eb" @click="soldRecords()">1</span>
                 </template>
@@ -97,43 +97,43 @@
         </el-table-column>
         <el-table-column
           prop="date"
-          label="商品名称"
+          :label="$t('商品名称')"
           width="180">
         </el-table-column>
         <el-table-column
           prop="name"
-          label="商品分类">
+          :label="$t('商品分类')">
         </el-table-column>
         <el-table-column
           prop="address"
-          label="分类标签">
+          :label="$t('分类标签')">
         </el-table-column>
         <el-table-column
           prop="date"
-          label="商品图片">
+          :label="$t('商品图片')">
         </el-table-column>
         <el-table-column
           prop="name"
-          label="可售库存">
+          :label="$t('可售库存')">
         </el-table-column>
         <el-table-column
           prop="address"
-          label="已售库存">
+          :label="$t('已售库存')">
           <template slot-scope="scope">
             <span style="color: #1a79eb" @click="soldRecords()">50</span>
           </template>
         </el-table-column>
         <el-table-column
           prop="date"
-          label="创建时间">
+          :label="$t('创建时间')">
         </el-table-column>
         <el-table-column
           prop="address"
-          label="操作"
+          :label="$t('操作')"
           width="150">
           <template slot-scope="scope">
-            <el-button type="text" size="small">编辑</el-button>
-            <el-button type="text" size="small">删除</el-button>
+            <el-button type="text" size="small">{{$t('编辑')}}</el-button>
+            <el-button type="text" size="small">{{$t('删除')}}</el-button>
           </template>
         </el-table-column>
       </el-table>

@@ -1,13 +1,13 @@
 <template>
   <el-dialog
-    title="选择退款商品"
+    :title="$t('选择退款商品')"
     :visible="visibleRefund"
     width="71%"
     :before-close="handleClose">
     <div class="top">
-      <span>已选 {{selectList.length}} 件商品，将退款€{{refundMoney}}</span>
+      <span>{{`${$t('已选')} ${selectList.length} ${$t('件商品')},${$t('将退款')} €${refundMoney}`}}</span>
       <el-input style="width: 270px">
-        <template slot="append">搜索</template>
+        <template slot="append">{{$t('搜索')}}</template>
       </el-input>
     </div>
     <el-table
@@ -22,46 +22,46 @@
         width="55"/>
       <el-table-column
         prop="date"
-        label="商品图片"
+        :label="$t('商品图片')"
         width="180">
       </el-table-column>
       <el-table-column
         prop="name"
-        label="商品名称"
+        :label="$t('商品名称')"
         width="180">
       </el-table-column>
       <el-table-column
         prop="address"
-        label="商品编号">
+        :label="$t('商品编号')">
       </el-table-column>
       <el-table-column
         prop="date"
-        label="EAN"
+        :label="$t('EAN')"
         width="180">
       </el-table-column>
       <el-table-column
         prop="name"
-        label="规格">
+        :label="$t('规格')">
       </el-table-column>
       <el-table-column
         prop="address"
-        label="单价">
+        :label="$t('单价')">
       </el-table-column>
       <el-table-column
         prop="date"
-        label="数量">
+        :label="$t('数量')">
         <template slot-scope="scope">
           <el-input size="small"/>
         </template>
       </el-table-column>
       <el-table-column
         prop="num"
-        label="实付">
+        :label="$t('实付')">
       </el-table-column>
     </el-table>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="visibleRefund = false">取 消</el-button>
-      <el-button type="primary" @click="visibleRefund = false">确 定</el-button>
+      <el-button @click="visibleRefund = false">{{$t('取消')}}</el-button>
+      <el-button type="primary" @click="visibleRefund = false">{{$t('确定')}}</el-button>
     </span>
   </el-dialog>
 </template>
