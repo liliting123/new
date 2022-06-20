@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="已售记录"
+    :title="$t('已售记录')"
     :visible="soldRecords"
     width="50%"
     :before-close="handleClose">
@@ -8,9 +8,9 @@
       <el-date-picker
         v-model="value1"
         type="daterange"
-        range-separator="至"
-        start-placeholder="开始日期"
-        end-placeholder="结束日期">
+        :range-separator="$t('至')"
+        :start-placeholder="$t('开始日期')"
+        :end-placeholder="$t('结束日期')">
       </el-date-picker>
     </div>
     <el-table
@@ -24,33 +24,33 @@
       </el-table-column>
       <el-table-column
         prop="date"
-        label="订单号"
+        :label="$t('订单号')"
         width="180">
       </el-table-column>
       <el-table-column
         prop="name"
-        label="已售数量">
+        :label="$t('已售数量')">
       </el-table-column>
       <el-table-column
         prop="address"
-        label="操作人">
+        :label="$t('操作人')">
       </el-table-column>
       <el-table-column
         prop="date"
-        label="创建时间"
+        :label="$t('创建时间')"
         width="180">
       </el-table-column>
       <el-table-column
         prop="name"
-        label="操作">
+        :label="$t('操作')">
         <template slot-scope="scope">
-          <el-button type="text" @click="showDetail()">查看详情</el-button>
+          <el-button type="text" @click="showDetail()">{{$t('查看详情')}}</el-button>
         </template>
       </el-table-column>
     </el-table>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="soldRecords = false">取 消</el-button>
-      <el-button type="primary" @click="soldRecords = false">确 定</el-button>
+      <el-button @click="soldRecords = false">{{$t('取消')}}</el-button>
+      <el-button type="primary" @click="soldRecords = false">{{$t('确定')}}</el-button>
       </span>
   </el-dialog>
 </template>

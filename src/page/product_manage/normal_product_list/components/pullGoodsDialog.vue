@@ -1,13 +1,13 @@
 <template>
   <el-dialog
-    title="拉取后台商品"
+    :title="$t('拉取后台商品')"
     :visible="dialogPullGoods"
     :before-close="handleClose"
     width="500px">
     <div style="padding: 0 40px 0 40px">
       <el-form :model="form" label-position="top">
-        <el-form-item label="店铺名称:">
-          <el-select v-model="form.name" placeholder="请选择">
+        <el-form-item :label="`${$t('店铺名称')}:`">
+          <el-select v-model="form.name">
             <el-option
               v-for="item in options"
               :key="item.value"
@@ -16,14 +16,14 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="商品编号:">
+        <el-form-item :label="`${$t('商品编号')}:`">
           <el-input v-model="form.name"></el-input>
         </el-form-item>
       </el-form>
     </div>
     <div slot="footer" class="dialog-footer">
-      <el-button @click="dialogPullGoods = false">取 消</el-button>
-      <el-button type="primary" @click="dialogPullGoods = false">确 定</el-button>
+      <el-button @click="dialogPullGoods = false">{{$t('取消')}}</el-button>
+      <el-button type="primary" @click="dialogPullGoods = false">{{$t('确定')}}</el-button>
     </div>
   </el-dialog>
 </template>

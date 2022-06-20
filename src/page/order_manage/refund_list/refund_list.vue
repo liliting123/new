@@ -6,14 +6,14 @@
         <el-date-picker
           v-model="value1"
           type="daterange"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期">
+          :range-separator="$t('至')"
+          :start-placeholder="$t('开始日期')"
+          :end-placeholder="$t('结束日期')">
         </el-date-picker>
         <el-select
           style="margin-left: 20px;"
           v-model="value"
-          placeholder="退款状态">
+          :placeholder="$t('退款状态')">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -24,7 +24,7 @@
         <el-select
           style="margin-left: 20px;"
           v-model="value"
-          placeholder="是否已退款">
+          :placeholder="$t('是否已退款')">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -35,15 +35,14 @@
       </div>
       <div slot="right">
         <el-input
-          placeholder="请输入内容"
           v-model="input3"
           class="input-with-select">
-          <el-select v-model="select" slot="prepend" placeholder="订单编号" >
+          <el-select v-model="select" slot="prepend" :placeholder="$t('订单编号')" >
             <el-option label="餐厅名" value="1"></el-option>
             <el-option label="订单号" value="2"></el-option>
             <el-option label="用户电话" value="3"></el-option>
           </el-select>
-          <el-button slot="append">搜索</el-button>
+          <el-button slot="append">{{$t('搜索')}}</el-button>
         </el-input>
       </div>
     </search-list>
@@ -61,103 +60,101 @@
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-table :header-cell-style="{background:'#F7F7F7'}" :data="tableData" border style="width: 80%;margin-left: 48px">
-              <el-table-column prop="name" label="商品图片">
+              <el-table-column prop="name" :label="$t('商品图片')">
               </el-table-column>
-              <el-table-column prop="name" label="商品名称">
+              <el-table-column prop="name" :label="$t('商品名称')">
               </el-table-column>
-              <el-table-column prop="address" label="商品编号"> </el-table-column>
-              <el-table-column prop="name" label="EAN"> </el-table-column>
-              <el-table-column prop="address" label="规格"> </el-table-column>
-              <el-table-column prop="address" label="单价"> </el-table-column>
-              <el-table-column prop="name" label="数量"> </el-table-column>
-              <el-table-column prop="address" label="退款金额"> </el-table-column>
+              <el-table-column prop="address" :label="$t('商品编号')"> </el-table-column>
+              <el-table-column prop="name" :label="$t('EAN')"> </el-table-column>
+              <el-table-column prop="address" :label="$t('规格')"> </el-table-column>
+              <el-table-column prop="address" :label="$t('单价')"> </el-table-column>
+              <el-table-column prop="name" :label="$t('数量')"> </el-table-column>
+              <el-table-column prop="address" :label="$t('退款金额')"> </el-table-column>
             </el-table>
           </template>
         </el-table-column>
         <el-table-column
           prop="date"
-          label="会员ID"
+          :label="$t('会员ID')"
           width="130">
         </el-table-column>
         <el-table-column
           prop="name"
-          label="订单编号"
+          :label="$t('订单编号')"
           width="180">
         </el-table-column>
         <el-table-column
           prop="address"
-          label="退款状态"
+          :label="$t('退款状态')"
           width="130">
         </el-table-column>
         <el-table-column
           prop="name"
-          label="退款金额"
+          :label="$t('退款金额')"
           width="180">
         </el-table-column>
         <el-table-column
           prop="address"
-          label="退款备注">
+          :label="$t('退款备注')">
         </el-table-column>
         <el-table-column
           prop="name"
-          label="申请时间">
+          :label="$t('申请时间')">
         </el-table-column>
         <el-table-column
           prop="address"
-          label="是否已退款"
+          :label="$t('是否已退款')"
           width="100">
         </el-table-column>
         <el-table-column
           prop="name"
-          label="操作人"
+          :label="$t('操作人')"
           width="100">
         </el-table-column>
         <el-table-column
           prop="address"
-          label="操作"
+          :label="$t('操作')"
           width="200">
           <template slot-scope="scope">
-            <el-button type="text" size="small">重推</el-button>
-            <el-button type="text" size="small">确认已退款</el-button>
-            <el-button type="text" size="small" @click="dialogRefund = true">退款审核</el-button>
+            <el-button type="text" size="small">{{$t('重推')}}</el-button>
+            <el-button type="text" size="small">{{$t('确认已退款')}}</el-button>
+            <el-button type="text" size="small" @click="dialogRefund = true">{{$t('退款审核')}}</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
 <!--    退款审核弹窗-->
     <el-dialog
-      title="退款审核"
+      :title="$t('退款审核')"
       :visible.sync="dialogRefund"
       width="400px">
       <div style="padding: 0 40px 0 40px">
         <el-form :model="form" label-position="top" :rules="formRules">
-          <el-form-item label="审核状态" prop="region">
+          <el-form-item :label="`${$t('审核状态')}:`" prop="region">
             <el-select
               style="width: 280px"
-              v-model="form.region"
-              placeholder="请选择活动区域">
+              v-model="form.region">
               <el-option label="区域一" value="shanghai"/>
               <el-option label="区域二" value="beijing"/>
             </el-select>
           </el-form-item>
-          <el-form-item label="退款金额" prop="name">
+          <el-form-item :label="`${$t('退款金额')}:`" prop="name">
             <el-input v-model="form.name">
               <span slot="suffix" style="font-size: 16px">€</span>
             </el-input>
           </el-form-item>
-          <el-form-item label="退款备注">
+          <el-form-item :label="`${$t('退款备注')}:`">
             <el-input
               type="textarea"
               :rows="3"
-              placeholder="请输入内容"
               v-model="form.desc">
             </el-input>
           </el-form-item>
         </el-form>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogRefund = false">取 消</el-button>
-        <el-button type="primary" @click="dialogRefund = false">确 定</el-button>
+        <el-button @click="dialogRefund = false">{{$t('取消')}}</el-button>
+        <el-button type="primary" @click="dialogRefund = false">{{$t('确定')}}</el-button>
       </div>
     </el-dialog>
   </div>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="info-top">
-      <div class="title">基本信息</div>
+      <div class="title">{{$t('基本信息')}}</div>
       <div class="nav">
 <!--        <tabsLanguage></tabsLanguage>-->
       </div>
@@ -15,42 +15,42 @@
           label-position="top">
           <el-row :gutter="20">
             <el-col :span="6">
-              <el-form-item label="商品名称:" prop="name">
+              <el-form-item :label="`${$t('商品名称')}:`" prop="name">
                 <el-input v-model="form.name"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8" :offset="6">
-              <el-form-item label="是否有会员价格:">
+              <el-form-item :label="`${$t('是否有会员价')}:`">
                 <el-switch v-model="form.delivery"></el-switch>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row :gutter="20">
             <el-col :span="6">
-              <el-form-item label="商品分类:">
-                <el-select v-model="form.region" placeholder="请选择分类">
+              <el-form-item :label="`${$t('商品分类')}:`">
+                <el-select v-model="form.region" :label="$t('请选择分类')">
                   <el-option label="区域一" value="shanghai"></el-option>
                   <el-option label="区域二" value="beijing"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="8" :offset="6">
-              <el-form-item label="商品图片:">
+              <el-form-item :label="`${$t('商品图片')}:`">
                 <el-upload
                   class="upload-demo"
                   action="https://jsonplaceholder.typicode.com/posts/"
                   multiple
                   :limit="3">
-                  <el-button size="small">点击上传</el-button>
-                  <span>（建议尺寸500*500px）</span>
+                  <el-button size="small">{{$t('点击上传')}}</el-button>
+                  <span>{{`（${$t('建议尺寸')} 500*500px）`}}</span>
                 </el-upload>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row :gutter="20">
             <el-col :span="6">
-              <el-form-item label="分类标签:">
-                <el-select v-model="form.region" placeholder="请选择活动区域">
+              <el-form-item :label="`${$t('分类标签')}:`">
+                <el-select v-model="form.region">
                   <el-option label="区域一" value="shanghai"></el-option>
                   <el-option label="区域二" value="beijing"></el-option>
                 </el-select>
@@ -62,7 +62,7 @@
     </div>
     <div class="info-top">
       <div class="title">
-        <span>规格信息</span>
+        <span>{{$t('规格信息')}}</span>
       </div>
       <div class="table">
         <el-form
@@ -82,7 +82,7 @@
             </el-table-column>
             <el-table-column
               prop="name"
-              label="* 商品编码"
+              :label="`*${$t('商品编码')}`"
               width="180">
               <template slot-scope="scope">
                 <el-input size="small"></el-input>
@@ -90,14 +90,14 @@
             </el-table-column>
             <el-table-column
               prop="address"
-              label="* ENA">
+              :label="`*${$t('EAN')}`">
               <template slot-scope="scope">
                 <el-input size="small"></el-input>
               </template>
             </el-table-column>
             <el-table-column
               prop="date"
-              label="* 供应商"
+              :label="`*${$t('供应商')}`"
               width="180">
               <template slot-scope="scope">
                 <el-select v-model="value" size="small">
@@ -112,7 +112,7 @@
             </el-table-column>
             <el-table-column
               prop="name"
-              label="* 规格"
+              :label="`*${$t('规格')}`"
               width="180">
               <template slot-scope="scope">
                 <el-input size="small"></el-input>
@@ -120,14 +120,14 @@
             </el-table-column>
             <el-table-column
               prop="address"
-              label="* 价格">
+              :label="`*${$t('价格')}`">
               <template slot-scope="scope">
                 <el-input size="small"></el-input>
               </template>
             </el-table-column>
             <el-table-column
               prop="date"
-              label="* 会员价"
+              :label="`*${$t('会员价')}`"
               width="180">
               <template slot-scope="scope">
                 <el-input size="small"></el-input>
@@ -135,7 +135,7 @@
             </el-table-column>
             <el-table-column
               prop="name"
-              label="* 税率"
+              :label="`*${$t('税率')}`"
               width="180">
               <template slot-scope="scope">
                 <el-select v-model="value" size="small">
@@ -150,23 +150,23 @@
             </el-table-column>
             <el-table-column
               prop="name"
-              label="操作"
+              :label="$t('操作')"
               width="100px">
               <template slot-scope="scope">
-                <el-button type="text" size="small" @click="showEAN()">EAN</el-button>
-                <el-button type="text" size="small" @click="deleteRow(scope.$index)">删除</el-button>
+                <el-button type="text" size="small" @click="showEAN()">{{$t('EAN')}}</el-button>
+                <el-button type="text" size="small" @click="deleteRow(scope.$index)">{{$t('删除')}}</el-button>
               </template>
             </el-table-column>
           </el-table>
         </el-form>
       </div>
       <div class="bottom-text">
-        <button @click="addSpec()">+添加规格</button>
+        <button @click="addSpec()">{{'+'+$t('添加规格')}}</button>
       </div>
     </div>
     <div class="info-top">
       <div class="title">
-        <span>wms分类（选择后将添加商品至WMS）</span>
+        <span>{{$t('WMS分类（选择后将商品同步至WMS）')}}</span>
       </div>
       <div style="padding: 15px">
         <el-select v-model="value" size="small">
@@ -180,7 +180,7 @@
       </div>
     </div>
     <div class="bottom-btn">
-      <el-button type="primary" style="width: 180px">保存</el-button>
+      <el-button type="primary" style="width: 180px">{{$t('保存')}}</el-button>
     </div>
 <!--    EAN弹窗-->
     <addEANDialog

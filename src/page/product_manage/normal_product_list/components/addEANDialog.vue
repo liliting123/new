@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="添加EAN"
+    :title="$t('添加EAN')"
     :visible="dialogENATable"
     width="30%">
     <el-table :data="gridData">
@@ -9,20 +9,20 @@
           <span class="table_index">1</span>
         </template>
       </el-table-column>
-      <el-table-column prop="date" label="* EAN" width="150"></el-table-column>
-      <el-table-column prop="name" label="添加时间" width="200"></el-table-column>
-      <el-table-column prop="address" label="操作">
+      <el-table-column prop="date"  :label="`*${$t('EAN')}`" width="150"></el-table-column>
+      <el-table-column prop="name"  :label="$t('添加时间')" width="200"></el-table-column>
+      <el-table-column prop="address" :label="$t('操作')">
         <template slot-scope="scope">
-          <el-button type="text">删除</el-button>
+          <el-button type="text">{{$t('删除')}}</el-button>
         </template>
       </el-table-column>
     </el-table>
     <div class="bottom-text">
-      <button>+EAN</button>
+      <button>{{'+'+$t('EAN')}}</button>
     </div>
     <div slot="footer" class="dialog-footer">
-      <el-button @click="dialogENATable = false">取 消</el-button>
-      <el-button type="primary" @click="dialogENATable = false">确 定</el-button>
+      <el-button @click="dialogENATable = false">{{$t('取消')}}</el-button>
+      <el-button type="primary" @click="dialogENATable = false">{{$t('确定')}}</el-button>
     </div>
   </el-dialog>
 </template>

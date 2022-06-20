@@ -1,10 +1,10 @@
 <template>
   <div>
     <div class="info-top">
-      <div class="title">基本信息</div>
+      <div class="title">{{$t('基本信息')}}</div>
       <div class="content">
         <div class="conten-item">
-          <span>会员名称:</span>
+          <span>{{$t('会员名称')}}:</span>
           <el-input
             placeholder="请输入内容"
             :disabled="true">
@@ -13,7 +13,7 @@
       </div>
       <div class="content">
         <div class="conten-item">
-          <span>会员ID:</span>
+          <span>{{$t('会员ID')}}:</span>
           <el-input
             placeholder="请输入内容"
             :disabled="true">
@@ -22,7 +22,7 @@
       </div>
       <div class="content">
         <div class="conten-item">
-          <span>会员邮箱:</span>
+          <span>{{$t('会员邮箱')}}:</span>
           <el-input
             placeholder="请输入内容"
             :disabled="true">
@@ -31,7 +31,7 @@
       </div>
       <div class="content">
         <div class="conten-item">
-          <span>收银员:</span>
+          <span>{{$t('收银员')}}:</span>
           <el-input
             placeholder="请输入内容"
             :disabled="true">
@@ -40,7 +40,7 @@
       </div>
       <div class="content">
         <div class="conten-item">
-          <span>订单编号:</span>
+          <span>{{$t('订单编号')}}:</span>
           <el-input
             placeholder="请输入内容"
             :disabled="true">
@@ -49,7 +49,7 @@
       </div>
       <div class="content">
         <div class="conten-item">
-          <span>订单金额:</span>
+          <span>{{$t('订单金额')}}:</span>
           <el-input
             placeholder="请输入内容"
             :disabled="true">
@@ -58,7 +58,7 @@
       </div>
       <div class="content">
         <div class="conten-item">
-          <span>订单状态:</span>
+          <span>{{$t('订单状态')}}:</span>
           <el-input
             placeholder="请输入内容"
             :disabled="true">
@@ -67,7 +67,7 @@
       </div>
       <div class="content">
         <div class="conten-item">
-          <span>支付方式:</span>
+          <span>{{$t('支付方式')}}:</span>
           <el-input
             placeholder="请输入内容"
             :disabled="true">
@@ -77,8 +77,8 @@
     </div>
     <div class="info-top">
       <div class="title">
-        <span>商品信息</span>
-        <span>操作时间：2022.05.27 12:00:00</span>
+        <span>{{$t('商品信息')}}</span>
+        <span>{{$t('操作时间')}}：2022.05.27 12:00:00</span>
       </div>
       <div class="table">
         <el-table
@@ -87,55 +87,55 @@
           style="width: 100%">
           <el-table-column
             prop="date"
-            label="商品图片"
+            :label="$t('商品图片')"
             width="180">
           </el-table-column>
           <el-table-column
             prop="name"
-            label="商品名称"
+            :label="$t('商品名称')"
             width="180">
           </el-table-column>
           <el-table-column
             prop="address"
-            label="商品编号">
+            :label="$t('商品编号')">
           </el-table-column>
           <el-table-column
             prop="date"
-            label="EAN"
+            :label="$t('EAN')"
             width="180">
           </el-table-column>
           <el-table-column
             prop="name"
-            label="规格"
+            :label="$t('规格')"
             width="180">
           </el-table-column>
           <el-table-column
             prop="address"
-            label="单价">
+            :label="$t('单价')">
           </el-table-column>
           <el-table-column
             prop="date"
-            label="数量"
+            :label="$t('数量')"
             width="180">
           </el-table-column>
           <el-table-column
             prop="name"
-            label="实付"
+            :label="$t('实付')"
             width="180">
           </el-table-column>
         </el-table>
       </div>
       <div class="bottom-text">
-        <span>总计:</span>
-        <span>改价:</span>
-        <span>找零:</span>
-        <span>实收:</span>
+        <span>{{$t('总计')}}:</span>
+        <span>{{$t('改价')}}:</span>
+        <span>{{$t('找零')}}:</span>
+        <span>{{$t('实收')}}:</span>
       </div>
     </div>
     <div class="info-top">
       <div class="title">
-        <span>退款记录</span>
-        <span>操作时间：2022.05.27 12:00:00</span>
+        <span>{{$t('退款记录')}}</span>
+        <span>{{$t('操作时间')}}：2022.05.27 12:00:00</span>
       </div>
       <div class="table">
         <el-table
@@ -144,46 +144,46 @@
           style="width: 100%">
           <el-table-column
             prop="date"
-            label="商品图片"
+            :label="$t('商品图片')"
             width="180">
           </el-table-column>
           <el-table-column
             prop="name"
-            label="商品名称"
+            :label="$t('商品名称')"
             width="180">
           </el-table-column>
           <el-table-column
             prop="address"
-            label="商品编号">
+            :label="$t('商品编号')">
           </el-table-column>
           <el-table-column
             prop="date"
-            label="EAN"
+            :label="$t('EAN')"
             width="180">
           </el-table-column>
           <el-table-column
             prop="name"
-            label="规格"
+            :label="$t('规格')"
             width="180">
           </el-table-column>
           <el-table-column
             prop="address"
-            label="单价">
+            :label="$t('单价')">
           </el-table-column>
           <el-table-column
             prop="date"
-            label="数量"
+            :label="$t('数量')"
             width="180">
           </el-table-column>
           <el-table-column
             prop="name"
-            label="退款金额"
+            :label="$t('退款金额')"
             width="180">
           </el-table-column>
         </el-table>
       </div>
       <div class="bottom-sum">
-          <span>总计:</span>
+          <span>{{$t('总计')}}:</span>
       </div>
     </div>
   </div>
