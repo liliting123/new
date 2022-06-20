@@ -17,7 +17,7 @@
     <span @click="$store.state.sider_show_flag = !$store.state.sider_show_flag"
       ><i class="el-icon-s-fold"></i
     ></span>
-    <el-select v-model="value" placeholder="请选择" class="shopSelect">
+    <el-select v-model="value" :placeholder="$t('请选择')" class="shopSelect">
       <el-option
         v-for="item in options"
         :key="item.value"
@@ -44,7 +44,7 @@
         </el-table-column>
       </el-table>
       <el-button slot="reference" plain @click="getDownloads()">
-        下载管理
+        {{ $t('下载管理') }}
       </el-button>
     </el-popover>
   </div>

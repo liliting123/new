@@ -3,25 +3,25 @@
     <!--    筛选条件-->
     <search-list>
       <div slot="left">
-        <el-button type="info" @click="dialogFormVisible = true">添加员工组</el-button>
+        <el-button type="info" @click="dialogFormVisible = true">{{
+          $t('添加员工组')
+        }}</el-button>
       </div>
       <div slot="right">
         <el-input
-          placeholder="请输入内容"
+          :placeholder="$t('请输入内容')"
           v-model="searchValue"
           class="input-with-select"
         >
           <el-select
             v-model="selectOption"
             slot="prepend"
-            placeholder="员工组名称"
+            :placeholder="$t('员工组名称')"
             style="width:120px"
           >
-            <el-option label="餐厅名" value="1"></el-option>
-            <el-option label="订单号" value="2"></el-option>
-            <el-option label="用户电话" value="3"></el-option>
+            <el-option :label="$t('备注')" value="1"></el-option>
           </el-select>
-          <el-button slot="append">搜索</el-button>
+          <el-button slot="append">{{ $t('搜索') }}</el-button>
         </el-input>
       </div>
     </search-list>
@@ -36,27 +36,35 @@
             <span class="table_index">1</span>
           </template>
         </el-table-column>
-        <el-table-column prop="date" label="员工组名称" width="180"> </el-table-column>
-        <el-table-column prop="name" label="员工人数" width="180"> </el-table-column>
-        <el-table-column prop="address" label="创建时间"> </el-table-column>
-        <el-table-column prop="address" label="备注"> </el-table-column>
-        <el-table-column label="操作" width="250">
+        <el-table-column prop="date" :label="$t('员工组名称')" width="180">
+        </el-table-column>
+        <el-table-column prop="name" :label="$t('员工人数')" width="180">
+        </el-table-column>
+        <el-table-column prop="address" :label="$t('创建时间')"> </el-table-column>
+        <el-table-column prop="address" :label="$t('备注')"> </el-table-column>
+        <el-table-column :label="$t('操作')" width="250">
           <template slot-scope="">
-            <el-button type="text" @click="dialogTableVisible = true">查看人员</el-button>
-            <el-button type="text" @click="dialogAuthorityVisible = true">权限</el-button>
-            <el-button type="text" @click="dialogFormVisible = true">编辑</el-button>
-            <el-button type="text" @click="delect">删除</el-button>
+            <el-button type="text" @click="dialogTableVisible = true">{{
+              $t('查看人员')
+            }}</el-button>
+            <el-button type="text" @click="dialogAuthorityVisible = true">{{
+              $t('权限')
+            }}</el-button>
+            <el-button type="text" @click="dialogFormVisible = true">{{
+              $t('编辑')
+            }}</el-button>
+            <el-button type="text" @click="delect">{{ $t('删除') }}</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
     <!-- <PaginationAndButtons :pageParams="page_params" /> -->
     <!-- 编辑 -->
-    <el-dialog title="编辑员工组" :visible.sync="dialogFormVisible" width="40%">
+    <el-dialog :title="$t('编辑员工组')" :visible.sync="dialogFormVisible" width="40%">
       <el-form :model="form" :rules="rules" label-position="top">
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="员工邮箱" prop="email">
+            <el-form-item :label="$t('员工邮箱')" prop="email">
               <el-input
                 v-model="form.email"
                 autocomplete="off"
@@ -65,20 +73,20 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="员工名称" prop="name">
+            <el-form-item :label="$t('员工名称')" prop="name">
               <el-input v-model="form.name" autocomplete="off"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="密码" prop="password">
+            <el-form-item :label="$t('密码')" prop="password">
               <el-input v-model="form.password" autocomplete="off"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="员工组" prop="userGroup">
-              <el-select v-model="value" placeholder="请选择" style="width:100%">
+            <el-form-item :label="$t('员工组')" prop="userGroup">
+              <el-select v-model="value" :placeholder="$t('请选择')" style="width:100%">
                 <el-option
                   v-for="item in options"
                   :key="item.value"
@@ -92,39 +100,43 @@
         </el-row>
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="确认密码" prop="password2">
+            <el-form-item :label="$t('确认密码')" prop="password2">
               <el-input v-model="form.password2" autocomplete="off"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="备注">
+            <el-form-item :label="$t('备注')">
               <el-input v-model="form.remark" autocomplete="off"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button @click="dialogFormVisible = false">{{ $t('取消') }}</el-button>
+        <el-button type="primary" @click="dialogFormVisible = false">{{
+          $t('确定')
+        }}</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="查看人员" :visible.sync="dialogTableVisible" width="40%">
+    <el-dialog :title="$t('查看人员')" :visible.sync="dialogTableVisible" width="40%">
       <el-table :data="gridData">
         <el-table-column type="index" width="80" align="center"> </el-table-column>
-        <el-table-column property="date" label="员工名称"></el-table-column>
-        <el-table-column property="name" label="邮箱"></el-table-column>
-        <el-table-column width="100" label="操作">
+        <el-table-column property="date" :label="$t('员工名称')"></el-table-column>
+        <el-table-column property="name" :label="$t('邮箱')"></el-table-column>
+        <el-table-column width="100" :label="$t('操作')">
           <template slot-scope="">
-            <el-button type="text" @click="delect">删除</el-button>
+            <el-button type="text" @click="delect">{{ $t('删除') }}</el-button>
           </template>
         </el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogTableVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogTableVisible = false">确 定</el-button>
+        <el-button @click="dialogTableVisible = false">{{ $t('取消') }}</el-button>
+        <el-button type="primary" @click="dialogTableVisible = false">{{
+          $t('确定')
+        }}</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="权限" :visible.sync="dialogAuthorityVisible" width="40%">
+    <el-dialog :title="$t('权限')" :visible.sync="dialogAuthorityVisible" width="40%">
       <el-tree
         :data="data"
         show-checkbox
@@ -136,10 +148,10 @@
       >
       </el-tree>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogAuthorityVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogAuthorityVisible = false"
-          >确 定</el-button
-        >
+        <el-button @click="dialogAuthorityVisible = false">{{ $t('取消') }}</el-button>
+        <el-button type="primary" @click="dialogAuthorityVisible = false">{{
+          $t('确定')
+        }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -227,10 +239,10 @@ export default {
       value: '',
       rules: {
         email: [{ required: true }],
-        name: [{ required: true, message: '请输入员工名称' }],
-        password: [{ required: true, message: '请输入密码' }],
-        userGroup: [{ required: true, message: '请选择员工组' }],
-        password2: [{ required: true, message: '请输入确认密码' }]
+        name: [{ required: true, message: this.$t('请输入员工名称') }],
+        password: [{ required: true, message: this.$t('请输入密码') }],
+        userGroup: [{ required: true, message: this.$t('请选择员工组') }],
+        password2: [{ required: true, message: this.$t('请输入确认密码') }]
       },
 
       // 权限
@@ -298,16 +310,16 @@ export default {
   methods: {
     onDetail() {},
     delect() {
-      this.$confirm('确认要删除吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm('确认要删除吗?', this.$t('提示'), {
+        confirmButtonText: this.$t('确定'),
+        cancelButtonText: this.$t('取消'),
         type: 'warning'
       })
         .then(() => {
           this.$notify({
-            title: '成功',
+            title: this.$t('成功'),
             type: 'success',
-            message: '删除成功'
+            message: this.$t('删除成功')
           })
         })
         .catch(() => {})

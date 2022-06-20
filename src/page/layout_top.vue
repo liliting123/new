@@ -92,7 +92,6 @@ export default {
   .toggle {
     font-size: 16px;
     height: 76px;
-    padding-top: 12px;
     width: 172px;
     color: #fff;
     text-align: center;

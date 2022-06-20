@@ -11,35 +11,37 @@
             <span class="table_index">1</span>
           </template>
         </el-table-column>
-        <el-table-column prop="date" label="支付方式"> </el-table-column>
-        <el-table-column prop="name" label="支付图标"> </el-table-column>
-        <el-table-column prop="address" label="是否开启"> </el-table-column>
-        <el-table-column label="操作" width="150">
+        <el-table-column prop="date" :label="$t('支付方式')"> </el-table-column>
+        <el-table-column prop="name" :label="$t('支付图标')"> </el-table-column>
+        <el-table-column prop="address" :label="$t('是否开启')"> </el-table-column>
+        <el-table-column :label="$t('操作')" width="150">
           <template>
-            <el-button type="text" @click="dialogFormVisible = true">编辑</el-button>
+            <el-button type="text" @click="dialogFormVisible = true">{{
+              $t('编辑')
+            }}</el-button>
           </template>
         </el-table-column>
       </el-table>
-      <el-dialog title="编辑" :visible.sync="dialogFormVisible" width="30%">
+      <el-dialog :title="$t('编辑')" :visible.sync="dialogFormVisible" width="30%">
         <el-form :model="form" :rules="rules" label-position="top">
-          <el-form-item label="支付名称" prop="payName">
+          <el-form-item :label="$t('支付名称')" prop="payName">
             <el-input v-model="form.payName" autocomplete="off"></el-input>
           </el-form-item>
 
-          <el-form-item label="*支付图标">
+          <el-form-item :label="`*${$t('支付图标')}`">
             <el-upload action="#">
-              <el-button>点击上传</el-button>
-              <span> &nbsp;&nbsp;(建议尺寸300*300px)</span>
+              <el-button>{{ $t('点击上传') }}</el-button>
+              <span> &nbsp;&nbsp;({{ $t('建议尺寸') }}300*300px)</span>
             </el-upload>
             <!-- <div class="config_ball">
               <img class="padding_top_10" width="400px" />
             </div> -->
           </el-form-item>
-          <el-form-item label="*是否启动">
+          <el-form-item :label="`*${$t('是否启动')}`">
             <el-switch
               v-model="enabled"
-              active-text="是"
-              inactive-text="否"
+              :active-text="$t('是')"
+              :inactive-text="$t('否')"
               active-color="#13ce66"
               inactive-color="#bfcfd9"
             >
@@ -47,8 +49,10 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+          <el-button @click="dialogFormVisible = false">{{ $t('取消') }}</el-button>
+          <el-button type="primary" @click="dialogFormVisible = false">{{
+            $t('确定')
+          }}</el-button>
         </div>
       </el-dialog>
     </div>
@@ -113,6 +117,7 @@ export default {
 }
 
 /deep/ .el-switch__label * {
+  width: 21px;
   line-height: 1;
   font-size: 12px;
   display: inline-block;

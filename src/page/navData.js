@@ -5,7 +5,7 @@ export default [
       {
         name: '首页',
         path: '/my_home/home',
-        subname: 'home'
+        subname: '首页'
       }
     ],
     expanded: false,
@@ -19,12 +19,12 @@ export default [
       {
         name: '员工列表',
         path: '/user_manage/user_list/user_list',
-        subname: 'user_list'
+        subname: '员工列表'
       },
       {
         name: '员工组列表',
         path: '/user_manage/user_group_list/user_group_list',
-        subname: 'user_group_list'
+        subname: '员工组列表'
       }
     ],
     expanded: false,

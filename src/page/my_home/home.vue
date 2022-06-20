@@ -2,33 +2,33 @@
   <div>
     <div class="home">
       <div class="boxWrap border-radius">
-        <span>数据概览</span>
+        <span>{{ $t('数据概览') }}</span>
         <el-date-picker
           class="pickerDate"
           v-model="time"
           type="daterange"
           unlink-panels
           value-format="yyyy-MM-dd"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
+          :start-placeholder="$t('开始日期')"
+          :end-placeholder="$t('结束日期')"
           :picker-options="pickerOptions"
         />
       </div>
       <div class="data_box border-radius">
-        <p>整体情况</p>
+        <p>{{ $t('整体情况') }}</p>
         <el-descriptions style="padding:16px" :column="6" direction="vertical">
-          <el-descriptions-item label="销售金额">￥0.00</el-descriptions-item>
-          <el-descriptions-item label="下单情况">0</el-descriptions-item>
-          <el-descriptions-item label="客单价">kooriookami</el-descriptions-item>
-          <el-descriptions-item label="会员人数">18100000000</el-descriptions-item>
-          <el-descriptions-item label="散客人数">苏州市</el-descriptions-item>
-          <el-descriptions-item label="总人数"> 0</el-descriptions-item><br />
-          <el-descriptions-item label="余额支付金额">￥0.00</el-descriptions-item>
-          <el-descriptions-item label="余额支付单量">0</el-descriptions-item>
-          <el-descriptions-item label="余额占比率">0.00%</el-descriptions-item>
-          <el-descriptions-item label="退款金额">￥0.00</el-descriptions-item>
-          <el-descriptions-item label="退款单价">00</el-descriptions-item>
-          <el-descriptions-item label="退款率">0.00%</el-descriptions-item>
+          <el-descriptions-item :label="$t('销售金额')">￥0.00</el-descriptions-item>
+          <el-descriptions-item :label="$t('下单情况')">0</el-descriptions-item>
+          <el-descriptions-item :label="$t('客单价')">kooriookami</el-descriptions-item>
+          <el-descriptions-item :label="$t('会员人数')">18100000000</el-descriptions-item>
+          <el-descriptions-item :label="$t('散客人数')">苏州市</el-descriptions-item>
+          <el-descriptions-item :label="$t('总人数')"> 0</el-descriptions-item><br />
+          <el-descriptions-item :label="$t('余额支付金额')">￥0.00</el-descriptions-item>
+          <el-descriptions-item :label="$t('余额支付单量')">0</el-descriptions-item>
+          <el-descriptions-item :label="$t('余额占比率')">0.00%</el-descriptions-item>
+          <el-descriptions-item :label="$t('退款金额')">￥0.00</el-descriptions-item>
+          <el-descriptions-item :label="$t('退款单价')">00</el-descriptions-item>
+          <el-descriptions-item :label="$t('退款率')">0.00%</el-descriptions-item>
         </el-descriptions>
       </div>
 
@@ -36,13 +36,13 @@
         <el-row :gutter="10">
           <el-col :md="12" :sm="12">
             <div class="leftEcharts data_box border-radius" style="background:#fff">
-              <p>商品销量前十</p>
+              <p>{{ $t('商品销量前十') }}</p>
               <div id="echartShop" style="width: 100%; height: 100%"></div>
             </div>
           </el-col>
           <el-col :md="12" :sm="12">
             <div class="leftEcharts data_box border-radius" style="background:#fff">
-              <p>会员人数</p>
+              <p>{{ $t('会员人数') }}</p>
               <div id="echartUser" style="width: 100%; height: 100%"></div>
             </div>
           </el-col>
@@ -114,6 +114,7 @@ export default {
   },
   methods: {
     setCharts(data) {
+      const _this = this
       // 基于准备好的dom，初始化echarts实例
       var myChartShop = echarts.init(document.getElementById('echartShop'))
       var myChartUser = echarts.init(document.getElementById('echartUser'))
@@ -145,13 +146,16 @@ export default {
           },
           formatter: function(data) {
             var val =
-              '商品名称：' +
+              _this.$t('商品名称') +
+              '：' +
               obj.name +
               '<br>' +
-              '商品价格：' +
+              _this.$t('商品价格') +
+              '：' +
               obj.price +
               '<br>' +
-              '商品销量：' +
+              _this.$t('商品销量') +
+              '：' +
               obj.num
             return val
           }

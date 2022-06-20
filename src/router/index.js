@@ -33,9 +33,13 @@ const NormalProductList = loadOnDemand(
 // 普通商品列表-添加商品
 const AddProduct = loadOnDemand('product_manage/normal_product_list/add_product')
 // 称重商品列表
-const WeighingGoods = loadOnDemand('product_manage/weighing_goods_list/weighing_goods_list')
+const WeighingGoods = loadOnDemand(
+  'product_manage/weighing_goods_list/weighing_goods_list'
+)
 // 添加称重商品
-const AddWeighingItem = loadOnDemand('product_manage/weighing_goods_list/add_weighing_item')
+const AddWeighingItem = loadOnDemand(
+  'product_manage/weighing_goods_list/add_weighing_item'
+)
 // 分类列表
 const ClassificationList = loadOnDemand(
   'product_manage/classification_list/classification_list'
@@ -61,26 +65,26 @@ var router = new Router({
       component: LayoutSide,
       children: [
         {
-          path: 'home',
-          name: 'home',
+          path: '/my_home/home',
+          name: '首页',
           component: Home
         }
       ]
     },
-    // 商品管理
+    // 用户管理
     {
       path: '/user_manage',
       component: LayoutSide,
       children: [
         {
           path: 'user_list',
-          name: 'user_list',
+          name: '员工列表',
           component: UserList,
           meta: { keepAlive: true }
         },
         {
           path: 'user_group_list',
-          name: 'user_group_list',
+          name: '员工组列表',
           component: UserGroupList
         }
       ]

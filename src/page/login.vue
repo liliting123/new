@@ -13,14 +13,14 @@
         <img src="../assets/images/login_logo.png" alt="logo" class="login-logo" />
 
         <div class="login_subbox">
-          <div class="login_title">收银管理系统</div>
+          <div class="login_title">{{ $t('收银管理系统') }}</div>
           <div class="login_border">
             <div class=" login_title_back"></div>
             <div class="paddingTwenty">
               <div>
                 <el-input
                   v-model="email"
-                  placeholder="请输入邮箱"
+                  :placeholder="$t('请输入邮箱')"
                   class="input"
                 ></el-input>
                 <img class="userImg" src="../assets/images/user.png" alt="user" />
@@ -28,7 +28,7 @@
               <div>
                 <el-input
                   v-model="password"
-                  placeholder="请输入密码"
+                  :placeholder="$t('请输入密码')"
                   class="input"
                 ></el-input>
                 <img
@@ -39,7 +39,7 @@
                 <div>
                   <el-input
                     v-model="code"
-                    placeholder="请输入验证码"
+                    :placeholder="$t('请输入验证码')"
                     class="input"
                     style="width: 50%;"
                   ></el-input>
@@ -48,8 +48,12 @@
                 </div>
               </div>
               <div class="marginTopTen">
-                <el-checkbox v-model="keep"></el-checkbox>&nbsp;&nbsp;保持登录记录
-                <router-link class="forgetPsd" to="/forgotPassword">忘记密码</router-link>
+                <el-checkbox v-model="keep"></el-checkbox>&nbsp;&nbsp;{{
+                  $t('保留登录记录')
+                }}
+                <router-link class="forgetPsd" to="/forgotPassword">{{
+                  $t('忘记密码')
+                }}</router-link>
               </div>
               <div style="text-align:center;" class="marginTopThirty">
                 <el-button
@@ -59,7 +63,7 @@
                   @click="login"
                   :loading="$store.state.btn_loading"
                 >
-                  登录
+                  {{ $t('登录') }}
                 </el-button>
               </div>
               <div style="text-align:center;" class="paddingTopTwenty"></div>
@@ -112,20 +116,20 @@ export default {
       }
       if (this.email === '') {
         this.$notify({
-          title: '操作失败',
-          message: 'EMAIL不能为空',
+          title: this.$t('操作失败'),
+          message: this.$t('EMAIL不能为空'),
           type: 'warning'
         })
       } else if (this.password === '') {
         this.$notify({
-          title: '操作失败',
-          message: '密码不能为空',
+          title: this.$t('操作失败'),
+          message: this.$t('密码不能为空'),
           type: 'warning'
         })
       } else if (this.code === '') {
         this.$notify({
-          title: '操作失败',
-          message: '验证码不能为空',
+          title: this.$t('操作失败'),
+          message: this.$t('验证码不能为空'),
           type: 'warning'
         })
       } else {

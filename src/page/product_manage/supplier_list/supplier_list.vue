@@ -3,15 +3,17 @@
     <!--    筛选条件-->
     <search-list>
       <div slot="left">
-        <el-button type="info" @click="dialogFormVisible = true">添加供应商</el-button>
+        <el-button type="info" @click="dialogFormVisible = true">
+          {{ $t('添加供应商') }}</el-button
+        >
       </div>
       <div slot="right">
         <el-input
-          placeholder="请输入内容"
+          :laceholder="$t('请输入内容')"
           v-model="searchValue"
           class="input-with-select"
         >
-          <el-button slot="append">搜索</el-button>
+          <el-button slot="append">{{ $t('搜索') }}</el-button>
         </el-input>
       </div>
     </search-list>
@@ -28,14 +30,16 @@
             <span class="table_index">1</span>
           </template>
         </el-table-column>
-        <el-table-column prop="date" label="供应商名称"> </el-table-column>
-        <el-table-column prop="name" label="是否启动"> </el-table-column>
+        <el-table-column prop="date" :label="$t('供应商名称')"> </el-table-column>
+        <el-table-column prop="name" :label="$t('是否启动')"> </el-table-column>
 
-        <el-table-column prop="address" label="创建时间"> </el-table-column>
-        <el-table-column label="操作" width="200">
+        <el-table-column prop="address" :label="$t('创建时间')"> </el-table-column>
+        <el-table-column :label="$t('操作')" width="200">
           <template slot-scope="">
-            <el-button type="text" @click="dialogFormVisible = true">编辑</el-button>
-            <el-button type="text" @click="delect">删除</el-button>
+            <el-button type="text" @click="dialogFormVisible = true">{{
+              $t('编辑')
+            }}</el-button>
+            <el-button type="text" @click="delect">{{ $t('删除') }}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -43,22 +47,22 @@
     <!-- <PaginationAndButtons :pageParams="page_params" /> -->
     <!-- 编辑 -->
     <el-dialog
-      title="添加供应商"
+      :title="$t('添加供应商')"
       :visible.sync="dialogFormVisible"
       width="40%"
       destroy-on-close
       v-if="dialogFormVisible"
     >
       <el-form :model="form" :rules="rules" label-position="top">
-        <el-form-item label="供应商名称" prop="supplierName">
+        <el-form-item :label="$t('供应商名称')" prop="supplierName">
           <el-input v-model="form.supplierName" autocomplete="off"></el-input>
         </el-form-item>
 
-        <el-form-item label="*是否启动">
+        <el-form-item :label="`*${$t('是否启动')}`">
           <el-switch
             v-model="form.enabled"
-            active-text="是"
-            inactive-text="否"
+            :active-text="$t('是')"
+            :inactive-text="$t('否')"
             active-color="#13ce66"
             inactive-color="#bfcfd9"
           >
@@ -66,8 +70,10 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button @click="dialogFormVisible = false">{{ $t('取消') }}</el-button>
+        <el-button type="primary" @click="dialogFormVisible = false">{{
+          $t('确定')
+        }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -122,16 +128,16 @@ export default {
 
   methods: {
     delect() {
-      this.$confirm('确认要删除吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('确认要删除吗?'), this.$t('提示'), {
+        confirmButtonText: this.$t('确定'),
+        cancelButtonText: this.$t('取消'),
         type: 'warning'
       })
         .then(() => {
           this.$notify({
-            title: '成功',
+            title: this.$t('成功'),
             type: 'success',
-            message: '删除成功'
+            message: this.$t('删除成功')
           })
         })
         .catch(() => {})

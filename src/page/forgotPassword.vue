@@ -13,14 +13,14 @@
         <img src="../assets/images/login_logo.png" alt="logo" class="login-logo" />
 
         <div class="login_subbox">
-          <div class="login_title">忘记密码</div>
+          <div class="login_title">{{ $t('忘记密码') }}</div>
           <div class="login_border">
             <div class=" login_title_back"></div>
             <div class="paddingTwenty">
               <div>
                 <el-input
                   v-model="email"
-                  placeholder="请输入邮箱"
+                  :placeholder="$t('请输入邮箱')"
                   class="input"
                 ></el-input>
                 <img class="userImg" src="../assets/images/user.png" alt="user" />
@@ -28,20 +28,20 @@
               <div>
                 <el-input
                   v-model="emailCode"
-                  placeholder="请输入邮箱验证码"
+                  :placeholder="$t('请输入邮箱验证码')"
                   class="input"
                 ></el-input>
                 <img class="codeImg" src="../assets/images/code.png" alt="code" />
-                <span class="verification sendOut border-radius" @click="getCode()"
-                  >发送</span
-                >
+                <span class="verification sendOut border-radius" @click="getCode()">{{
+                  $t('发送')
+                }}</span>
                 <span class="verification sendOutTime border-radius" v-if="countdown"
                   >{{ count }}s</span
                 >
                 <div>
                   <el-input
                     v-model="newPassword"
-                    placeholder="请输入新密码"
+                    :placeholder="$t('请输入新密码')"
                     class="input"
                   ></el-input>
                   <img
@@ -52,7 +52,7 @@
                 </div>
               </div>
               <h1 class="returnLogin">
-                <router-link to="/login">返回登录</router-link>
+                <router-link to="/login">{{ $t('返回登录') }}</router-link>
               </h1>
               <div style="text-align:center;" class="marginTopThirty">
                 <el-button
@@ -62,7 +62,7 @@
                   @click="forgotPassword()"
                   :loading="$store.state.btn_loading"
                 >
-                  确定
+                  {{ $t('确定') }}
                 </el-button>
               </div>
               <div style="text-align:center;" class="paddingTopTwenty"></div>
@@ -100,7 +100,7 @@ export default {
       if (this.email === '') {
         this.$notify({
           title: '操作失败',
-          message: 'EMAIL不能为空',
+          message: this.$t('EMAIL不能为空'),
           type: 'warning'
         })
       } else {
@@ -122,20 +122,20 @@ export default {
     forgotPassword() {
       if (this.email === '') {
         this.$notify({
-          title: '操作失败',
-          message: 'EMAIL不能为空',
+          title: this.$t('操作失败'),
+          message: this.$t('EMAIL不能为空'),
           type: 'warning'
         })
       } else if (this.emailCode === '') {
         this.$notify({
-          title: '操作失败',
-          message: '邮箱验证码不能为空',
+          title: this.$t('操作失败'),
+          message: this.$t('邮箱验证码不能为空'),
           type: 'warning'
         })
       } else if (this.newPassword === '') {
         this.$notify({
-          title: '操作失败',
-          message: '新密码不能为空',
+          title: this.$t('操作失败'),
+          message: this.$t('新密码不能为空'),
           type: 'warning'
         })
       } else {

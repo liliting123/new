@@ -103,12 +103,12 @@ a {
 .slide-nav-title-sub {
   height: 0;
   opacity: 0;
-  transition: all 1s ease;
+  // transition: all 1s ease;
 }
 .expanded .slide-nav-title-sub {
   height: 50px;
   opacity: 1;
-  transition: all 1s ease;
+  // transition: all 0.5s ease;
 }
 .slide-nav-title-sub-item a {
   display: block;
