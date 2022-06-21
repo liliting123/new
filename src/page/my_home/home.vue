@@ -42,7 +42,7 @@
           </el-col>
           <el-col :md="12" :sm="12">
             <div class="leftEcharts data_box border-radius" style="background:#fff">
-              <p>{{ $t('会员人数') }}</p>
+              <p>{{ $t('会员消费前十') }}</p>
               <div id="echartUser" style="width: 100%; height: 100%"></div>
             </div>
           </el-col>

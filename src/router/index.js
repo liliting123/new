@@ -61,7 +61,7 @@ var router = new Router({
     },
     {
       path: '/',
-      redirect: 'home',
+      redirect: '/my_home/home',
       component: LayoutSide,
       children: [
         {
@@ -95,19 +95,19 @@ var router = new Router({
       children: [
         {
           path: 'order_list',
-          name: 'order_list',
+          name: '订单列表',
           component: OrderList,
           meta: { keepAlive: true }
         },
         {
-          path: 'order_list/orderDetail',
-          name: 'orderDetail',
+          path: 'orderDetail',
+          name: '订单详情',
           component: OrderDetail,
           meta: { keepAlive: true }
         },
         {
           path: 'refund_list',
-          name: 'refund_list',
+          name: '退款列表',
           component: RefundList
         }
       ]
@@ -118,36 +118,36 @@ var router = new Router({
       children: [
         {
           path: 'normal_product_list',
-          name: 'normal_product_list',
+          name: '普通商品列表',
           component: NormalProductList,
           meta: { keepAlive: true }
         },
         {
           path: 'normal_product_list/add_product',
-          name: 'add_product',
+          name: '添加商品',
           component: AddProduct,
           meta: { keepAlive: true }
         },
         {
           path: 'weighing_goods_list',
-          name: 'weighing_goods_list',
+          name: '称重商品列表',
           component: WeighingGoods,
           meta: { keepAlive: true }
         },
         {
           path: 'weighing_goods_list/add_weighing_item',
-          name: 'add_weighing_item',
+          name: '添加称重商品',
           component: AddWeighingItem,
           meta: { keepAlive: true }
         },
         {
           path: 'classification_list',
-          name: 'classification_list',
+          name: '分类列表',
           component: ClassificationList
         },
         {
           path: 'supplier_list',
-          name: 'supplier_list',
+          name: '供应商列表',
           component: SupplierList
         }
       ]
@@ -158,12 +158,12 @@ var router = new Router({
       children: [
         {
           path: 'store_settings',
-          name: 'store_settings',
+          name: '店铺设置',
           component: StoreSettings
         },
         {
           path: 'payment_settings',
-          name: 'payment_settings',
+          name: '支付设置',
           component: PaymentSettings
         }
       ]

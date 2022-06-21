@@ -1,15 +1,4 @@
 export default {
-  // 首页
-  home: 'home',
-
-  // 员工管理
-  user_list: 'User List',
-  user_group_list: 'User Group List',
-
-  // 订单管理
-  order_list: 'Order List',
-  refund_list: 'Refund List',
-
   收银管理系统: 'Cashier Management System',
   请输入邮箱: 'please input your email',
   请输入密码: 'Please enter password',
@@ -45,8 +34,8 @@ export default {
   退款金额: 'Refund Amount',
   退款单数: 'Number of Refunds',
   退款率: 'Refund Rate',
-  商品销量前十: 'Top 10 Products Sold',
-  会员消费前十: 'Top 10 Member Spending',
+  商品销量前十: 'Top Ten Products Sold',
+  会员消费前十: 'Top Ten Member Spending',
   商品名称: 'Product Name',
   商品价格: 'Commodity Price',
   商品销量: 'Product Sales',
@@ -56,7 +45,7 @@ export default {
   当前余额: 'Current Balance',
   消费金额: 'Amount of Consumption',
   联系方式: 'Contact Information',
-  用户管理: 'User Management',
+  用户管理: 'User',
   会员列表: 'Member List',
   是否有越: 'Whether there is more',
   会员名称: 'Member Name',
@@ -103,8 +92,9 @@ export default {
     'The employee mailbox already exists, please change the mailbox',
   两次密码输入不一致: 'Inconsistent password entered twice',
   '员工组已存在，请更换名称': 'Staff group already exists, please change the name',
-  订单管理: 'Order Management',
+  订单管理: 'Order',
   订单列表: 'Order List',
+  订单详情: 'Order Details',
   订单编号: 'Order Number',
   订单状态: 'Order Status',
   订单金额: 'Order Amount',
@@ -146,7 +136,7 @@ export default {
   审核状态: 'Approval Status',
   退款金额不能大于申请金额:
     'The refund amount cannot be more than the application amount',
-  商品管理: 'Commodity Management',
+  商品管理: 'Commodity',
   商品列表: 'Product List',
   商品分类: 'Categories',
   导出商品: 'Export Product',
@@ -199,7 +189,7 @@ export default {
   请输入门牌号: 'Please enter the house number',
   城市街道有误: 'Wrong city street',
   店铺设置: 'Store Settings',
-  配置管理: 'Configuration Management',
+  配置管理: 'Configuration',
   支付设置: 'Payment Settings',
   支付图标: 'Payment Icon',
   是否开启: 'Whether to Open',
@@ -234,7 +224,7 @@ export default {
   是否称重分类: 'Weighing Category',
 
   普通商品列表: 'Product List',
-  称重商品列表: 'Weighing Product List',
+  称重商品列表: 'Weighing Product',
   分类列表: 'Category List',
   供应商列表: 'Supplier List',
 
