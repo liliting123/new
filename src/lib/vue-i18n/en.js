@@ -11,7 +11,7 @@ export default {
   验证码有误: 'Code is incorrect',
   发送: 'Send',
   返回登录: 'Back to login',
-  您确定要退出登录吗: 'Are you sure you want to log out?？',
+  您确定要退出登录吗: 'Are you sure you want to log out?',
   退出登录: 'Sign Out',
   收银后台: 'Cashier Background',
   下载管理: 'Download Management',

@@ -6,39 +6,47 @@
         <el-select
           style="margin-left: 10px;"
           v-model="value"
-          :placeholder="$t('商品分类')">
+          :placeholder="$t('商品分类')"
+        >
           <el-option
             v-for="item in options"
             :key="item.value"
             :label="item.label"
-            :value="item.value">
+            :value="item.value"
+          >
           </el-option>
         </el-select>
         <el-select
           style="margin-left: 10px;"
           v-model="value"
-          :placeholder="$t('分类标签')">
+          :placeholder="$t('分类标签')"
+        >
           <el-option
             v-for="item in options"
             :key="item.value"
             :label="item.label"
-            :value="item.value">
+            :value="item.value"
+          >
           </el-option>
         </el-select>
         <el-select
           style="margin:0 10px 0 10px;"
           v-model="value"
-          :placeholder="$t('供应商')">
+          :placeholder="$t('供应商')"
+        >
           <el-option
             v-for="item in options"
             :key="item.value"
             :label="item.label"
-            :value="item.value">
+            :value="item.value"
+          >
           </el-option>
         </el-select>
-        <el-button type="info" @click="settlementPassword()">{{$t('结算密码')}}</el-button>
-        <el-button type="info" @click="addProduct()">{{$t('添加商品')}}</el-button>
-        <el-button type="info" @click="pullGoods()">{{$t('拉取后台商品')}}</el-button>
+        <el-button type="info" @click="settlementPassword()">{{
+          $t('结算密码')
+        }}</el-button>
+        <el-button type="info" @click="addProduct()">{{ $t('添加商品') }}</el-button>
+        <el-button type="info" @click="pullGoods()">{{ $t('拉取后台商品') }}</el-button>
       </div>
       <div slot="right">
         <el-input v-model="input3">
@@ -47,31 +55,34 @@
             <el-option label="订单号" value="2"></el-option>
             <el-option label="用户电话" value="3"></el-option>
           </el-select>
-          <el-button slot="append">{{$t('搜索')}}</el-button>
+          <el-button slot="append">{{ $t('搜索') }}</el-button>
         </el-input>
       </div>
     </search-list>
     <!--    table列表-->
     <div class="table_list" style="padding-top: 10px">
       <div class="top_btn">
-        <button>{{$t('拉取库存')}}</button>
-        <button>{{$t('拉取BBD')}}</button>
+        <button>{{ $t('拉取库存') }}</button>
+        <button>{{ $t('拉取BBD') }}</button>
       </div>
       <el-table
-        :header-cell-style="{background:'#F7F7F7'}"
+        :header-cell-style="{ background: '#F7F7F7' }"
         :data="tableData"
         style="width: 100%;margin-bottom: 20px;"
         row-key="id"
         border
         :default-expand-all="false"
-        :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
-        <el-table-column
-          type="selection"
-          width="55">
-        </el-table-column>
+        :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+      >
+        <el-table-column type="selection" width="55"> </el-table-column>
         <el-table-column type="expand">
           <template slot-scope="props">
-            <el-table :header-cell-style="{background:'#F7F7F7'}" :data="tableData" border style="width: 80%;margin-left: 48px">
+            <el-table
+              :header-cell-style="{ background: '#F7F7F7' }"
+              :data="tableData"
+              border
+              style="width: 80%;margin-left: 48px"
+            >
               <el-table-column type="selection" width="55"></el-table-column>
               <el-table-column width="50" label="#">
                 <template slot-scope="scope">
@@ -95,58 +106,31 @@
             </el-table>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="date"
-          :label="$t('商品名称')"
-          width="180">
+        <el-table-column prop="date" :label="$t('商品名称')" width="180">
         </el-table-column>
-        <el-table-column
-          prop="name"
-          :label="$t('商品分类')">
-        </el-table-column>
-        <el-table-column
-          prop="address"
-          :label="$t('分类标签')">
-        </el-table-column>
-        <el-table-column
-          prop="date"
-          :label="$t('商品图片')">
-        </el-table-column>
-        <el-table-column
-          prop="name"
-          :label="$t('可售库存')">
-        </el-table-column>
-        <el-table-column
-          prop="address"
-          :label="$t('已售库存')">
+        <el-table-column prop="name" :label="$t('商品分类')"> </el-table-column>
+        <el-table-column prop="address" :label="$t('分类标签')"> </el-table-column>
+        <el-table-column prop="date" :label="$t('商品图片')"> </el-table-column>
+        <el-table-column prop="name" :label="$t('可售库存')"> </el-table-column>
+        <el-table-column prop="address" :label="$t('已售库存')">
           <template slot-scope="scope">
             <span style="color: #1a79eb" @click="soldRecords()">50</span>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="date"
-          :label="$t('创建时间')">
-        </el-table-column>
-        <el-table-column
-          prop="address"
-          :label="$t('操作')"
-          width="150">
+        <el-table-column prop="date" :label="$t('创建时间')"> </el-table-column>
+        <el-table-column prop="address" :label="$t('操作')" width="150">
           <template slot-scope="scope">
-            <el-button type="text" size="small">{{$t('编辑')}}</el-button>
-            <el-button type="text" size="small">{{$t('删除')}}</el-button>
+            <el-button type="text" size="small">{{ $t('编辑') }}</el-button>
+            <el-button type="text" size="small">{{ $t('删除') }}</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
     <!--  拉取后台商品弹窗-->
-    <pullGoodsDialog
-      :visible.sync="dialogPullGoods"
-    />
+    <pullGoodsDialog :visible.sync="dialogPullGoods" />
     <!--  结算密码弹窗-->
-    <setPasswordDialog
-      :visible.sync="dialogPassword"/>
-    <soldRecordsDialog
-      :visible.sync="dialogSoldRecords"/>
+    <setPasswordDialog :visible.sync="dialogPassword" />
+    <soldRecordsDialog :visible.sync="dialogSoldRecords" />
   </div>
 </template>
 
@@ -166,33 +150,41 @@ export default {
   data() {
     return {
       value1: '',
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
+      options: [
+        {
+          value: '选项1',
+          label: '黄金糕'
+        },
+        {
+          value: '选项2',
+          label: '双皮奶'
+        },
+        {
+          value: '选项3',
+          label: '蚵仔煎'
+        },
+        {
+          value: '选项4',
+          label: '龙须面'
+        },
+        {
+          value: '选项5',
+          label: '北京烤鸭'
+        }
+      ],
       value: '',
       input1: '',
       input2: '',
       input3: '',
       select: '',
-      tableData: [{
-        id: 1,
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }],
+      tableData: [
+        {
+          id: 1,
+          date: '2016-05-02',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }
+      ],
       dialogPassword: false, // 结算密码弹窗
       dialogSoldRecords: false, // 已售库存弹窗
       dialogPullGoods: false // 拉取后台商品弹窗
@@ -214,7 +206,7 @@ export default {
     // 跳转到添加商品页面
     addProduct() {
       this.$router.push({
-        name: 'add_product'
+        path: 'normal_product_list/add_product'
       })
     }
   }
@@ -223,7 +215,7 @@ export default {
 
 <style lang="scss" scoped>
 .top_btn {
-  padding:10px 0 10px 0;
+  padding: 10px 0 10px 0;
   button {
     background: white;
     border: 1px solid rgba(128, 128, 128, 0.49);

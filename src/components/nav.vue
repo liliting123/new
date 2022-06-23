@@ -93,7 +93,7 @@ export default {
   methods: {
     // 注销
     onLoyout() {
-      this.$confirm(this.$t('AreYouSureToLogOut') + '?', this.$t('tips'), {
+      this.$confirm(this.$t('您确定要退出登录吗'), this.$t('tips'), {
         confirmButtonText: this.$t('confirm'),
         cancelButtonText: this.$t('cancel'),
         type: 'warning'
