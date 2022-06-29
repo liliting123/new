@@ -7,8 +7,8 @@
         style="width: 100%"
       >
         <el-table-column width="50">
-          <template>
-            <span class="table_index">1</span>
+          <template slot-scope="scope">
+            <span class="table_index">{{ scope.$index + 1 }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="date" :label="$t('支付方式')"> </el-table-column>

@@ -3,16 +3,12 @@
     <!--    筛选条件-->
     <search-list>
       <div slot="left">
-        <el-button type="info" @click="dialogFormVisible = true">
+        <el-button type="primary" @click="dialogFormVisible = true">
           {{ $t('添加供应商') }}</el-button
         >
       </div>
       <div slot="right">
-        <el-input
-          :laceholder="$t('请输入内容')"
-          v-model="searchValue"
-          class="input-with-select"
-        >
+        <el-input v-model="searchValue" class="input-with-select">
           <el-button slot="append">{{ $t('搜索') }}</el-button>
         </el-input>
       </div>
@@ -26,8 +22,8 @@
         style="width: 100%"
       >
         <el-table-column width="50" align="center" label="#">
-          <template>
-            <span class="table_index">1</span>
+          <template slot-scope="scope">
+            <span class="table_index">{{ scope.$index + 1 }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="date" :label="$t('供应商名称')"> </el-table-column>

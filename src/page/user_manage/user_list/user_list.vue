@@ -3,7 +3,7 @@
     <!--    筛选条件-->
     <search-list>
       <div slot="left">
-        <el-button type="info" @click="dialogFormVisible = true">{{
+        <el-button type="primary" @click="dialogFormVisible = true">{{
           $t('添加员工')
         }}</el-button>
       </div>
@@ -19,8 +19,12 @@
             :placeholder="$t('员工名称')"
             style="width:110px"
           >
-            <el-option :label="$t('邮箱')" value="1"></el-option>
-            <el-option :label="$t('备注')" value="2"></el-option>
+            <el-option
+              v-for="item in selectList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
           </el-select>
           <el-button slot="append">{{ $t('搜索') }}</el-button>
         </el-input>
@@ -35,8 +39,8 @@
         style="width: 100%"
       >
         <el-table-column width="50" align="center">
-          <template>
-            <span class="table_index">1</span>
+          <template slot-scope="scope">
+            <span class="table_index">{{ scope.$index + 1 }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="date" :label="$t('员工名称')" width="180">
@@ -136,7 +140,12 @@ export default {
   },
   data() {
     return {
-      selectOption: '',
+      selectOption: '0',
+      selectList: [
+        { value: '0', label: this.$t('员工名称') },
+        { value: '1', label: this.$t('邮箱') },
+        { value: '2', label: this.$t('备注') }
+      ],
       searchValue: '',
       page_params: 1,
       tableData: [
@@ -216,7 +225,7 @@ export default {
         })
     },
     delect() {
-      this.$confirm('确认要删除吗?', this.$t('提示'), {
+      this.$confirm(this.$t('确认要删除吗?'), this.$t('提示'), {
         confirmButtonText: this.$t('确定'),
         cancelButtonText: this.$t('取消'),
         type: 'warning'

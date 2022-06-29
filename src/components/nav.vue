@@ -5,7 +5,7 @@
       style="
     width: 200px;"
     >
-      <h1>收银后台</h1>
+      <h1>{{ $t('收银后台') }}</h1>
     </div>
     <div class="brand">
       <span style="padding: 10px;">Admin</span>
@@ -93,9 +93,9 @@ export default {
   methods: {
     // 注销
     onLoyout() {
-      this.$confirm(this.$t('您确定要退出登录吗'), this.$t('tips'), {
-        confirmButtonText: this.$t('confirm'),
-        cancelButtonText: this.$t('cancel'),
+      this.$confirm(this.$t('您确定要退出登录吗'), this.$t('提示'), {
+        confirmButtonText: this.$t('确定'),
+        cancelButtonText: this.$t('取消'),
         type: 'warning'
       }).then(() => {
         this.$notify({
@@ -148,7 +148,8 @@ export default {
     width: 172px;
     color: #fff;
     text-align: center;
-    background-color: #1c2c3c;
+    // background-color: #1c2c3c;
+    background-color: #43495f;
     h1 {
       padding-top: 10px;
       font-size: 27px;

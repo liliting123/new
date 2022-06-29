@@ -17,17 +17,17 @@
       <div class="data_box border-radius">
         <p>{{ $t('整体情况') }}</p>
         <el-descriptions style="padding:16px" :column="6" direction="vertical">
-          <el-descriptions-item :label="$t('销售金额')">￥0.00</el-descriptions-item>
-          <el-descriptions-item :label="$t('下单情况')">0</el-descriptions-item>
+          <el-descriptions-item :label="$t('销售金额')">€0.00</el-descriptions-item>
+          <el-descriptions-item :label="$t('下单数量')">0</el-descriptions-item>
           <el-descriptions-item :label="$t('客单价')">kooriookami</el-descriptions-item>
           <el-descriptions-item :label="$t('会员人数')">18100000000</el-descriptions-item>
           <el-descriptions-item :label="$t('散客人数')">苏州市</el-descriptions-item>
           <el-descriptions-item :label="$t('总人数')"> 0</el-descriptions-item><br />
-          <el-descriptions-item :label="$t('余额支付金额')">￥0.00</el-descriptions-item>
+          <el-descriptions-item :label="$t('余额支付金额')">€0.00</el-descriptions-item>
           <el-descriptions-item :label="$t('余额支付单量')">0</el-descriptions-item>
           <el-descriptions-item :label="$t('余额占比率')">0.00%</el-descriptions-item>
-          <el-descriptions-item :label="$t('退款金额')">￥0.00</el-descriptions-item>
-          <el-descriptions-item :label="$t('退款单价')">00</el-descriptions-item>
+          <el-descriptions-item :label="$t('退款金额')">€0.00</el-descriptions-item>
+          <el-descriptions-item :label="$t('退款单数')">00</el-descriptions-item>
           <el-descriptions-item :label="$t('退款率')">0.00%</el-descriptions-item>
         </el-descriptions>
       </div>
@@ -128,7 +128,7 @@ export default {
         price: 10,
         num: 900
       }
-      var option = {
+      var shopOption = {
         color: ['#7f7f7f'], // 柱子颜色
         tooltip: {
           trigger: 'axis',
@@ -217,10 +217,102 @@ export default {
           }
         ]
       }
+      var consumptionOption = {
+        color: ['#7f7f7f'], // 柱子颜色
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow',
+            shadowStyle: {
+              color: 'rgba(220, 220, 220, 0.5)' // 鼠标移入的阴影颜色
+            }
+          },
+          backgroundColor: '#f2f2f2', // 背景颜色
+          borderColor: '#f2f2f2',
+          textStyle: {
+            color: '#000000', // 字体颜色
+            fontSize: 13 // 字体大小
+          },
+          formatter: function(data) {
+            var val =
+              _this.$t('昵称') +
+              '：' +
+              obj.name +
+              '<br>' +
+              _this.$t('邮箱') +
+              '：' +
+              obj.price +
+              '<br>' +
+              _this.$t('下单次数') +
+              '：' +
+              obj.num +
+              '<br>' +
+              _this.$t('消费金额') +
+              '：€' +
+              obj.num
+            return val
+          }
+        },
 
+        grid: {
+          top: '5%',
+          left: '3%',
+          right: '4%',
+          bottom: '8%',
+          containLabel: true
+        },
+
+        xAxis: {
+          axisLine: {
+            show: true // 显示坐标轴线
+          },
+          splitLine: {
+            // 网格线
+            show: false
+          },
+          type: 'value',
+          boundaryGap: [0, 0.01]
+        },
+        yAxis: {
+          axisTick: {
+            show: false // 不显示坐标轴刻度线
+          },
+
+          type: 'category',
+          data: [
+            'Brazil',
+            'Indonesia',
+            'USA',
+            'India',
+            'China',
+            'World',
+            'India',
+            'China',
+            'World',
+            'India'
+          ]
+        },
+        series: [
+          {
+            type: 'bar',
+            data: [
+              18203,
+              23489,
+              29034,
+              104970,
+              131744,
+              630230,
+              104970,
+              131744,
+              630230,
+              430230
+            ]
+          }
+        ]
+      }
       // 使用刚指定的配置项和数据显示图表。
-      myChartShop.setOption(option)
-      myChartUser.setOption(option)
+      myChartShop.setOption(shopOption)
+      myChartUser.setOption(consumptionOption)
       // this.myCharts.setOption({
       //   tooltip: {
       //     trigger: 'axis',

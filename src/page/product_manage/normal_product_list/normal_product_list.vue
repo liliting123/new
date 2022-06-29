@@ -42,11 +42,13 @@
           >
           </el-option>
         </el-select>
-        <el-button type="info" @click="settlementPassword()">{{
+        <el-button type="primary" @click="settlementPassword()">{{
           $t('结算密码')
         }}</el-button>
-        <el-button type="info" @click="addProduct()">{{ $t('添加商品') }}</el-button>
-        <el-button type="info" @click="pullGoods()">{{ $t('拉取后台商品') }}</el-button>
+        <el-button type="primary" @click="addProduct()">{{ $t('添加商品') }}</el-button>
+        <el-button type="primary" @click="pullGoods()">{{
+          $t('拉取后台商品')
+        }}</el-button>
       </div>
       <div slot="right">
         <el-input v-model="input3">

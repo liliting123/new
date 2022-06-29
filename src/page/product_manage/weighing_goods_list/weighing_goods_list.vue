@@ -25,7 +25,7 @@
           >
           </el-option>
         </el-select>
-        <el-button type="info" @click="addWeightProduct()">{{
+        <el-button type="primary" @click="addWeightProduct()">{{
           $t('添加称重商品')
         }}</el-button>
       </div>

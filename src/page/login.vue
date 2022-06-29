@@ -133,70 +133,30 @@ export default {
           type: 'warning'
         })
       } else {
-        this.$http
-          .post('user/login', {
-            userName: this.email,
-            password: this.password
-          })
-          .then(res => {
-            console.log(res)
-            if (res.ret) {
-              this.$notify({
-                type: 'success',
-                title: this.$t('success'),
-                message: this.$t('LoginSuccessful')
-              })
-              this.$store.commit('token/saveToken', { token: res.data.token })
-              this.$router.push('/')
-            } else {
-              this.$message({
-                message: res.msg,
-                type: 'error'
-              })
-            }
-          })
-        // this.$router.push('/')
+        // this.$http
+        //   .post('user/login', {
+        //     userName: this.email,
+        //     password: this.password
+        //   })
+        //   .then(res => {
+        //     console.log(res)
+        //     if (res.ret) {
+        //       this.$notify({
+        //         type: 'success',
+        //         title: this.$t('success'),
+        //         message: this.$t('LoginSuccessful')
+        //       })
+        //       this.$store.commit('token/saveToken', { token: res.data.token })
+        //       this.$router.push('/')
+        //     } else {
+        //       this.$message({
+        //         message: res.msg,
+        //         type: 'error'
+        //       })
+        //     }
+        //   })
+        this.$router.push('/')
       }
-      // if (this.keep) {
-      //   localStorage.setItem(NLE.EMAIL, this.email)
-      //   localStorage.setItem(NLE.PASSWORD, this.password)
-      // } else {
-      //   localStorage.setItem(NLE.EMAIL, '')
-      //   localStorage.setItem(NLE.PASSWORD, '')
-      // }
-      // if (this.email === '') {
-      //   this.$notify({
-      //     title: this.$t('error'),
-      //     message: this.$t('EmailCannotBeEmpty'),
-      //     type: 'warning'
-      //   })
-      // } else if (this.password === '') {
-      //   this.$notify({
-      //     title: this.$t('error'),
-      //     message: this.$t('PasswordCannotBeEmpty'),
-      //     type: 'warning'
-      //   })
-      // } else {
-      //   this.$http.post('user/login', {
-      //     userName: this.email,
-      //     password: this.password
-      //   }).then(res => {
-      //     if (res.ret) {
-      //       this.$notify({
-      //         type: 'success',
-      //         title: this.$t('success'),
-      //         message: this.$t('LoginSuccessful')
-      //       })
-      //       this.$store.commit('token/saveToken', {token: res.data.token})
-      //       this.$router.push('/')
-      //     } else {
-      //       this.$message({
-      //         message: res.msg,
-      //         type: 'error'
-      //       })
-      //     }
-      //   })
-      // }
     }
   }
 }

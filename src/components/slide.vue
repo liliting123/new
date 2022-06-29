@@ -79,14 +79,14 @@ a {
 }
 .slide-nav-title {
   position: relative;
-  background: #304156;
+  background: #43495f;
   display: block;
   padding-left: 12px;
   line-height: 50px;
   font-size: 16px;
 }
 .titleColor {
-  background-color: #304156;
+  background-color: #43495f;
   // color:#fff;
 }
 .iconClass {
@@ -116,19 +116,19 @@ a {
   line-height: 50px;
   color: #879db2;
   padding-left: 55px;
-  background: #202231;
-  border-left: #202231 5px solid;
+  background: #43495f;
+  border-left: #43495f 5px solid;
   font-weight: bold;
   &:not(.router-link-active):hover {
-    background: #232638;
-    border-left: #98c1ff 5px solid;
-    color: #98c1ff;
+    background: #59bbe7;
+    border-left: #c7ecfd 5px solid;
+    color: #fff;
   }
 }
 .slide-nav-title-sub-item a.router-link-active {
-  background: #232638;
-  border-left: #98c1ff 5px solid;
-  color: #98c1ff;
+  background: #59bbe7;
+  border-left: #c7ecfd 5px solid;
+  color: #fff;
   cursor: default;
 }
 </style>

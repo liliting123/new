@@ -3,7 +3,7 @@
     <!--    筛选条件-->
     <search-list>
       <div slot="left">
-        <el-button type="info" @click="dialogFormVisible = true">{{
+        <el-button type="primary" @click="dialogFormVisible = true">{{
           $t('添加员工组')
         }}</el-button>
       </div>
@@ -19,7 +19,12 @@
             :placeholder="$t('员工组名称')"
             style="width:120px"
           >
-            <el-option :label="$t('备注')" value="1"></el-option>
+            <el-option
+              v-for="item in selectList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
           </el-select>
           <el-button slot="append">{{ $t('搜索') }}</el-button>
         </el-input>
@@ -32,8 +37,8 @@
         style="width: 100%"
       >
         <el-table-column align="center" width="50">
-          <template>
-            <span class="table_index">1</span>
+          <template slot-scope="scope">
+            <span class="table_index">{{ scope.$index + 1 }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="date" :label="$t('员工组名称')" width="180">
@@ -42,7 +47,7 @@
         </el-table-column>
         <el-table-column prop="address" :label="$t('创建时间')"> </el-table-column>
         <el-table-column prop="address" :label="$t('备注')"> </el-table-column>
-        <el-table-column :label="$t('操作')" width="250">
+        <el-table-column :label="$t('操作')" width="300">
           <template slot-scope="">
             <el-button type="text" @click="dialogTableVisible = true">{{
               $t('查看人员')
@@ -167,7 +172,11 @@ export default {
   },
   data() {
     return {
-      selectOption: '',
+      selectOption: '0',
+      selectList: [
+        { value: '0', label: '员工组名称' },
+        { value: '1', label: '备注' }
+      ],
       searchValue: '',
       page_params: 1,
       dialogFormVisible: false,
@@ -310,7 +319,7 @@ export default {
   methods: {
     onDetail() {},
     delect() {
-      this.$confirm('确认要删除吗?', this.$t('提示'), {
+      this.$confirm(this.$t('确认要删除吗?'), this.$t('提示'), {
         confirmButtonText: this.$t('确定'),
         cancelButtonText: this.$t('取消'),
         type: 'warning'

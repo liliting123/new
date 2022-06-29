@@ -16,6 +16,7 @@ export default {
   收银后台: '收银后台',
   下载管理: '下载管理',
   我的面板: '我的面板',
+  cn: '中文',
   首页: '首页',
   数据概览: '数据概览',
   开始日期: '开始日期',
@@ -257,5 +258,17 @@ export default {
   当前库存: '当前库存',
   操作库存: '操作库存',
   '价格/KG': '价格/KG',
-  '会员价格/KG': '会员价格/KG'
+  '会员价格/KG': '会员价格/KG',
+  'Front Page': '首页',
+  'Employee List': '用户列表',
+  'Employee Group': '用户组列表',
+  'Order List': '订单列表',
+  'Refund List': '退款列表',
+  'Product List': '普通商品列表',
+  'Weighing Product': '称重商品列表',
+  'Category List': '分类列表',
+  'Supplier List': '供应商列表',
+  'Store Settings': '店铺设置',
+  'Payment Settings': '支付设置',
+  '这是最后一页, 不能在关闭了': '这是最后一页, 不能在关闭了'
 }
