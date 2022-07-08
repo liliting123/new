@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="info-top">
-      <div class="title">{{$t('基本信息')}}</div>
+      <div class="title">{{ $t('基本信息') }}</div>
       <div class="nav">
         <!--        <tabsLanguage></tabsLanguage>-->
       </div>
@@ -12,7 +12,8 @@
           :rules="rules"
           label-width="80px"
           size="small"
-          label-position="top">
+          label-position="top"
+        >
           <el-row :gutter="20">
             <el-col :span="6">
               <el-form-item :label="`${$t('商品名称')}:`" prop="name">
@@ -75,8 +76,8 @@
           </el-row>
           <el-row :gutter="20">
             <el-col :span="6">
-              <el-form-item :label="`${$t('是否有会员价')}:`" prop="name">
-                <el-switch v-model="form.name"></el-switch>
+              <el-form-item :label="`${$t('是否有会员价')}:`">
+                <el-switch v-model="form.delivery"></el-switch>
               </el-form-item>
             </el-col>
             <el-col :span="8" :offset="6">
@@ -85,24 +86,25 @@
                   class="upload-demo"
                   action="https://jsonplaceholder.typicode.com/posts/"
                   multiple
-                  :limit="3">
-                  <el-button size="small">{{$t('点击上传')}}</el-button>
-                  <span>{{`（${$t('建议尺寸')} 500*500px）`}}</span>
+                  :limit="3"
+                >
+                  <el-button size="small">{{ $t('点击上传') }}</el-button>
+                  <span>{{ `（${$t('建议尺寸')} 500*500px）` }}</span>
                 </el-upload>
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row :gutter="20">
+          <el-row :gutter="20" v-if="form.delivery">
             <el-col :span="6">
-              <el-form-item :label="`${$t('会员价格/KG')}:`" prop="name">
-                <el-input v-model="form.name"></el-input>
+              <el-form-item :label="`${$t('会员价格/KG')}:`">
+                <el-input v-model="form.delivery"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
         </el-form>
       </div>
       <div class="bottom-btn">
-        <el-button type="primary" style="width: 180px">{{$t('保存')}}</el-button>
+        <el-button type="primary" style="width: 180px">{{ $t('保存') }}</el-button>
       </div>
     </div>
   </div>
@@ -127,36 +129,35 @@ export default {
       }
     }
   },
-  methods: {
-  }
+  methods: {}
 }
 </script>
 
 <style lang="scss" scoped>
-  .info-top {
-    background: #ffffff;
-    border-radius: 8px;
-    margin-top: 10px;
-    .title {
-      padding: 20px;
-      line-height: 15px;
-      font-weight: bold;
-      border-bottom: 1px solid rgba(196, 196, 196, 0.76);
-      display: flex;
-      justify-content: space-between;
-    }
-    .form-content {
-      padding: 15px;
-    }
-    .content {
-      display: inline-block;
-      padding: 20px;
-      width: 500px;
-      margin-right: 200px;
-    }
+.info-top {
+  background: #ffffff;
+  border-radius: 8px;
+  margin-top: 10px;
+  .title {
+    padding: 20px;
+    line-height: 15px;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(196, 196, 196, 0.76);
+    display: flex;
+    justify-content: space-between;
   }
-  .bottom-btn {
-    width: 100%;
-    padding: 20px 0 50px 15px;
+  .form-content {
+    padding: 15px;
   }
+  .content {
+    display: inline-block;
+    padding: 20px;
+    width: 500px;
+    margin-right: 200px;
+  }
+}
+.bottom-btn {
+  width: 100%;
+  padding: 20px 0 50px 15px;
+}
 </style>

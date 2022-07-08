@@ -30,7 +30,7 @@
         }}</el-button>
       </div>
       <div slot="right">
-        <el-input placeholder="请输入内容" v-model="input3">
+        <el-input v-model="input3">
           <el-select v-model="select" slot="prepend" :placeholder="$t('商品名称')">
             <el-option label="餐厅名" value="1"></el-option>
             <el-option label="订单号" value="2"></el-option>
@@ -68,7 +68,7 @@
         <el-table-column prop="address" :label="$t('可售库存')"> </el-table-column>
         <el-table-column prop="date" :label="$t('已售库存')"> </el-table-column>
         <el-table-column prop="date" :label="$t('创建时间')"> </el-table-column>
-        <el-table-column prop="address" :label="$t('操作')" width="180">
+        <el-table-column prop="address" :label="$t('操作')" width="250">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="inventoryRecords()">{{
               $t('库存记录')
