@@ -87,7 +87,7 @@ export default {
     return {
       email: '',
       password: '',
-      code: '',
+      code: '1',
       keep: false
     }
   },
@@ -106,10 +106,6 @@ export default {
       if (this.keep) {
         localStorage.setItem(NLE.EMAIL, this.email)
         localStorage.setItem(NLE.PASSWORD, this.password)
-        // localStorage.setItem(
-        //   'TOKEN',
-        //   '262181e7e5f1182323f5846ce8b8ef53f20cbc5174d24f1b0244b31de7c9f847904544'
-        // )
       } else {
         localStorage.setItem(NLE.EMAIL, '')
         localStorage.setItem(NLE.PASSWORD, '')
@@ -133,29 +129,29 @@ export default {
           type: 'warning'
         })
       } else {
-        // this.$http
-        //   .post('user/login', {
-        //     userName: this.email,
-        //     password: this.password
-        //   })
-        //   .then(res => {
-        //     console.log(res)
-        //     if (res.ret) {
-        //       this.$notify({
-        //         type: 'success',
-        //         title: this.$t('success'),
-        //         message: this.$t('LoginSuccessful')
-        //       })
-        //       this.$store.commit('token/saveToken', { token: res.data.token })
-        //       this.$router.push('/')
-        //     } else {
-        //       this.$message({
-        //         message: res.msg,
-        //         type: 'error'
-        //       })
-        //     }
-        //   })
-        this.$router.push('/')
+        this.$http
+          .post('api/shop/staff/login', {
+            email: this.email,
+            password: this.password
+          })
+          .then(res => {
+            console.log(res)
+            if (res.ret) {
+              this.$notify({
+                type: 'success',
+                title: this.$t('success'),
+                message: this.$t('LoginSuccessful')
+              })
+              this.$store.commit('token/saveToken', { token: res.data.token })
+              localStorage.setItem('shopId', res.data.staff.shop_id)
+              this.$router.push('/')
+            } else {
+              this.$message({
+                message: res.msg,
+                type: 'error'
+              })
+            }
+          })
       }
     }
   }

@@ -77,7 +77,7 @@
               <el-input
                 v-model="form.email"
                 autocomplete="off"
-                :disabled="true"
+                :disabled="false"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -94,7 +94,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item :label="$t('员工组')" prop="userGroup">
+            <el-form-item :label="$t('员工组')" prop="staff_group_id">
               <el-select v-model="value" :placeholder="$t('请选择')" style="width:100%">
                 <el-option
                   v-for="item in options"
@@ -109,8 +109,11 @@
         </el-row>
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item :label="$t('确认密码')" prop="password2">
-              <el-input v-model="form.password2" autocomplete="off"></el-input>
+            <el-form-item :label="$t('确认密码')" prop="password_confirmation">
+              <el-input
+                v-model="form.password_confirmation"
+                autocomplete="off"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -122,9 +125,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">{{ $t('取消') }}</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">{{
-          $t('确定')
-        }}</el-button>
+        <el-button type="primary" @click="onSave()">{{ $t('确定') }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -172,12 +173,13 @@ export default {
       ],
       dialogFormVisible: false,
       form: {
-        name: '',
-        email: '',
-        password: '',
-        userGroup: '',
-        password2: '',
-        remark: ''
+        // name1: '',
+        // email: '',
+        // password: '',
+        staff_group_id: 1,
+        // password_confirmation: '',
+        // remark: '',
+        shop_id: 1
       },
       options: [
         {
@@ -194,8 +196,8 @@ export default {
         email: [{ required: true }],
         name: [{ required: true, message: '请输入员工名称' }],
         password: [{ required: true, message: '请输入密码' }],
-        userGroup: [{ required: true, message: '请选择员工组' }],
-        password2: [{ required: true, message: '请输入确认密码' }]
+        staff_group_id: [{ required: true, message: '请选择员工组' }],
+        password_confirmation: [{ required: true, message: '请输入确认密码' }]
       }
     }
   },
@@ -211,12 +213,30 @@ export default {
     getList() {
       this.tableLoading = true
       this.$http
-        .get('api/user_wallet', {
+        .get('api/shop/staff', {
           params: {
             page: 1,
             size: 10,
-            keyword: 1
+            keyword: ''
           }
+        })
+        .then(res => {
+          if (res.ret) {
+            console.log(res)
+          }
+        })
+    },
+    onSave() {
+      this.dialogFormVisible = false
+      this.$http
+        .post('api/shop/staff', {
+          name: '1',
+          email: '11@qq.com',
+          password: '111111',
+          staff_group_id: 1,
+          password_confirmation: '111111',
+          remark: '1',
+          shop_id: 1
         })
         .then(res => {
           if (res.ret) {

@@ -102,7 +102,8 @@ export default {
           type: 'success',
           message: this.$t('success')
         })
-
+        this.$store.commit('token/removeToken')
+        this.$store.commit('switchPermissionMapFilterStatus', { status: false }) // 重新筛选路由
         this.$router.push('/login')
       })
     },

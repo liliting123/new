@@ -1,6 +1,6 @@
 import $form from 'axios'
 import qs from 'qs'
-// import router from '@/router'
+import router from '@/router'
 import store from '@/store'
 import { Message } from 'element-ui'
 import baseApi from '@/lib/base-api'
@@ -22,6 +22,7 @@ function interceptorsRequestSuccess(config) {
   store.commit('switchBtnLoading', { status: true })
   config.headers.Authorization = store.state.token.token
   config.headers.language = store.state.lang
+  config.headers['shop-id'] = 1
   return config
 }
 
@@ -45,24 +46,24 @@ function interceptorsResponseError(error) {
   let msg
   nprogress.done()
   store.commit('switchBtnLoading', { status: false })
-  // if (error.response && error.response.status === 401) {
-  //   store.commit('token/removeToken')
-  //   router.push('/login')
-  //   // Message({
-  //   //   message: '请重新登录',
-  //   //   type: 'error'
-  //   // })
-  // } else {
-  //   if (error.response && error.response.data && error.response.data.tips) {
-  //     msg = error.response.data.tips
-  //   } else {
-  //     msg = '请求失败'
-  //   }
-  //   Message({
-  //     message: msg,
-  //     type: 'error'
-  //   })
-  // }
+  if (error.response && error.response.status === 401) {
+    store.commit('token/removeToken')
+    router.push('/login')
+    Message({
+      message: '请重新登录',
+      type: 'error'
+    })
+  } else {
+    if (error.response && error.response.data && error.response.data.tips) {
+      msg = error.response.data.tips
+    } else {
+      msg = '请求失败'
+    }
+    Message({
+      message: msg,
+      type: 'error'
+    })
+  }
   return Promise.reject((error.response && error.response.data) || msg)
 }
 

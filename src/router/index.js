@@ -1,11 +1,15 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import Interception from './interception.js'
 
 Vue.use(Router)
 
 const loadOnDemand = function(file) {
   return () => import(/* webpackChunkName: "chunk" */ '@/page/' + file)
 }
+
+// 404页面
+const NotFound = loadOnDemand('404')
 const LayoutSide = loadOnDemand('layout_side') // 侧边二级导航栏
 // 登录
 const Login = loadOnDemand('login')
@@ -47,128 +51,240 @@ const ClassificationList = loadOnDemand(
 // 供应商列表
 const SupplierList = loadOnDemand('product_manage/supplier_list/supplier_list')
 
-var router = new Router({
-  routes: [
-    {
-      path: '/login',
-      name: 'Login',
-      component: Login
-    },
-    {
-      path: '/forgotPassword',
-      name: 'ForgotPassword',
-      component: ForgotPassword
-    },
-    {
-      path: '/',
-      redirect: '/my_home/home',
-      component: LayoutSide,
-      children: [
-        {
-          path: '/my_home/home',
-          name: '首页',
-          component: Home
-        }
-      ]
-    },
-    // 用户管理
-    {
-      path: '/user_manage',
-      component: LayoutSide,
-      children: [
-        {
-          path: 'user_list',
-          name: '员工列表',
-          component: UserList,
-          meta: { keepAlive: true }
-        },
-        {
-          path: 'user_group_list',
-          name: '员工组列表',
-          component: UserGroupList
-        }
-      ]
-    },
-    {
-      path: '/order_manage',
-      component: LayoutSide,
-      children: [
-        {
-          path: 'order_list',
-          name: '订单列表',
-          component: OrderList,
-          meta: { keepAlive: true }
-        },
-        {
-          path: 'orderDetail',
-          name: '订单详情',
-          component: OrderDetail,
-          meta: { keepAlive: true }
-        },
-        {
-          path: 'refund_list',
-          name: '退款列表',
-          component: RefundList
-        }
-      ]
-    },
-    {
-      path: '/product_manage',
-      component: LayoutSide,
-      children: [
-        {
-          path: 'normal_product_list',
-          name: '普通商品列表',
-          component: NormalProductList,
-          meta: { keepAlive: true }
-        },
-        {
-          path: 'normal_product_list/add_product',
-          name: '添加商品',
-          component: AddProduct,
-          meta: { keepAlive: true }
-        },
-        {
-          path: 'weighing_goods_list',
-          name: '称重商品列表',
-          component: WeighingGoods,
-          meta: { keepAlive: true }
-        },
-        {
-          path: 'weighing_goods_list/add_weighing_item',
-          name: '添加称重商品',
-          component: AddWeighingItem,
-          meta: { keepAlive: true }
-        },
-        {
-          path: 'classification_list',
-          name: '分类列表',
-          component: ClassificationList
-        },
-        {
-          path: 'supplier_list',
-          name: '供应商列表',
-          component: SupplierList
-        }
-      ]
-    },
-    {
-      path: '/configuration_manage',
-      component: LayoutSide,
-      children: [
-        {
-          path: 'store_settings',
-          name: '店铺设置',
-          component: StoreSettings
-        },
-        {
-          path: 'payment_settings',
-          name: '支付设置',
-          component: PaymentSettings
-        }
-      ]
-    }
-  ]
+export const constantRouterMap = [
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login
+  },
+  {
+    path: '/forgotPassword',
+    name: 'ForgotPassword',
+    component: ForgotPassword
+  },
+  {
+    path: '/',
+    redirect: '/my_home/home',
+    component: LayoutSide,
+    children: [
+      {
+        path: '/my_home/home',
+        name: '首页',
+        component: Home
+      }
+    ]
+  },
+  // 用户管理
+  {
+    path: '/user_manage',
+    component: LayoutSide,
+    children: [
+      {
+        path: 'user_list',
+        name: '员工列表',
+        component: UserList,
+        meta: { keepAlive: true }
+      },
+      {
+        path: 'user_group_list',
+        name: '员工组列表',
+        component: UserGroupList
+      }
+    ]
+  },
+  {
+    path: '/order_manage',
+    component: LayoutSide,
+    children: [
+      {
+        path: 'order_list',
+        name: '订单列表',
+        component: OrderList,
+        meta: { keepAlive: true }
+      },
+      {
+        path: 'orderDetail',
+        name: '订单详情',
+        component: OrderDetail,
+        meta: { keepAlive: true }
+      },
+      {
+        path: 'refund_list',
+        name: '退款列表',
+        component: RefundList
+      }
+    ]
+  },
+  {
+    path: '/product_manage',
+    component: LayoutSide,
+    children: [
+      {
+        path: 'normal_product_list',
+        name: '普通商品列表',
+        component: NormalProductList,
+        meta: { keepAlive: true }
+      },
+      {
+        path: 'normal_product_list/add_product',
+        name: '添加商品',
+        component: AddProduct,
+        meta: { keepAlive: true }
+      },
+      {
+        path: 'weighing_goods_list',
+        name: '称重商品列表',
+        component: WeighingGoods,
+        meta: { keepAlive: true }
+      },
+      {
+        path: 'weighing_goods_list/add_weighing_item',
+        name: '添加称重商品',
+        component: AddWeighingItem,
+        meta: { keepAlive: true }
+      },
+      {
+        path: 'classification_list',
+        name: '分类列表',
+        component: ClassificationList
+      },
+      {
+        path: 'supplier_list',
+        name: '供应商列表',
+        component: SupplierList
+      }
+    ]
+  },
+  {
+    path: '/configuration_manage',
+    component: LayoutSide,
+    children: [
+      {
+        path: 'store_settings',
+        name: '店铺设置',
+        component: StoreSettings
+      },
+      {
+        path: 'payment_settings',
+        name: '支付设置',
+        component: PaymentSettings
+      }
+    ]
+  },
+  {
+    path: '*',
+    name: 'NotFound',
+    component: NotFound
+  }
+]
+
+export const asyncRouterMap = [
+  {
+    name: '我的面板',
+    subRoutes: [
+      {
+        name: '首页',
+        path: '/my_home/home',
+        subname: '首页'
+      }
+    ],
+    expanded: false,
+    iconClassName: 'el-icon-tickets',
+    iconClassNameTop: 'el-icon-arrow-down',
+    iconClassNameBottom: 'el-icon-arrow-up'
+  },
+  {
+    name: '用户管理',
+    subRoutes: [
+      {
+        name: '员工列表',
+        path: '/user_manage/user_list/user_list',
+        subname: '员工列表'
+      },
+      {
+        name: '员工组列表',
+        path: '/user_manage/user_group_list/user_group_list',
+        subname: '员工组列表'
+      }
+    ],
+    expanded: false,
+    iconClassName: 'el-icon-s-custom',
+    iconClassNameTop: 'el-icon-arrow-down',
+    iconClassNameBottom: 'el-icon-arrow-up'
+  },
+  {
+    name: '订单管理',
+    subRoutes: [
+      {
+        name: '订单列表',
+        path: '/order_manage/order_list/order_list',
+        subname: '订单列表'
+      },
+      {
+        name: '退款列表',
+        path: '/order_manage/refund_list/refund_list',
+        subname: '退款列表'
+      }
+    ],
+    expanded: false,
+    iconClassName: 'el-icon-document',
+    iconClassNameTop: 'el-icon-arrow-down',
+    iconClassNameBottom: 'el-icon-arrow-up'
+  },
+  {
+    name: '商品管理',
+    subRoutes: [
+      {
+        name: '普通商品列表',
+        path: '/product_manage/normal_product_list/normal_product_list',
+        subname: '普通商品列表'
+      },
+      {
+        name: '称重商品列表',
+        path: '/product_manage/weighing_goods_list/weighing_goods_list',
+        subname: '称重商品列表'
+      },
+      {
+        name: '分类列表',
+        path: '/product_manage/classification_list/classification_list',
+        subname: '分类列表'
+      },
+      {
+        name: '供应商列表',
+        path: '/product_manage/supplier_list/supplier_list',
+        subname: '供应商列表'
+      }
+    ],
+    expanded: false,
+    iconClassName: 'el-icon-document',
+    iconClassNameTop: 'el-icon-arrow-down',
+    iconClassNameBottom: 'el-icon-arrow-up'
+  },
+  {
+    name: '配置管理',
+    subRoutes: [
+      {
+        name: '店铺设置',
+        path: 'configuration_manage/store_settings',
+        subname: '店铺设置'
+      },
+      {
+        name: '支付设置',
+        path: '/configuration_manage/payment_settings',
+        subname: '支付设置'
+      }
+    ],
+    expanded: false,
+    iconClassName: 'el-icon-setting',
+    iconClassNameTop: 'el-icon-arrow-down',
+    iconClassNameBottom: 'el-icon-arrow-up'
+  }
+]
+
+const router = new Router({
+  routes: constantRouterMap
 })
+
+router.beforeEach(Interception(router))
 
 export default router
