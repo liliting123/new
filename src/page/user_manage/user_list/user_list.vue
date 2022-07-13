@@ -43,19 +43,21 @@
             <span class="table_index">{{ scope.$index + 1 }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="date" :label="$t('员工名称')" width="180">
+        <el-table-column prop="name" :label="$t('员工名称')" width="180">
         </el-table-column>
-        <el-table-column prop="name" :label="$t('员工邮箱')" width="180">
+        <el-table-column prop="email" :label="$t('员工邮箱')" width="180">
         </el-table-column>
-        <el-table-column prop="address" :label="$t('员工组')"> </el-table-column>
-        <el-table-column prop="address" :label="$t('创建时间')"> </el-table-column>
-        <el-table-column prop="address" :label="$t('备注')"> </el-table-column>
+        <el-table-column prop="staff_group_id" :label="$t('员工组')"> </el-table-column>
+        <el-table-column prop="updated_at" :label="$t('创建时间')"> </el-table-column>
+        <el-table-column prop="remark" :label="$t('备注')"> </el-table-column>
         <el-table-column :label="$t('操作')" width="200">
-          <template slot-scope="">
-            <el-button type="text" @click="dialogFormVisible = true">{{
+          <template slot-scope="scope">
+            <el-button type="text" @click="onDetail(scope.row.id)">{{
               $t('编辑')
             }}</el-button>
-            <el-button type="text" @click="delect">{{ $t('删除') }}</el-button>
+            <el-button type="text" @click="onDelect(scope.row.id)">{{
+              $t('删除')
+            }}</el-button>
             <el-button type="text">{{ $t('允许登录') }}</el-button>
           </template>
         </el-table-column>
@@ -149,37 +151,17 @@ export default {
       ],
       searchValue: '',
       page_params: 1,
-      tableData: [
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        },
-        {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        },
-        {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }
-      ],
+      tableData: [],
       dialogFormVisible: false,
       form: {
-        // name1: '',
-        // email: '',
-        // password: '',
+        name: '',
+        email: '',
+        password: '',
         staff_group_id: 1,
-        // password_confirmation: '',
-        // remark: '',
-        shop_id: 1
+        password_confirmation: '',
+        remark: '',
+        shop_id: 1,
+        status_id: 2
       },
       options: [
         {
@@ -198,21 +180,17 @@ export default {
         password: [{ required: true, message: '请输入密码' }],
         staff_group_id: [{ required: true, message: '请选择员工组' }],
         password_confirmation: [{ required: true, message: '请输入确认密码' }]
-      }
+      },
+      ids: ''
     }
   },
   mounted() {
     this.getList()
   },
-  updated() {},
-  // row,  每一行上的数据
-  // column, 每一列上的数据
-  // rowIndex,  行数的下标从0开始
-  // columnIndex   列数下标从0开始
   methods: {
-    getList() {
+    async getList() {
       this.tableLoading = true
-      this.$http
+      const res = await this.$http
         .get('api/shop/staff', {
           params: {
             page: 1,
@@ -220,44 +198,65 @@ export default {
             keyword: ''
           }
         })
-        .then(res => {
-          if (res.ret) {
-            console.log(res)
-          }
-        })
+        .finally(() => (this.tableLoading = false))
+      if (res.ret) {
+        this.tableData = res.data.data
+      }
     },
     onSave() {
       this.dialogFormVisible = false
-      this.$http
-        .post('api/shop/staff', {
-          name: '1',
-          email: '11@qq.com',
-          password: '111111',
-          staff_group_id: 1,
-          password_confirmation: '111111',
-          remark: '1',
-          shop_id: 1
-        })
-        .then(res => {
+      if (this.ids) {
+        this.$json.put(`api/shop/staff/${this.ids}`, { ...this.form }).then(res => {
           if (res.ret) {
             console.log(res)
+            this.$notify({
+              title: this.$t('success'),
+              message: res.msg,
+              type: 'success'
+            })
+            this.getList()
           }
         })
+      } else {
+        this.$http
+          .post('/api/shop/staff', {
+            ...this.form
+          })
+          .then(res => {
+            if (res.ret) {
+              this.$notify({
+                title: this.$t('success'),
+                message: res.msg,
+                type: 'success'
+              })
+              this.getList()
+            }
+          })
+      }
     },
-    delect() {
+    onDetail(id) {
+      this.ids = id
+      this.$http.get(`api/shop/staff/${id}`, {}).then(res => {
+        this.form = res.data
+      })
+      this.dialogFormVisible = true
+    },
+    onDelect(id) {
       this.$confirm(this.$t('确认要删除吗?'), this.$t('提示'), {
         confirmButtonText: this.$t('确定'),
         cancelButtonText: this.$t('取消'),
         type: 'warning'
-      })
-        .then(() => {
+      }).then(async () => {
+        const res = await this.$http.delete(`api/shop/staff/${id}`)
+        if (res.ret === 1) {
           this.$notify({
-            title: this.$t('成功'),
-            type: 'success',
-            message: this.$t('删除成功')
+            title: this.$t('success'),
+            message: res.msg,
+            type: 'success'
           })
-        })
-        .catch(() => {})
+          this.getList()
+        }
+      })
     }
   }
 }

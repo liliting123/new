@@ -63,7 +63,7 @@
         </el-col>
       </el-row>
       <el-form-item>
-        <el-button type="primary">{{ $t('保存') }}</el-button>
+        <el-button type="primary" @click="onSave()">{{ $t('保存') }}</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -81,6 +81,32 @@ export default {
         email: [{ required: true }],
         name: [{ required: true }]
       }
+    }
+  },
+  mounted() {
+    this.onSave()
+  },
+  methods: {
+    onSave() {
+      this.$http
+        .post('api/shop/shop', {
+          name: 'a',
+          phone: '13022343213',
+          email: '2@qq.com',
+          postcode: '123433',
+          door_no: '93845899676',
+          city: 'bj',
+          street: 'jd',
+          start_time: '1',
+          end_time: '1',
+          logo: '1',
+          banner: '1'
+        })
+        .then(res => {
+          if (res.ret) {
+            console.log(res)
+          }
+        })
     }
   }
 }

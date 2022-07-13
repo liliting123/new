@@ -41,96 +41,70 @@
             <span class="table_index">{{ scope.$index + 1 }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="date" :label="$t('员工组名称')" width="180">
+        <el-table-column prop="name" :label="$t('员工组名称')" width="180">
         </el-table-column>
-        <el-table-column prop="name" :label="$t('员工人数')" width="180">
+        <el-table-column prop="staff_count" :label="$t('员工人数')" width="180">
         </el-table-column>
-        <el-table-column prop="address" :label="$t('创建时间')"> </el-table-column>
-        <el-table-column prop="address" :label="$t('备注')"> </el-table-column>
+        <el-table-column prop="updated_at" :label="$t('创建时间')"> </el-table-column>
+        <el-table-column prop="remark" :label="$t('备注')"> </el-table-column>
         <el-table-column :label="$t('操作')" width="300">
-          <template slot-scope="">
-            <el-button type="text" @click="dialogTableVisible = true">{{
+          <template slot-scope="scope">
+            <el-button type="text" @click="viewPeople(scope.row.id)">{{
               $t('查看人员')
             }}</el-button>
             <el-button type="text" @click="dialogAuthorityVisible = true">{{
               $t('权限')
             }}</el-button>
-            <el-button type="text" @click="dialogFormVisible = true">{{
+            <el-button type="text" @click="onDetail(scope.row.id)">{{
               $t('编辑')
             }}</el-button>
-            <el-button type="text" @click="delect">{{ $t('删除') }}</el-button>
+            <el-button type="text" @click="delect(scope.row.id)">{{
+              $t('删除')
+            }}</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
-    <!-- <PaginationAndButtons :pageParams="page_params" /> -->
+    <PaginationAndButtons :pageParams="page_params" />
     <!-- 编辑 -->
-    <el-dialog :title="$t('编辑员工组')" :visible.sync="dialogFormVisible" width="40%">
+    <el-dialog :title="$t('编辑员工组')" :visible.sync="dialogFormVisible" width="30%">
       <el-form :model="form" :rules="rules" label-position="top">
         <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item :label="$t('员工邮箱')" prop="email">
-              <el-input
-                v-model="form.email"
-                autocomplete="off"
-                :disabled="true"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item :label="$t('员工名称')" prop="name">
+          <el-col :span="24">
+            <el-form-item :label="$t('员工组名称')" prop="name">
               <el-input v-model="form.name" autocomplete="off"></el-input>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item :label="$t('密码')" prop="password">
-              <el-input v-model="form.password" autocomplete="off"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item :label="$t('员工组')" prop="userGroup">
-              <el-select v-model="value" :placeholder="$t('请选择')" style="width:100%">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                >
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item :label="$t('确认密码')" prop="password2">
-              <el-input v-model="form.password2" autocomplete="off"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item :label="$t('备注')">
-              <el-input v-model="form.remark" autocomplete="off"></el-input>
+          <el-col :span="24">
+            <el-form-item :label="$t('备注')" prop="remark">
+              <el-input
+                type="textarea"
+                v-model="form.remark"
+                autocomplete="off"
+              ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">{{ $t('取消') }}</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">{{
-          $t('确定')
-        }}</el-button>
+        <el-button type="primary" @click="onSave()">{{ $t('确定') }}</el-button>
       </div>
     </el-dialog>
     <el-dialog :title="$t('查看人员')" :visible.sync="dialogTableVisible" width="40%">
-      <el-table :data="gridData">
-        <el-table-column type="index" width="80" align="center"> </el-table-column>
-        <el-table-column property="date" :label="$t('员工名称')"></el-table-column>
-        <el-table-column property="name" :label="$t('邮箱')"></el-table-column>
+      <el-table :data="peopleData">
+        <el-table-column width="80" align="center">
+          <template slot-scope="scope">
+            <span class="table_index">{{ scope.$index + 1 }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="name" :label="$t('员工名称')"></el-table-column>
+        <el-table-column prop="email" :label="$t('邮箱')"></el-table-column>
         <el-table-column width="100" :label="$t('操作')">
-          <template slot-scope="">
-            <el-button type="text" @click="delect">{{ $t('删除') }}</el-button>
+          <template slot-scope="scope">
+            <el-button type="text" @click="delect(scope.row.id)">{{
+              $t('删除')
+            }}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -163,13 +137,14 @@
 </template>
 <script>
 import searchList from '@/components/searchList.vue'
-// import PaginationAndButtons from '@/components/pagination_and_buttons.vue'
-// import { pagination } from '@/mixin/pagination.js'
+import PaginationAndButtons from '@/components/pagination_and_buttons.vue'
+import pagination from '@/mixin/pagination'
 export default {
-  // mixins: [pagination],
   components: {
-    searchList
+    searchList,
+    PaginationAndButtons
   },
+  mixins: [pagination],
   data() {
     return {
       selectOption: '0',
@@ -178,62 +153,15 @@ export default {
         { value: '1', label: '备注' }
       ],
       searchValue: '',
-      page_params: 1,
       dialogFormVisible: false,
       dialogTableVisible: false,
       dialogAuthorityVisible: false,
-      tableData: [
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        },
-        {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        },
-        {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }
-      ],
-      gridData: [
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }
-      ],
-
+      tableData: [],
+      peopleData: [],
       form: {
         name: '',
-        email: '',
-        password: '',
-        userGroup: '',
-        password2: '',
-        remark: ''
+        remark: '',
+        shop_id: 1
       },
       options: [
         {
@@ -312,26 +240,85 @@ export default {
     }
   },
 
-  // row,  每一行上的数据
-  // column, 每一列上的数据
-  // rowIndex,  行数的下标从0开始
-  // columnIndex   列数下标从0开始
+  mounted() {
+    this.getList()
+    console.log('snfksd')
+  },
   methods: {
-    onDetail() {},
-    delect() {
+    getList() {
+      this.tableLoading = true
+      this.$http
+        .get('api/shop/staff_group', {
+          params: {
+            page: this.page_params.page,
+            size: this.page_params.size,
+            keyword: this.page_params.keyword
+          }
+        })
+        .then(res => {
+          this.page_params.total = res.data.total
+          this.tableData = res.data.data
+          console.log(res.data.total)
+        })
+        .catch(() => {
+          this.tableLoading = false
+        })
+    },
+    onSave() {
+      this.dialogFormVisible = false
+      this.$http
+        .post('api/shop/staff_group', {
+          ...this.form
+        })
+        .then(res => {
+          if (res.ret) {
+            this.$notify({
+              title: this.$t('success'),
+              message: res.msg,
+              type: 'success'
+            })
+            this.getList()
+          }
+        })
+    },
+    onDetail(id) {
+      this.$http.get(`api/shop/staff_group/${id}`, {}).then(res => {
+        console.log(res)
+        this.form = res.data.staff_group
+      })
+      this.dialogFormVisible = true
+    },
+    delect(id) {
+      console.log(id)
       this.$confirm(this.$t('确认要删除吗?'), this.$t('提示'), {
         confirmButtonText: this.$t('确定'),
         cancelButtonText: this.$t('取消'),
         type: 'warning'
-      })
-        .then(() => {
+      }).then(async () => {
+        const res = await this.$http.delete(`api/shop/staff_group/${id}`)
+        if (res.ret === 1) {
           this.$notify({
-            title: this.$t('成功'),
-            type: 'success',
-            message: this.$t('删除成功')
+            title: this.$t('success'),
+            message: res.msg,
+            type: 'success'
           })
-        })
-        .catch(() => {})
+          this.getList()
+        }
+      })
+    },
+    async viewPeople(id) {
+      const res = await this.$http.get(`api/shop/staff_group/${id}/staff`, {
+        params: {
+          page: 1,
+          size: 10,
+          keyword: ''
+        }
+      })
+
+      if (res.ret) {
+        this.peopleData = res.data.data
+      }
+      this.dialogTableVisible = true
     }
   }
 }

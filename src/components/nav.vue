@@ -19,7 +19,7 @@
     ></span>
     <el-select v-model="value" :placeholder="$t('请选择')" class="shopSelect">
       <el-option
-        v-for="item in options"
+        v-for="item in shopSelect"
         :key="item.value"
         :label="item.label"
         :value="item.value"
@@ -54,7 +54,7 @@
 export default {
   data() {
     return {
-      options: [
+      shopSelect: [
         {
           value: '1',
           label: '欧亚超市一号店'
@@ -90,7 +90,24 @@ export default {
       ]
     }
   },
+  mounted() {
+    this.getShop()
+  },
   methods: {
+    getShop() {
+      this.$http
+        .get('api/shop/shop', {
+          params: {
+            keyword: 'admin@nle-tech.com',
+            password: '123456'
+          }
+        })
+        .then(res => {
+          if (res.ret) {
+            console.log(res.data)
+          }
+        })
+    },
     // 注销
     onLoyout() {
       this.$confirm(this.$t('您确定要退出登录吗'), this.$t('提示'), {

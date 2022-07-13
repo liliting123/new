@@ -19,6 +19,9 @@ Vue.use(elementUI, {
 })
 
 Vue.use(axios)
+// 初始化 token
+store.commit('token/initToken')
+store.commit('initLang')
 
 Vue.config.productionTip = false
 

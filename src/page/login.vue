@@ -30,6 +30,7 @@
                   v-model="password"
                   :placeholder="$t('请输入密码')"
                   class="input"
+                  type="password"
                 ></el-input>
                 <img
                   class="passwordImg"

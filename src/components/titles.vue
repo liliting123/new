@@ -136,7 +136,10 @@ export default {
           })
         }
         this.active = activePath
-        this.$router.push(activePath)
+        if (!this.$route.path.includes(activePath)) {
+          this.$router.push(activePath)
+        }
+
         this.tabList = tabs.filter(tab => tab.path !== targetPath)
       }
     },

@@ -17,7 +17,7 @@ const whiteList = ['Login', 'NotFound'] // 不重定向白名单
 
 export default router => {
   return (to, from, next) => {
-    if (localStorage.getItem('TOKEN')) {
+    if (store.state.token.token) {
       // 判断是否有token
       if (to.path.toLowerCase() === '/login') {
         next({ path: '/' })
