@@ -26,7 +26,7 @@
               :value="item.value"
             ></el-option>
           </el-select>
-          <el-button slot="append">{{ $t('搜索') }}</el-button>
+          <el-button slot="append" @click="getList()">{{ $t('搜索') }}</el-button>
         </el-input>
       </div>
     </search-list>
@@ -41,10 +41,8 @@
             <span class="table_index">{{ scope.$index + 1 }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="name" :label="$t('员工组名称')" width="180">
-        </el-table-column>
-        <el-table-column prop="staff_count" :label="$t('员工人数')" width="180">
-        </el-table-column>
+        <el-table-column prop="name" :label="$t('员工组名称')"> </el-table-column>
+        <el-table-column prop="staff_count" :label="$t('员工人数')"> </el-table-column>
         <el-table-column prop="updated_at" :label="$t('创建时间')"> </el-table-column>
         <el-table-column prop="remark" :label="$t('备注')"> </el-table-column>
         <el-table-column :label="$t('操作')" width="300">
@@ -52,13 +50,13 @@
             <el-button type="text" @click="viewPeople(scope.row.id)">{{
               $t('查看人员')
             }}</el-button>
-            <el-button type="text" @click="dialogAuthorityVisible = true">{{
+            <el-button type="text" @click="onDetail(scope.row.id)">{{
               $t('权限')
             }}</el-button>
-            <el-button type="text" @click="onDetail(scope.row.id)">{{
+            <el-button type="text" @click="onDetail(scope.row.id, 'edit')">{{
               $t('编辑')
             }}</el-button>
-            <el-button type="text" @click="delect(scope.row.id)">{{
+            <el-button type="text" @click="onDelect(scope.row.id)">{{
               $t('删除')
             }}</el-button>
           </template>
@@ -67,7 +65,11 @@
     </div>
     <PaginationAndButtons :pageParams="page_params" />
     <!-- 编辑 -->
-    <el-dialog :title="$t('编辑员工组')" :visible.sync="dialogFormVisible" width="30%">
+    <el-dialog
+      :title="userGroupIds ? $t('编辑员工组') : $t('添加员工组')"
+      :visible.sync="dialogFormVisible"
+      width="30%"
+    >
       <el-form :model="form" :rules="rules" label-position="top">
         <el-row :gutter="20">
           <el-col :span="24">
@@ -102,7 +104,7 @@
         <el-table-column prop="email" :label="$t('邮箱')"></el-table-column>
         <el-table-column width="100" :label="$t('操作')">
           <template slot-scope="scope">
-            <el-button type="text" @click="delect(scope.row.id)">{{
+            <el-button type="text" @click="delectPeople(scope.row.id)">{{
               $t('删除')
             }}</el-button>
           </template>
@@ -117,7 +119,7 @@
     </el-dialog>
     <el-dialog :title="$t('权限')" :visible.sync="dialogAuthorityVisible" width="40%">
       <el-tree
-        :data="data"
+        :data="permissionData"
         show-checkbox
         default-expand-all
         node-key="id"
@@ -128,9 +130,7 @@
       </el-tree>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogAuthorityVisible = false">{{ $t('取消') }}</el-button>
-        <el-button type="primary" @click="dialogAuthorityVisible = false">{{
-          $t('确定')
-        }}</el-button>
+        <el-button type="primary" @click="getCheckedKeys()">{{ $t('确定') }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -147,10 +147,10 @@ export default {
   mixins: [pagination],
   data() {
     return {
-      selectOption: '0',
+      selectOption: '1',
       selectList: [
-        { value: '0', label: '员工组名称' },
-        { value: '1', label: '备注' }
+        { value: '1', label: '员工组名称' },
+        { value: '2', label: '备注' }
       ],
       searchValue: '',
       dialogFormVisible: false,
@@ -160,19 +160,8 @@ export default {
       peopleData: [],
       form: {
         name: '',
-        remark: '',
-        shop_id: 1
+        remark: ''
       },
-      options: [
-        {
-          value: '1',
-          label: '欧亚超市一号店'
-        },
-        {
-          value: '2',
-          label: '欧亚超市二号店'
-        }
-      ],
       value: '',
       rules: {
         email: [{ required: true }],
@@ -181,54 +170,81 @@ export default {
         userGroup: [{ required: true, message: this.$t('请选择员工组') }],
         password2: [{ required: true, message: this.$t('请输入确认密码') }]
       },
-
+      userGroupIds: '',
+      powerIds: '',
       // 权限
-      data: [
+      permissionData: [
         {
-          id: 1,
-          label: '一级 1',
+          label: '后台',
           children: [
+            // {
+            //   label: '我的面板',
+            //   children: [
+            //     {
+            //       label: '首页'
+            //     }
+            //   ]
+            // },
             {
-              id: 4,
-              label: '二级 1-1',
+              label: '用户管理',
               children: [
                 {
-                  id: 9,
-                  label: '三级 1-1-1'
+                  id: 2,
+                  label: '用户列表'
                 },
                 {
-                  id: 10,
-                  label: '三级 1-1-2'
+                  id: 3,
+                  label: '用户组列表'
                 }
               ]
-            }
-          ]
-        },
-        {
-          id: 2,
-          label: '一级 2',
-          children: [
-            {
-              id: 5,
-              label: '二级 2-1'
             },
             {
-              id: 6,
-              label: '二级 2-2'
-            }
-          ]
-        },
-        {
-          id: 3,
-          label: '一级 3',
-          children: [
-            {
-              id: 7,
-              label: '二级 3-1'
+              label: '订单管理',
+              children: [
+                {
+                  id: 4,
+                  label: '订单列表'
+                },
+                {
+                  id: 5,
+                  label: '退款列表'
+                }
+              ]
             },
             {
-              id: 8,
-              label: '二级 3-2'
+              label: '商品管理',
+              children: [
+                {
+                  id: 6,
+                  label: '普通商品列表'
+                },
+                {
+                  id: 7,
+                  label: '称重商品列表'
+                },
+                {
+                  id: 8,
+                  label: '分类列表'
+                },
+                {
+                  id: 9,
+                  label: '供应商列表'
+                }
+              ]
+            },
+
+            {
+              label: '配置设置',
+              children: [
+                {
+                  id: 10,
+                  label: '店铺设置'
+                },
+                {
+                  id: 11,
+                  label: '支付设置'
+                }
+              ]
             }
           ]
         }
@@ -236,13 +252,13 @@ export default {
       defaultProps: {
         children: 'children',
         label: 'label'
-      }
+      },
+      group_permission: []
     }
   },
 
   mounted() {
     this.getList()
-    console.log('snfksd')
   },
   methods: {
     getList() {
@@ -252,44 +268,55 @@ export default {
           params: {
             page: this.page_params.page,
             size: this.page_params.size,
-            keyword: this.page_params.keyword
+            type_id: this.selectOption,
+            keyword: this.searchValue
           }
         })
         .then(res => {
           this.page_params.total = res.data.total
           this.tableData = res.data.data
-          console.log(res.data.total)
         })
         .catch(() => {
           this.tableLoading = false
         })
     },
-    onSave() {
-      this.dialogFormVisible = false
-      this.$http
-        .post('api/shop/staff_group', {
-          ...this.form
+    async onSave() {
+      const [method, url] = this.userGroupIds
+        ? ['put', `api/shop/staff_group/${this.userGroupIds}`]
+        : ['post', 'api/shop/staff_group']
+      const res = await this.$http[method](url, { ...this.form, shop_id: 1 })
+      if (res.ret) {
+        this.$notify({
+          title: this.$t('success'),
+          message: res.msg,
+          type: 'success'
         })
-        .then(res => {
-          if (res.ret) {
-            this.$notify({
-              title: this.$t('success'),
-              message: res.msg,
-              type: 'success'
-            })
-            this.getList()
-          }
-        })
+        this.form = {}
+        this.userGroupIds = ''
+        this.dialogFormVisible = false
+        this.getList()
+      }
     },
-    onDetail(id) {
-      this.$http.get(`api/shop/staff_group/${id}`, {}).then(res => {
-        console.log(res)
+    // 显示权限
+    setCheckedKeys(groupPermission) {
+      this.$refs.tree.setCheckedKeys(groupPermission)
+    },
+    onDetail(id, type) {
+      this.userGroupIds = id
+      this.$http.get(`api/shop/staff_group/${id}`).then(res => {
         this.form = res.data.staff_group
+        this.group_permission = JSON.parse(JSON.stringify(res.data.group_permission))
+        if (type === 'edit') {
+          this.dialogFormVisible = true
+        } else {
+          this.$nextTick(() => {
+            this.setCheckedKeys(this.group_permission)
+          })
+          this.dialogAuthorityVisible = true
+        }
       })
-      this.dialogFormVisible = true
     },
-    delect(id) {
-      console.log(id)
+    onDelect(id) {
       this.$confirm(this.$t('确认要删除吗?'), this.$t('提示'), {
         confirmButtonText: this.$t('确定'),
         cancelButtonText: this.$t('取消'),
@@ -307,6 +334,7 @@ export default {
       })
     },
     async viewPeople(id) {
+      this.dialogTableVisible = true
       const res = await this.$http.get(`api/shop/staff_group/${id}/staff`, {
         params: {
           page: 1,
@@ -314,11 +342,48 @@ export default {
           keyword: ''
         }
       })
-
       if (res.ret) {
         this.peopleData = res.data.data
       }
-      this.dialogTableVisible = true
+    },
+    delectPeople(id) {
+      this.$confirm(this.$t('确认要删除吗?'), this.$t('提示'), {
+        confirmButtonText: this.$t('确定'),
+        cancelButtonText: this.$t('取消'),
+        type: 'warning'
+      }).then(async () => {
+        const res = await this.$http.delete(`api/shop/staff/${id}`)
+        if (res.ret === 1) {
+          this.$notify({
+            title: this.$t('success'),
+            message: res.msg,
+            type: 'success'
+          })
+          this.viewPeople(id)
+          this.getList()
+        }
+      })
+    },
+    openPower(id) {
+      this.powerIds = id
+      this.dialogAuthorityVisible = true
+    },
+    getCheckedKeys() {
+      this.dialogAuthorityVisible = false
+      const arrs = this.$refs.tree.getCheckedKeys().filter(res => {
+        return res !== undefined
+      })
+      this.$json
+        .post(`api/shop/staff_group/${this.userGroupIds}/permission`, {
+          permission_ids: arrs
+        })
+        .then(res => {
+          this.$notify({
+            title: this.$t('success'),
+            message: res.msg,
+            type: 'success'
+          })
+        })
     }
   }
 }

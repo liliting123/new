@@ -45,7 +45,11 @@ export default router => {
         //   message: '请登录后再进行操作',
         //   type: 'error'
         // })
-        next('/login')
+        if (to.path === '/forgotPassword') {
+          next()
+        } else {
+          next('/login')
+        }
       }
     }
   }

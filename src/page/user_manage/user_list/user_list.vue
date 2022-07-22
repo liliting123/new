@@ -3,9 +3,7 @@
     <!--    筛选条件-->
     <search-list>
       <div slot="left">
-        <el-button type="primary" @click="dialogFormVisible = true">{{
-          $t('添加员工')
-        }}</el-button>
+        <el-button type="primary" @click="addUser()">{{ $t('添加员工') }}</el-button>
       </div>
       <div slot="right">
         <el-input
@@ -26,7 +24,7 @@
               :value="item.value"
             ></el-option>
           </el-select>
-          <el-button slot="append">{{ $t('搜索') }}</el-button>
+          <el-button slot="append" @click="getList()">{{ $t('搜索') }}</el-button>
         </el-input>
       </div>
     </search-list>
@@ -43,11 +41,13 @@
             <span class="table_index">{{ scope.$index + 1 }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="name" :label="$t('员工名称')" width="180">
+        <el-table-column prop="name" :label="$t('员工名称')"> </el-table-column>
+        <el-table-column prop="email" :label="$t('员工邮箱')"> </el-table-column>
+        <el-table-column :label="$t('员工组')">
+          <template slot-scope="scope">
+            {{ scope.row.group.name }}
+          </template>
         </el-table-column>
-        <el-table-column prop="email" :label="$t('员工邮箱')" width="180">
-        </el-table-column>
-        <el-table-column prop="staff_group_id" :label="$t('员工组')"> </el-table-column>
         <el-table-column prop="updated_at" :label="$t('创建时间')"> </el-table-column>
         <el-table-column prop="remark" :label="$t('备注')"> </el-table-column>
         <el-table-column :label="$t('操作')" width="200">
@@ -58,15 +58,17 @@
             <el-button type="text" @click="onDelect(scope.row.id)">{{
               $t('删除')
             }}</el-button>
-            <el-button type="text">{{ $t('允许登录') }}</el-button>
+            <el-button type="text" @click="allowLogin(scope.row)">{{
+              scope.row.status_id == 1 ? $t('禁止登录') : $t('允许登录')
+            }}</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
-    <!-- <PaginationAndButtons :pageParams="page_params" /> -->
+    <PaginationAndButtons :pageParams="page_params" />
     <!-- 编辑 -->
     <el-dialog
-      :title="$t('编辑员工')"
+      :title="userIds ? $t('编辑员工') : $t('添加员工')"
       :visible.sync="dialogFormVisible"
       width="40%"
       destroy-on-close
@@ -79,7 +81,7 @@
               <el-input
                 v-model="form.email"
                 autocomplete="off"
-                :disabled="false"
+                :disabled="userIds ? true : false"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -97,12 +99,16 @@
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('员工组')" prop="staff_group_id">
-              <el-select v-model="value" :placeholder="$t('请选择')" style="width:100%">
+              <el-select
+                v-model="form.staff_group_id"
+                :placeholder="$t('请选择用户组')"
+                style="width:100%"
+              >
                 <el-option
-                  v-for="item in options"
+                  v-for="item in userGroupSelect"
                   :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :label="item.name"
+                  :value="item.id"
                 >
                 </el-option>
               </el-select>
@@ -134,93 +140,88 @@
 </template>
 <script>
 import searchList from '@/components/searchList.vue'
-// import PaginationAndButtons from '@/components/pagination_and_buttons.vue'
-// import { pagination } from '@/mixin/pagination.js'
+import PaginationAndButtons from '@/components/pagination_and_buttons.vue'
+import pagination from '@/mixin/pagination.js'
 export default {
-  // mixins: [pagination],
+  mixins: [pagination],
   components: {
-    searchList
+    searchList,
+    PaginationAndButtons
   },
   data() {
     return {
-      selectOption: '0',
+      selectOption: '1',
       selectList: [
-        { value: '0', label: this.$t('员工名称') },
-        { value: '1', label: this.$t('邮箱') },
-        { value: '2', label: this.$t('备注') }
+        { value: '1', label: this.$t('员工名称') },
+        { value: '2', label: this.$t('邮箱') },
+        { value: '3', label: this.$t('备注') }
       ],
       searchValue: '',
-      page_params: 1,
       tableData: [],
       dialogFormVisible: false,
       form: {
         name: '',
         email: '',
         password: '',
-        staff_group_id: 1,
+        staff_group_id: '',
         password_confirmation: '',
-        remark: '',
-        shop_id: 1,
-        status_id: 2
+        remark: ''
       },
-      options: [
-        {
-          value: '1',
-          label: '欧亚超市一号店'
-        },
-        {
-          value: '2',
-          label: '欧亚超市二号店'
-        }
-      ],
-      value: '',
+      userGroupSelect: [],
       rules: {
         email: [{ required: true }],
         name: [{ required: true, message: '请输入员工名称' }],
         password: [{ required: true, message: '请输入密码' }],
-        staff_group_id: [{ required: true, message: '请选择员工组' }],
         password_confirmation: [{ required: true, message: '请输入确认密码' }]
       },
-      ids: ''
+      userIds: '',
+      is_lock: 1
     }
   },
   mounted() {
     this.getList()
+    this.getGroupList()
   },
   methods: {
-    async getList() {
+    getList() {
       this.tableLoading = true
-      const res = await this.$http
+      this.$http
         .get('api/shop/staff', {
           params: {
-            page: 1,
-            size: 10,
-            keyword: ''
+            page: this.page_params.page,
+            size: this.page_params.size,
+            type_id: this.selectOption,
+            keyword: this.searchValue
           }
         })
-        .finally(() => (this.tableLoading = false))
-      if (res.ret) {
-        this.tableData = res.data.data
-      }
+        .then(res => {
+          this.page_params.total = res.data.total
+          this.tableData = res.data.data
+        })
+        .catch(() => {
+          this.tableLoading = false
+        })
     },
     onSave() {
-      this.dialogFormVisible = false
-      if (this.ids) {
-        this.$json.put(`api/shop/staff/${this.ids}`, { ...this.form }).then(res => {
+      if (this.userIds) {
+        this.$json.put(`api/shop/staff/${this.userIds}`, { ...this.form }).then(res => {
           if (res.ret) {
-            console.log(res)
             this.$notify({
               title: this.$t('success'),
               message: res.msg,
               type: 'success'
             })
+            this.form = {}
+            this.userIds = ''
+            this.dialogFormVisible = false
             this.getList()
           }
         })
       } else {
         this.$http
           .post('/api/shop/staff', {
-            ...this.form
+            ...this.form,
+            shop_id: 1
           })
           .then(res => {
             if (res.ret) {
@@ -229,13 +230,20 @@ export default {
                 message: res.msg,
                 type: 'success'
               })
+              this.form = {}
+              this.dialogFormVisible = false
               this.getList()
             }
           })
       }
     },
+    addUser() {
+      this.userIds = ''
+      this.form = {}
+      this.dialogFormVisible = true
+    },
     onDetail(id) {
-      this.ids = id
+      this.userIds = id
       this.$http.get(`api/shop/staff/${id}`, {}).then(res => {
         this.form = res.data
       })
@@ -257,6 +265,37 @@ export default {
           this.getList()
         }
       })
+    },
+    // 获取用户组
+    getGroupList() {
+      this.tableLoading = true
+      this.$http
+        .get('api/shop/staff_group', {
+          params: {
+            list: 'all'
+          }
+        })
+        .then(res => {
+          this.userGroupSelect = res.data
+        })
+        .catch(() => {
+          this.tableLoading = false
+        })
+    },
+    allowLogin(row) {
+      const statusId = row.status_id === 1 ? 2 : 1
+      this.$json
+        .post(`api/shop/staff/check_login/${row.id}`, { status_id: statusId })
+        .then(res => {
+          if (res.ret === 1) {
+            this.$notify({
+              title: this.$t('success'),
+              message: res.msg,
+              type: 'success'
+            })
+            this.getList()
+          }
+        })
     }
   }
 }
