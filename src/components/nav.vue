@@ -2,9 +2,7 @@
   <div class="nav">
     <div
       class="toggle"
-      style="
-    width: 200px;"
-    >
+      style="width: 200px;">
       <h1>{{ $t('收银后台') }}</h1>
     </div>
     <div class="brand">
@@ -13,17 +11,19 @@
         <i class="el-icon-switch-button"></i>
       </router-link>
     </div>
-
-    <span @click="$store.state.sider_show_flag = !$store.state.sider_show_flag"
-      ><i class="el-icon-s-fold"></i
-    ></span>
-    <el-select v-model="value" :placeholder="$t('请选择')" class="shopSelect">
+    <span @click="$store.state.sider_show_flag = !$store.state.sider_show_flag">
+      <i class="el-icon-s-fold"></i>
+    </span>
+    <el-select
+      v-model="shopValue"
+      :placeholder="$t('请选择')"
+      @change="selectShop()"
+      class="shopSelect">
       <el-option
-        v-for="item in shopSelect"
-        :key="item.value"
-        :label="item.label"
-        :value="item.value"
-      >
+        v-for="item in shopList"
+        :key="item.id"
+        :label="item.name"
+        :value="item.id">
       </el-option>
     </el-select>
     <el-popover placement="bottom" width="500" trigger="click">
@@ -37,9 +37,9 @@
         </el-table-column>
         <el-table-column :label="$t('operate')">
           <template slot-scope="scope">
-            <el-button @click="onDownload(scope.row.file_url, scope.row.status)">{{
-              $t('Download')
-            }}</el-button>
+            <el-button @click="onDownload(scope.row.file_url, scope.row.status)">
+              {{$t('Download')}}
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -54,46 +54,18 @@
 export default {
   data() {
     return {
-      shopSelect: [
-        {
-          value: '1',
-          label: '欧亚超市一号店'
-        },
-        {
-          value: '2',
-          label: '欧亚超市二号店'
-        }
-      ],
-      value: '1',
+      shopList: [],
       downloads: [],
-      gridData: [
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }
-      ]
+      shopValue: +localStorage.getItem('shopId')
     }
   },
   mounted() {
     this.getShop()
   },
   methods: {
+    selectShop() {
+      localStorage.setItem('shopId', this.shopValue)
+    },
     getShop() {
       this.$http
         .get('api/shop/shop', {
@@ -101,10 +73,12 @@ export default {
             keyword: 'admin@nle-tech.com',
             password: '123456'
           }
-        })
-        .then(res => {
+        }).then(res => {
           if (res.ret) {
-            console.log(res.data)
+            this.shopList = res.data.data
+            if (!this.shopValue) {
+              this.shopValue = res.data.data[0].id
+            }
           }
         })
     },

@@ -56,7 +56,7 @@ export default {
   methods: {
     // 获取语言种类
     async getLanguage() {
-      const res = await this.$http(`api/language`)
+      const res = await this.$http.get(`api/shop/language`)
       if (res.ret) {
         this.languageArr = res.data
       }
@@ -68,7 +68,7 @@ export default {
 }
 </script>
 <style scoped lang='scss'>
-// .tabs {
-//   margin-left: 120px;
-// }
+ /*.tabs {*/
+ /*  margin-left: 120px;*/
+ /*}*/
 </style>

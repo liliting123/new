@@ -3,13 +3,15 @@
     <!--    筛选条件-->
     <search-list>
       <div slot="left">
-        <el-button type="primary" @click="dialogFormVisible = true">{{
-          $t('添加分类')
-        }}</el-button>
+        <el-button type="primary" @click="insertClass()">
+          {{$t('添加分类')}}
+        </el-button>
       </div>
       <div slot="right">
         <el-input v-model="searchValue" class="input-with-select">
-          <el-button slot="append">{{ $t('搜索') }}</el-button>
+          <el-button slot="append" @click="getList()">
+            {{ $t('搜索') }}
+          </el-button>
         </el-input>
       </div>
     </search-list>
@@ -33,50 +35,52 @@
             <span class="table_index">{{ scope.$index + 1 }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="code" :label="$t('分类名称')"> </el-table-column>
-        <el-table-column prop="name" :label="$t('是否称重分类')"> </el-table-column>
-
-        <el-table-column prop="postcode" :label="$t('创建时间')"> </el-table-column>
+        <el-table-column prop="name" :label="$t('分类名称')"> </el-table-column>
+        <el-table-column prop="weigh" :label="$t('是否称重分类')">
+          <template slot-scope="scope">
+            {{scope.row.weigh ? '是' : '否'}}
+          </template>
+        </el-table-column>
+        <el-table-column prop="created_at" :label="$t('创建时间')"> </el-table-column>
         <el-table-column :label="$t('操作')" width="200">
-          <template slot-scope="">
-            <el-button type="text" @click="dialogFormVisible = true">{{
-              $t('编辑')
-            }}</el-button>
-            <el-button type="text" @click="delect">{{ $t('删除') }}</el-button>
+          <template slot-scope="scope">
+            <el-button type="text" @click="editClassifly(scope.row)">
+              {{$t('编辑')}}
+            </el-button>
+            <el-button type="text" @click="deleteClassifly(scope.row)">{{ $t('删除') }}</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
-    <!-- <PaginationAndButtons :pageParams="page_params" /> -->
+    <PaginationAndButtons :pageParams="page_params" />
     <!-- 编辑 -->
     <el-dialog
-      :title="$t('添加分类')"
+      :title="$t(title)"
       :visible.sync="dialogFormVisible"
       width="40%"
-      destroy-on-close
-      v-if="dialogFormVisible"
-    >
-      <el-form :model="form" :rules="rules" label-position="top">
-        <el-form-item :label="$t('分类名称')" prop="classificationName">
-          <el-input v-model="form.classificationName" autocomplete="off"></el-input>
+      destroy-on-close>
+      <TabsLanguage @update="modifyLanguage" />
+      <el-form :model="form" :rules="rules" ref="form" label-position="top">
+        <el-form-item :label="$t('分类名称')" prop="name">
+          <el-input v-model="form.name[currentLanguage]"></el-input>
         </el-form-item>
-
-        <el-form-item :label="`*${$t('是否启动')}`">
+        <el-form-item :label="$t('是否称重分类')" prop="weigh">
           <el-switch
-            v-model="form.enabled"
+            v-model="form.weigh"
             :active-text="$t('是')"
             :inactive-text="$t('否')"
+            :active-value="1"
+            :inactive-value="0"
             active-color="#13ce66"
-            inactive-color="#bfcfd9"
-          >
+            inactive-color="#bfcfd9">
           </el-switch>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">{{ $t('取消') }}</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">{{
-          $t('确定')
-        }}</el-button>
+        <el-button type="primary" @click="saveClassifly('form')">
+          {{ $t('确定') }}
+        </el-button>
       </div>
     </el-dialog>
   </div>
@@ -84,79 +88,133 @@
 <script>
 import Sortable from 'sortablejs'
 import searchList from '@/components/searchList.vue'
-// import PaginationAndButtons from '@/components/pagination_and_buttons.vue'
-// import { pagination } from '@/mixin/pagination.js'
+import TabsLanguage from '@/components/tabs-language.vue'
+import PaginationAndButtons from '@/components/pagination_and_buttons.vue'
+import pagination from '@/mixin/pagination'
 export default {
-  // mixins: [pagination],
   components: {
     searchList,
-    Sortable
+    Sortable,
+    TabsLanguage,
+    PaginationAndButtons
   },
+  mixins: [pagination],
   data() {
     return {
       searchValue: '',
-      page_params: 1,
-      // tableData: [],
-      tableData: [
-        {
-          date: '1',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        },
-        {
-          date: '3',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        },
-        {
-          date: '4',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }
-      ],
+      tableData: [],
       dialogFormVisible: false,
       form: {
-        classificationName: '',
-        enabled: false
+        name: {},
+        weigh: ''
       },
-      rules: {
-        classificationName: [{ required: true }]
+      currentLanguage: '',
+      title: '',
+      categoryId: ''
+    }
+  },
+  computed: {
+    rules() {
+      const validateLanguage = (rule, value, cb) => {
+        const requiredLanguage = () => ['cn', 'en', 'nl'].includes(this.currentLanguage)
+        if (requiredLanguage) {
+          if (value.cn && value.en && value.nl) {
+            cb()
+          } else cb(new Error(this.$t('中文、英文、荷兰语为必填项')))
+        }
+        cb()
+      }
+      return {
+        name: [{ required: true, validator: validateLanguage, trigger: 'blur' }],
+        weigh: [{ required: true }]
       }
     }
   },
   mounted() {
     this.dragSort()
-    // this.getList()
+    this.getList()
   },
   updated() {},
 
   methods: {
+    // 编辑分类
+    editClassifly(row) {
+      this.title = '编辑分类'
+      this.categoryId = row.id
+      this.dialogFormVisible = true
+      this.$http.get(`api/shop/category/${row.id}`).then(res => {
+        this.form = res.data
+      })
+    },
+    // 添加或编辑分类
+    saveClassifly(form) {
+      let api
+      this.title === '添加分类' ? api = this.$http.post('api/shop/category', {
+        ...this.form,
+        shop_id: localStorage.getItem('shopId')
+      }) : api = this.$http.put(`api/shop/category/${this.categoryId}`, {
+        name: this.form.name,
+        weigh: this.form.weigh
+      })
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          api.then(res => {
+            if (res.ret) {
+              this.$notify({
+                title: this.$t('成功'),
+                type: 'success',
+                message: this.$t('添加成功')
+              })
+              this.dialogFormVisible = false
+              this.form = {}
+              this.form.name = {}
+              this.getList()
+            }
+          })
+        } else {
+          return false
+        }
+      })
+    },
+    // 获取列表数据
     async getList() {
-      const res = await this.$http.get(`api/countries`)
-      console.log(res)
-      if (res.ret === 1) {
-        this.tableData = res.data
+      this.page_params.keyword = this.searchValue
+      const res = await this.$http.get(`api/shop/category`, {
+        params: {
+          page: this.page_params.page,
+          size: this.page_params.size,
+          keyword: this.page_params.keyword
+        }
+      })
+      if (res.ret) {
+        this.page_params.total = res.data.total
+        this.tableData = res.data.data
       }
     },
-    delect() {
+    // 删除分类
+    deleteClassifly(row) {
       this.$confirm(this.$t('确认要删除吗?'), this.$t('提示'), {
         confirmButtonText: this.$t('确定'),
         cancelButtonText: this.$t('取消'),
         type: 'warning'
-      })
-        .then(() => {
-          this.$notify({
-            title: this.$t('成功'),
-            type: 'success',
-            message: this.$t('删除成功')
-          })
+      }).then(() => {
+        this.$http.delete(`api/shop/category/${row.id}`).then(res => {
+          if (res.ret) {
+            this.$notify({
+              title: this.$t('成功'),
+              type: 'success',
+              message: this.$t('删除成功')
+            })
+            this.getList()
+          }
         })
-        .catch(() => {})
+      }).catch(() => {})
+    },
+    insertClass() {
+      this.dialogFormVisible = true
+      this.title = '添加分类'
+      this.form = {}
+      this.form.name = {}
     },
     // 拖拽排序
     dragSort() {
@@ -192,6 +250,9 @@ export default {
           }
         }
       })
+    },
+    modifyLanguage(language) {
+      this.currentLanguage = language
     }
   }
 }

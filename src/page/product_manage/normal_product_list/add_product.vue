@@ -3,13 +3,13 @@
     <div class="info-top">
       <div class="title">{{ $t('基本信息') }}</div>
       <div class="nav">
-        <!--        <tabsLanguage></tabsLanguage>-->
+        <TabsLanguage :marginLeft="20" @update="modifyLanguage" />
       </div>
       <div class="form-content">
         <el-form
           ref="form"
           :model="form"
-          :rules="rules"
+          :rules="rulesInfo"
           label-width="80px"
           size="small"
           label-position="top"
@@ -17,44 +17,57 @@
           <el-row :gutter="20">
             <el-col :span="6">
               <el-form-item :label="`${$t('商品名称')}:`" prop="name">
-                <el-input v-model="form.name"></el-input>
+                <el-input v-model="form.name[currentLanguage]"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8" :offset="6">
-              <el-form-item :label="`${$t('是否有会员价')}:`">
-                <el-switch v-model="form.delivery"></el-switch>
+              <el-form-item :label="`${$t('是否有会员价')}:`" prop="vip_special">
+                <el-switch
+                  v-model="form.vip_special"
+                  :active-value="1"
+                  :inactive-value="0">
+                </el-switch>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row :gutter="20">
             <el-col :span="6">
-              <el-form-item :label="`${$t('商品分类')}:`">
-                <el-select v-model="form.region" :label="$t('请选择分类')">
-                  <el-option label="区域一" value="shanghai"></el-option>
-                  <el-option label="区域二" value="beijing"></el-option>
+              <el-form-item :label="`${$t('商品分类')}:`" prop="category_id">
+                <el-select v-model="form.category_id" :placeholder="$t('请选择分类')">
+                  <el-option
+                    v-for="item in categoryList"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id">
+                  </el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="8" :offset="6">
-              <el-form-item :label="`${$t('商品图片')}:`">
+              <el-form-item :label="`${$t('商品图片')}:`" prop="cover">
                 <el-upload
                   class="upload-demo"
-                  action="https://jsonplaceholder.typicode.com/posts/"
-                  multiple
-                  :limit="3"
-                >
+                  action="https://dev-shouyin-api.nle-tech.com/api/shop/upload/image"
+                  name="image"
+                  :on-success="uploadSuccess"
+                  :show-file-list="false">
                   <el-button size="small">{{ $t('点击上传') }}</el-button>
                   <span>{{ `（${$t('建议尺寸')} 500*500px）` }}</span>
                 </el-upload>
+                <img width="100px" height="100px" :src="form.cover"/>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row :gutter="20">
             <el-col :span="6">
-              <el-form-item :label="`${$t('分类标签')}:`">
-                <el-select v-model="form.region">
-                  <el-option label="区域一" value="shanghai"></el-option>
-                  <el-option label="区域二" value="beijing"></el-option>
+              <el-form-item :label="`${$t('分类标签')}:`" prop="label">
+                <el-select v-model="form.label">
+                  <el-option
+                    v-for="item in labelList"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id">
+                  </el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -67,81 +80,93 @@
         <span>{{ $t('规格信息') }}</span>
       </div>
       <div class="table">
-        <el-form ref="specForm" :model="specForm">
+        <el-form :model="form" :rules="rulesSpec" ref="formSpec">
           <el-table
             :header-cell-style="{ background: '#F7F7F7' }"
-            :data="specForm.tableData"
+            :data="form.spec"
             style="width: 100%"
           >
-            <el-table-column prop="date" label="#" width="80">
+            <el-table-column label="#" width="80">
               <template slot-scope="scope">
                 <span class="table_index">{{ scope.$index + 1 }}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="name" :label="`*${$t('商品编码')}`" width="180">
+            <el-table-column prop="code" :label="`*${$t('商品编码')}`">
               <template slot-scope="scope">
-                <el-input size="small"></el-input>
+                <el-form-item :prop="'spec.'+scope.$index+'.code'" :rules="rulesSpec.code">
+                  <el-input size="small" v-model="scope.row.code"></el-input>
+                </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column prop="address" :label="`*${$t('EAN')}`">
+            <el-table-column prop="ean" :label="`*${$t('EAN')}`">
               <template slot-scope="scope">
-                <el-input size="small"></el-input>
+                <el-form-item :prop="'spec.'+scope.$index+'.ean'" :rules="rulesSpec.ean">
+                  <el-input size="small" v-model="scope.row.ean"></el-input>
+                </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column prop="date" :label="`*${$t('供应商')}`" width="180">
+            <el-table-column prop="supplier_id" :label="`*${$t('供应商')}`">
               <template slot-scope="scope">
-                <el-select v-model="value" size="small">
-                  <el-option
-                    v-for="item in specForm.options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  >
-                  </el-option>
-                </el-select>
+                <el-form-item :prop="'spec.'+scope.$index+'.supplier_id'" :rules="rulesSpec.supplier_id">
+                  <el-select v-model="scope.row.supplier_id" :placeholder="$t('请选择供应商')">
+                    <el-option
+                      v-for="item in supplierList"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column prop="name" :label="`*${$t('规格')}`" width="180">
+            <el-table-column prop="name" :label="`*${$t('规格')}`">
               <template slot-scope="scope">
-                <el-input size="small"></el-input>
+                <el-form-item :prop="'spec.'+scope.$index+'.name'" :rules="rulesSpec.name">
+                  <el-input size="small" v-model="scope.row.name"></el-input>
+                </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column prop="address" :label="`*${$t('价格')}`">
+            <el-table-column prop="price" :label="`*${$t('价格')}`">
               <template slot-scope="scope">
-                <el-input size="small"></el-input>
+                <el-form-item :prop="'spec.'+scope.$index+'.price'" :rules="rulesSpec.price">
+                  <el-input size="small" v-model="scope.row.price"></el-input>
+                </el-form-item>
               </template>
             </el-table-column>
             <el-table-column
-              v-if="form.delivery"
-              prop="date"
+              v-if="form.vip_special"
+              prop="vip_price"
               :label="`*${$t('会员价')}`"
-              width="180"
             >
               <template slot-scope="scope">
-                <el-input size="small"></el-input>
+                <el-form-item :prop="'spec.'+scope.$index+'.vip_price'" :rules="rulesSpec.vip_price">
+                  <el-input size="small" v-model="scope.row.vip_price"></el-input>
+                </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column prop="name" :label="`*${$t('税率')}`" width="180">
+            <el-table-column prop="tax_rate" :label="`*${$t('税率')}`" width="180">
               <template slot-scope="scope">
-                <el-select v-model="value" size="small">
-                  <el-option
-                    v-for="item in specForm.options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  >
-                  </el-option>
-                </el-select>
+                <el-form-item :prop="'spec.'+scope.$index+'.tax_rate'" :rules="rulesSpec.tax_rate">
+                  <el-select v-model="scope.row.tax_rate" size="small">
+                    <el-option label="0%" value="1"></el-option>
+                    <el-option label="9%" value="2"></el-option>
+                    <el-option label="21%" value="3"></el-option>
+                  </el-select>
+                </el-form-item>
               </template>
             </el-table-column>
             <el-table-column prop="name" :label="$t('操作')" width="100px">
               <template slot-scope="scope">
-                <el-button type="text" size="small" @click="showEAN()">{{
-                  $t('EAN')
-                }}</el-button>
-                <el-button type="text" size="small" @click="deleteRow(scope.$index)">{{
-                  $t('删除')
-                }}</el-button>
+                <el-button
+                  type="text"
+                  size="small"
+                  v-if="productId"
+                  @click="showEAN()">
+                  {{ $t('EAN') }}
+                </el-button>
+                <el-button type="text" size="small" @click="deleteRow(scope.$index)">
+                  {{ $t('删除') }}
+                </el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -156,19 +181,23 @@
         <span>{{ $t('WMS分类（选择后将商品同步至WMS）') }}</span>
       </div>
       <div style="padding: 15px">
-        <el-select v-model="value" size="small">
+        <el-select v-model="form.wms_category_id" size="small">
           <el-option
-            v-for="item in specForm.options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          >
+            v-for="item in wmsList"
+            :key="item.id"
+            :label="item.name_cn"
+            :value="item.id">
           </el-option>
         </el-select>
       </div>
     </div>
     <div class="bottom-btn">
-      <el-button type="primary" style="width: 180px">{{ $t('保存') }}</el-button>
+      <el-button
+        type="primary"
+        style="width: 180px"
+        @click="insertProduct('form','formSpec',)">
+        {{ $t('保存') }}
+      </el-button>
     </div>
     <!--    EAN弹窗-->
     <addEANDialog :visible.sync="dialogENATable" />
@@ -176,91 +205,196 @@
 </template>
 
 <script>
-// import tabsLanguage from '@/components/tabs-language.vue'
+import TabsLanguage from '@/components/tabs-language.vue'
 import addEANDialog from './components/addEANDialog.vue'
 export default {
   name: 'add_product',
   components: {
-    // tabsLanguage,
+    TabsLanguage,
     addEANDialog
   },
   data() {
     return {
-      specForm: {
-        tableData: [
-          {
-            date: '2016-05-02',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1518 弄'
-          },
-          {
-            date: '2016-05-04',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1517 弄'
-          },
-          {
-            date: '2016-05-01',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1519 弄'
-          },
-          {
-            date: '2016-05-03',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1516 弄'
-          }
-        ],
-        options: [
-          {
-            value: '选项1',
-            label: '黄金糕'
-          },
-          {
-            value: '选项2',
-            label: '双皮奶'
-          },
-          {
-            value: '选项3',
-            label: '蚵仔煎'
-          },
-          {
-            value: '选项4',
-            label: '龙须面'
-          },
-          {
-            value: '选项5',
-            label: '北京烤鸭'
-          }
-        ]
-      },
-      value: '',
+      labelList: [
+        {id: 1, name: '普通'},
+        {id: 2, name: '烟酒'},
+        {id: 3, name: '酒精类'}
+      ],
       form: {
-        name: '',
-        region: '',
-        delivery: false
+        name: {}, // 商品名称
+        shop_id: localStorage.getItem('shopId'), // 店铺账号id
+        category_id: '', // 分类id
+        label: '', // 分类标签
+        cover: '', // 封面图
+        vip_special: false, // 是否vip价格
+        wms_category_id: '', // wms分类id
+        spec: [{
+          supplier_id: '', // 供应商id
+          code: '', // 商品编号
+          name: '', // 规格名称
+          price: '', // 价格
+          vip_price: 0, // vip价格
+          tax_rate: '', // 汇率
+          ean: '' // EAN
+        }] // 商品规格数组
       },
-      rules: {
-        name: [{ required: true, message: '请填写商品名称', trigger: 'change' }]
+      fileList: [],
+      dialogENATable: false, // EAN弹窗
+      rulesSpec: {
+        code: [{ required: true, message: '请输入商品编码', trigger: 'blur' }],
+        supplier_id: [{ required: true, message: '请选择供应商', trigger: 'change' }],
+        name: [{ required: true, message: '请输入规格', trigger: 'blur' }],
+        price: [{ required: true, message: '请输入价格', trigger: 'blur' }],
+        vip_price: [{ required: true, message: '请输入vip价格', trigger: 'blur' }],
+        tax_rate: [{ required: true, message: '请选择税率', trigger: 'change' }],
+        ean: [{ required: true, message: '请输入EAN', trigger: 'blur' }]
       },
-      dialogENATable: false // EAN弹窗
+      currentLanguage: '',
+      categoryList: [], // 分类下拉
+      supplierList: [], // 供应商下拉
+      wmsList: [], // wms分类
+      productId: this.$route.query.id // 商品id
+    }
+  },
+  computed: {
+    // 基本信息必填校验
+    rulesInfo() {
+      // 商品图片自定义校验
+      const validataImg = (rule, value, callback) => {
+        console.log(this.form.cover, 'this.form.cover')
+        if (!this.form.cover) {
+          callback(new Error('请上传商品图片'))
+        } else {
+          callback()
+        }
+      }
+      // 商品分类自定义校验
+      const validataCategory = (rule, value, callback) => {
+        if (!this.form.category_id) {
+          callback(new Error('请选择商品分类'))
+        } else {
+          callback()
+        }
+      }
+      // 分类标签自定义校验
+      const validataLabel = (rule, value, callback) => {
+        if (!this.form.label) {
+          callback(new Error('请选择分类标签'))
+        } else {
+          callback()
+        }
+      }
+      const validateLanguage = (rule, value, cb) => {
+        const requiredLanguage = () => ['cn', 'en', 'nl'].includes(this.currentLanguage)
+        if (requiredLanguage) {
+          if (value.cn && value.en && value.nl) {
+            cb()
+          } else cb(new Error(this.$t('中文、英文、荷兰语为必填项')))
+        }
+        cb()
+      }
+      return {
+        name: [{ required: true, validator: validateLanguage, trigger: 'blur' }],
+        category_id: [{ required: true, validator: validataCategory, trigger: 'change' }],
+        vip_special: [{ required: true, message: '请选择是否有会员价', trigger: 'blur' }],
+        label: [{ required: true, validator: validataLabel, trigger: 'change' }],
+        cover: [{ required: true, validator: validataImg, trigger: 'change' }]
+      }
+    }
+  },
+  created() {
+    this.getClassList()
+    this.getSupplierList()
+    this.getWMSCategoryList()
+    if (this.productId) {
+      this.getProductInfo()
     }
   },
   methods: {
+    // 编辑回显
+    getProductInfo() {
+      this.$http.get(`api/shop/goods/${this.productId}`).then(res => {
+        if (res.ret) {
+          this.form = res.data
+        }
+      })
+    },
+    // 保存商品
+    insertProduct(form, formSpec) {
+      Promise.all([
+        this.$refs[form].validate(),
+        this.$refs[formSpec].validate()
+      ]).then(() => {
+        // this.form.spec = JSON.stringify(this.form.spec)
+        this.$http.post('api/shop/goods', {
+          ...this.form
+        }).then(res => {
+          if (res.ret) {
+            this.$notify({
+              title: this.$t('添加成功'),
+              message: res.msg,
+              type: 'success'
+            })
+            this.$router.push({path: '/product_manage/normal_product_list'})
+          }
+        })
+      })
+    },
+    // 获取分类下拉列表
+    async getClassList() {
+      const res = await this.$http.get(`api/shop/category`, {
+        params: {
+          weigh: 0
+        }
+      })
+      if (res.ret) {
+        this.categoryList = res.data.data
+      }
+    },
+    // 获取供应商下拉列表
+    async getSupplierList() {
+      const res = await this.$http.get(`api/shop/supplier`, {
+        params: {
+          switch: 1
+        }
+      })
+      if (res.ret) {
+        this.supplierList = res.data.data
+      }
+    },
+    // 获取WMS分类列表
+    getWMSCategoryList() {
+      this.$http.get('api/shop/get_wms_category').then(res => {
+        if (res.ret) {
+          this.wmsList = res.data.data
+        }
+      })
+    },
     // EAN弹窗
     showEAN() {
-      console.log(111)
       this.dialogENATable = true
     },
     // 添加规格
     addSpec() {
-      this.specForm.tableData.push({
-        date: '',
-        name: '',
-        address: ''
+      this.form.spec.push({
+        supplier_id: '', // 供应商id
+        code: '', // 商品编号
+        name: '', // 规格名称
+        price: '', // 价格
+        vip_price: '', // vip价格
+        tax_rate: '' // 汇率
       })
+    },
+    modifyLanguage(language) {
+      this.currentLanguage = language
     },
     // 删除行
     deleteRow(index) {
-      this.specForm.tableData.splice(index, 1)
+      this.form.spec.splice(index, 1)
+    },
+    // 图片上传成功时触发的钩子
+    uploadSuccess(response, file, fileList) {
+      this.form.cover = response.data.path
     }
   }
 }
@@ -278,6 +412,10 @@ export default {
     border-bottom: 1px solid rgba(196, 196, 196, 0.76);
     display: flex;
     justify-content: space-between;
+  }
+  .nav {
+    width: 430px;
+    margin-top: 15px;
   }
   .form-content {
     padding: 15px;

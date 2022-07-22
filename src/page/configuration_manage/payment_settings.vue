@@ -4,21 +4,24 @@
       <el-table
         :data="tableData"
         :header-cell-style="{ background: '#F7F7F7' }"
-        style="width: 100%"
-      >
+        style="width: 100%">
         <el-table-column width="50">
           <template slot-scope="scope">
             <span class="table_index">{{ scope.$index + 1 }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="date" :label="$t('支付方式')"> </el-table-column>
+        <el-table-column prop="name" :label="$t('支付方式')"> </el-table-column>
         <el-table-column prop="name" :label="$t('支付图标')"> </el-table-column>
-        <el-table-column prop="address" :label="$t('是否开启')"> </el-table-column>
+        <el-table-column prop="switch" :label="$t('是否开启')">
+          <template slot-scope="scope">
+            {{scope.row.switch ? '是' : '否'}}
+          </template>
+        </el-table-column>
         <el-table-column :label="$t('操作')" width="150">
           <template>
-            <el-button type="text" @click="dialogFormVisible = true">{{
-              $t('编辑')
-            }}</el-button>
+            <el-button type="text" @click="dialogFormVisible = true">
+              {{$t('编辑')}}
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -27,7 +30,6 @@
           <el-form-item :label="$t('支付名称')" prop="payName">
             <el-input v-model="form.payName" autocomplete="off"></el-input>
           </el-form-item>
-
           <el-form-item :label="`*${$t('支付图标')}`">
             <el-upload action="#">
               <el-button>{{ $t('点击上传') }}</el-button>
@@ -42,17 +44,18 @@
               v-model="enabled"
               :active-text="$t('是')"
               :inactive-text="$t('否')"
+              :active-value="1"
+              :inactive-value="0"
               active-color="#13ce66"
-              inactive-color="#bfcfd9"
-            >
+              inactive-color="#bfcfd9">
             </el-switch>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">{{ $t('取消') }}</el-button>
-          <el-button type="primary" @click="dialogFormVisible = false">{{
-            $t('确定')
-          }}</el-button>
+          <el-button type="primary" @click="dialogFormVisible = false">
+            {{$t('确定')}}
+          </el-button>
         </div>
       </el-dialog>
     </div>
@@ -65,34 +68,26 @@ export default {
     return {
       enabled: false,
       dialogFormVisible: false,
-      tableData: [
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        },
-        {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        },
-        {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }
-      ],
+      tableData: [],
       form: {
         payName: ''
       },
       rules: {
         payName: [{ required: true }]
       }
+    }
+  },
+  created() {
+    this.getPaymentList()
+  },
+  methods: {
+    // 获取支付列表
+    getPaymentList() {
+      this.$http.get('api/shop/payment').then(res => {
+        if (res.ret) {
+          this.tableData = res.data.data
+        }
+      })
     }
   }
 }

@@ -69,7 +69,7 @@
       </div>
       <el-table
         :header-cell-style="{ background: '#F7F7F7' }"
-        :data="tableData"
+        :data="tableInfo"
         style="width: 100%;margin-bottom: 20px;"
         row-key="id"
         border
@@ -78,26 +78,26 @@
       >
         <el-table-column type="selection" width="55"> </el-table-column>
         <el-table-column type="expand">
-          <template slot-scope="props">
+          <template slot-scope="scope">
             <el-table
               :header-cell-style="{ background: '#F7F7F7' }"
-              :data="tableData"
+              :data="scope.row.spec"
               border
               style="width: 80%;margin-left: 48px"
             >
               <el-table-column type="selection" width="55"></el-table-column>
               <el-table-column width="50" label="#">
                 <template slot-scope="scope">
-                  <span class="table_index">1</span>
+                  <span class="table_index">{{scope.$index + 1}}</span>
                 </template>
               </el-table-column>
-              <el-table-column prop="name" :label="$t('商品编码')"></el-table-column>
+              <el-table-column prop="code" :label="$t('商品编码')"></el-table-column>
               <el-table-column prop="name" :label="$t('EAN')"></el-table-column>
-              <el-table-column prop="address" :label="$t('供应商')"> </el-table-column>
+              <el-table-column prop="supplier_id" :label="$t('供应商')"> </el-table-column>
               <el-table-column prop="name" :label="$t('规格')"> </el-table-column>
-              <el-table-column prop="address" :label="$t('价格')"> </el-table-column>
-              <el-table-column prop="name" :label="$t('会员价')"> </el-table-column>
-              <el-table-column prop="address" :label="$t('税率')"> </el-table-column>
+              <el-table-column prop="price" :label="$t('价格')"> </el-table-column>
+              <el-table-column prop="vip_price" :label="$t('会员价')"> </el-table-column>
+              <el-table-column prop="tax_rate" :label="$t('税率')"> </el-table-column>
               <el-table-column prop="address" :label="$t('BBD')"> </el-table-column>
               <el-table-column prop="address" :label="$t('可售库存')"> </el-table-column>
               <el-table-column prop="address" :label="$t('已售库存')">
@@ -108,21 +108,25 @@
             </el-table>
           </template>
         </el-table-column>
-        <el-table-column prop="date" :label="$t('商品名称')" width="180">
+        <el-table-column prop="name" :label="$t('商品名称')" width="150">
         </el-table-column>
-        <el-table-column prop="name" :label="$t('商品分类')"> </el-table-column>
-        <el-table-column prop="address" :label="$t('分类标签')"> </el-table-column>
-        <el-table-column prop="date" :label="$t('商品图片')"> </el-table-column>
+        <el-table-column prop="category.name" :label="$t('商品分类')"> </el-table-column>
+        <el-table-column prop="label" :label="$t('分类标签')"> </el-table-column>
+        <el-table-column prop="cover" :label="$t('商品图片')" width="110">
+          <template slot-scope="scope">
+            <img width="100px" height="100px" :src="scope.row.cover">
+          </template>
+        </el-table-column>
         <el-table-column prop="name" :label="$t('可售库存')"> </el-table-column>
         <el-table-column prop="address" :label="$t('已售库存')">
           <template slot-scope="scope">
             <span style="color: #1a79eb" @click="soldRecords()">50</span>
           </template>
         </el-table-column>
-        <el-table-column prop="date" :label="$t('创建时间')"> </el-table-column>
-        <el-table-column prop="address" :label="$t('操作')" width="150">
+        <el-table-column prop="created_at" :label="$t('创建时间')"> </el-table-column>
+        <el-table-column :label="$t('操作')" width="150">
           <template slot-scope="scope">
-            <el-button type="text" size="small">{{ $t('编辑') }}</el-button>
+            <el-button type="text" size="small" @click="editProduct(scope.row.id)">{{ $t('编辑') }}</el-button>
             <el-button type="text" size="small">{{ $t('删除') }}</el-button>
           </template>
         </el-table-column>
@@ -174,25 +178,28 @@ export default {
           label: '北京烤鸭'
         }
       ],
+      tableInfo: [],
       value: '',
       input1: '',
       input2: '',
       input3: '',
       select: '',
-      tableData: [
-        {
-          id: 1,
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }
-      ],
       dialogPassword: false, // 结算密码弹窗
       dialogSoldRecords: false, // 已售库存弹窗
       dialogPullGoods: false // 拉取后台商品弹窗
     }
   },
+  created() {
+    this.getList()
+  },
   methods: {
+    getList() {
+      this.$http.get('api/shop/goods').then(res => {
+        if (res.ret) {
+          this.tableInfo = res.data.data
+        }
+      })
+    },
     // 已售库存弹窗
     soldRecords() {
       this.dialogSoldRecords = true
@@ -204,6 +211,15 @@ export default {
     // 拉取后台商品弹窗
     pullGoods() {
       this.dialogPullGoods = true
+    },
+    // 编辑商品
+    editProduct(id) {
+      this.$router.push({
+        path: 'normal_product_list/add_product',
+        query: {
+          id: id
+        }
+      })
     },
     // 跳转到添加商品页面
     addProduct() {

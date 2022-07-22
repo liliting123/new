@@ -22,7 +22,7 @@ function interceptorsRequestSuccess(config) {
   store.commit('switchBtnLoading', { status: true })
   config.headers.Authorization = store.state.token.token
   config.headers.language = store.state.lang
-  config.headers['shop-id'] = 1
+  config.headers['shop-id'] = localStorage.getItem('shopId')
   return config
 }
 

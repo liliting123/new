@@ -3,13 +3,13 @@
     <!--    筛选条件-->
     <search-list>
       <div slot="left">
-        <el-button type="primary" @click="dialogFormVisible = true">
-          {{ $t('添加供应商') }}</el-button
-        >
+        <el-button type="primary" @click="addSupplier()">
+          {{ $t('添加供应商') }}
+        </el-button>
       </div>
       <div slot="right">
         <el-input v-model="searchValue" class="input-with-select">
-          <el-button slot="append">{{ $t('搜索') }}</el-button>
+          <el-button slot="append" @click="getList()">{{ $t('搜索') }}</el-button>
         </el-input>
       </div>
     </search-list>
@@ -26,39 +26,45 @@
             <span class="table_index">{{ scope.$index + 1 }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="date" :label="$t('供应商名称')"> </el-table-column>
-        <el-table-column prop="name" :label="$t('是否启动')"> </el-table-column>
-
-        <el-table-column prop="address" :label="$t('创建时间')"> </el-table-column>
+        <el-table-column prop="name" :label="$t('供应商名称')"> </el-table-column>
+        <el-table-column prop="switch" :label="$t('是否启动')">
+          <template slot-scope="scope">
+            {{scope.row.switch ? '是' : '否'}}
+          </template>
+        </el-table-column>
+        <el-table-column prop="created_at" :label="$t('创建时间')"> </el-table-column>
         <el-table-column :label="$t('操作')" width="200">
-          <template slot-scope="">
-            <el-button type="text" @click="dialogFormVisible = true">{{
-              $t('编辑')
-            }}</el-button>
-            <el-button type="text" @click="delect">{{ $t('删除') }}</el-button>
+          <template slot-scope="scope">
+            <el-button type="text" @click="editSupplier(scope.row)">
+              {{$t('编辑')}}
+            </el-button>
+            <el-button type="text" @click="deleteSupplier(scope.row)">
+              {{ $t('删除') }}
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
-    <!-- <PaginationAndButtons :pageParams="page_params" /> -->
+    <PaginationAndButtons :pageParams="page_params" />
     <!-- 编辑 -->
     <el-dialog
-      :title="$t('添加供应商')"
+      :title="$t(title)"
       :visible.sync="dialogFormVisible"
       width="40%"
       destroy-on-close
       v-if="dialogFormVisible"
     >
-      <el-form :model="form" :rules="rules" label-position="top">
-        <el-form-item :label="$t('供应商名称')" prop="supplierName">
-          <el-input v-model="form.supplierName" autocomplete="off"></el-input>
+      <el-form :model="form" :rules="rules" ref="form" label-position="top">
+        <el-form-item :label="$t('供应商名称')" prop="name">
+          <el-input v-model="form.name"></el-input>
         </el-form-item>
-
-        <el-form-item :label="`*${$t('是否启动')}`">
+        <el-form-item :label="$t('是否启动')" prop="switch">
           <el-switch
-            v-model="form.enabled"
+            v-model="form.switch"
             :active-text="$t('是')"
             :inactive-text="$t('否')"
+            :active-value="1"
+            :inactive-value="0"
             active-color="#13ce66"
             inactive-color="#bfcfd9"
           >
@@ -67,7 +73,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">{{ $t('取消') }}</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">{{
+        <el-button type="primary" @click="saveSupplier('form')">{{
           $t('确定')
         }}</el-button>
       </div>
@@ -76,67 +82,114 @@
 </template>
 <script>
 import searchList from '@/components/searchList.vue'
-// import PaginationAndButtons from '@/components/pagination_and_buttons.vue'
-// import { pagination } from '@/mixin/pagination.js'
+import PaginationAndButtons from '@/components/pagination_and_buttons.vue'
+import pagination from '@/mixin/pagination'
 export default {
-  // mixins: [pagination],
+  mixins: [pagination],
   components: {
-    searchList
+    searchList,
+    PaginationAndButtons
   },
   data() {
     return {
       searchValue: '',
-      page_params: 1,
-      tableData: [
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        },
-        {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        },
-        {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }
-      ],
+      tableData: [],
       dialogFormVisible: false,
       form: {
-        supplierName: '',
-        enabled: false
+        name: '',
+        switch: false
       },
+      title: '',
       rules: {
-        supplierName: [{ required: true }]
-      }
+        name: [{ required: true, message: '此项为必填', trigger: 'blur' }],
+        switch: [{ required: true }]
+      },
+      categoryId: ''
     }
   },
-  mounted() {},
-  updated() {},
-
+  created() {
+    this.getList()
+  },
   methods: {
-    delect() {
+    // 添加或编辑供应商
+    saveSupplier(form) {
+      let api
+      this.title === '添加供应商' ? api = this.$http.post('api/shop/supplier', {
+        ...this.form,
+        shop_id: localStorage.getItem('shopId')
+      }) : api = this.$http.put(`api/shop/supplier/${this.categoryId}`, {
+        name: this.form.name,
+        switch: this.form.switch
+      })
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          api.then(res => {
+            if (res.ret) {
+              this.$notify({
+                title: this.$t('成功'),
+                type: 'success',
+                message: this.$t('添加成功')
+              })
+              this.dialogFormVisible = false
+              this.form = {}
+              this.getList()
+            }
+          })
+        } else {
+          return false
+        }
+      })
+    },
+    // 点击编辑供应商
+    editSupplier(row) {
+      this.categoryId = row.id
+      this.title = '编辑供应商'
+      this.dialogFormVisible = true
+      this.$http.get(`api/shop/supplier/${row.id}`).then(res => {
+        if (res.ret) {
+          this.form = res.data
+        }
+      })
+    },
+    // 点击添加供应商
+    addSupplier () {
+      this.title = '添加供应商'
+      this.dialogFormVisible = true
+      this.form = {}
+    },
+    // 删除
+    deleteSupplier(row) {
       this.$confirm(this.$t('确认要删除吗?'), this.$t('提示'), {
         confirmButtonText: this.$t('确定'),
         cancelButtonText: this.$t('取消'),
         type: 'warning'
-      })
-        .then(() => {
-          this.$notify({
-            title: this.$t('成功'),
-            type: 'success',
-            message: this.$t('删除成功')
-          })
+      }).then(() => {
+        this.$http.delete(`api/shop/supplier/${row.id}`).then(res => {
+          if (res.ret) {
+            this.$notify({
+              title: this.$t('成功'),
+              type: 'success',
+              message: this.$t('删除成功')
+            })
+            this.getList()
+          }
         })
-        .catch(() => {})
+      }).catch(() => {})
+    },
+    // 获取供应商列表
+    async getList() {
+      this.page_params.keyword = this.searchValue
+      const res = await this.$http.get(`api/shop/supplier`, {
+        params: {
+          page: this.page_params.page,
+          size: this.page_params.size,
+          keyword: this.page_params.keyword
+        }
+      })
+      if (res.ret) {
+        this.page_params.total = res.data.total
+        this.tableData = res.data.data
+      }
     }
   }
 }
