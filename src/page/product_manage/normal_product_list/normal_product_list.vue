@@ -132,6 +132,7 @@
         </el-table-column>
       </el-table>
     </div>
+    <PaginationAndButtons :pageParams="page_params" />
     <!--  拉取后台商品弹窗-->
     <pullGoodsDialog :visible.sync="dialogPullGoods" />
     <!--  结算密码弹窗-->
@@ -145,14 +146,18 @@ import searchList from '@/components/searchList.vue'
 import setPasswordDialog from './components/setPasswordDialog'
 import soldRecordsDialog from './components/soldRecordsDialog'
 import pullGoodsDialog from './components/pullGoodsDialog'
+import PaginationAndButtons from '@/components/pagination_and_buttons.vue'
+import pagination from '@/mixin/pagination'
 export default {
   name: 'normal_product_list',
   components: {
     searchList,
     setPasswordDialog,
     soldRecordsDialog,
-    pullGoodsDialog
+    pullGoodsDialog,
+    PaginationAndButtons
   },
+  mixins: [pagination],
   data() {
     return {
       value1: '',
@@ -194,15 +199,26 @@ export default {
   },
   methods: {
     getList() {
-      this.$http.get('api/shop/goods').then(res => {
+      this.$http.get('api/shop/goods', {
+        params: {
+          page: this.page_params.page,
+          size: this.page_params.size,
+          keyword: this.page_params.keyword
+        }
+      }).then(res => {
         if (res.ret) {
           this.tableInfo = res.data.data
+          this.page_params.total = res.data.total
         }
       })
     },
     // 已售库存弹窗
     soldRecords() {
       this.dialogSoldRecords = true
+    },
+    unset(arr, item, len = 1) {
+      arr.splice(item, len)
+      return arr
     },
     // 结算密码弹窗
     settlementPassword() {

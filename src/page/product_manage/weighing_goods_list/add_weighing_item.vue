@@ -78,7 +78,7 @@
                 <el-date-picker
                   v-model="form.bbd"
                   type="date"
-                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
                   placeholder="请选择保质期">
                 </el-date-picker>
               </el-form-item>
@@ -105,7 +105,7 @@
                   <el-button size="small">{{ $t('点击上传') }}</el-button>
                   <span>{{ `（${$t('建议尺寸')} 500*500px）` }}</span>
                 </el-upload>
-                <img :src="form.cover"/>
+                <img width="100" height="100" :src="form.cover"/>
               </el-form-item>
             </el-col>
           </el-row>
@@ -157,7 +157,8 @@ export default {
       rules: {
         name: [{ required: true, message: '请填写商品名称', trigger: 'change' }]
       },
-      currentLanguage: ''
+      currentLanguage: '',
+      weighProductId: this.$route.query.id // 称重商品id
     }
   },
   computed: {
@@ -197,21 +198,36 @@ export default {
     }
   },
   created() {
+    if (this.weighProductId) {
+      this.getWeighProduct()
+    }
     this.getClassList()
     this.getSupplierList()
   },
   methods: {
+    getWeighProduct() {
+      this.$http.get(`api/shop/weigh_goods/${this.weighProductId}`).then(res => {
+        if (res.ret) {
+          this.form = res.data
+        }
+      })
+    },
     // 添加称重商品
     addWeightProduct (weighForm) {
       this.$refs[weighForm].validate((valid) => {
         if (valid) {
-          this.$http.post('api/shop/weigh_goods', {
+          let api
+          this.weighProductId ? api = this.$http.put(`api/shop/weigh_goods/${this.weighProductId}`, {
             ...this.form,
             shop_id: localStorage.getItem('shopId')
-          }).then(res => {
+          }) : api = this.$http.post('api/shop/weigh_goods', {
+            ...this.form,
+            shop_id: localStorage.getItem('shopId')
+          })
+          api.then(res => {
             if (res.ret) {
               this.$notify({
-                title: this.$t('添加成功'),
+                title: res.msg,
                 message: res.msg,
                 type: 'success'
               })

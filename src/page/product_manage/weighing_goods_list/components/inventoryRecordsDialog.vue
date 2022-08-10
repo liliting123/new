@@ -7,14 +7,14 @@
   >
     <div class="top">
       <el-date-picker
-        v-model="value1"
+        v-model="time"
         type="daterange"
         range-separator="-"
         :start-placeholder="$t('开始日期')"
         :end-placeholder="$t('结束日期')"
       >
       </el-date-picker>
-      <el-select v-model="value1" :placeholder="$t('全部')">
+      <el-select v-model="type_id" :placeholder="$t('全部')">
         <el-option
           v-for="item in options"
           :key="item.value"
@@ -26,21 +26,20 @@
     </div>
     <el-table
       :header-cell-style="{ background: '#F7F7F7' }"
-      :data="tableData"
-      style="width: 100%"
-    >
+      :data="recordsData"
+      style="width: 100%">
       <el-table-column width="50">
         <template slot-scope="scope">
           <span class="table_index">{{ scope.$index + 1 }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="date" :label="$t('类型')" width="180"> </el-table-column>
-      <el-table-column prop="name" :label="$t('操作前库存')"> </el-table-column>
-      <el-table-column prop="address" :label="$t('当前库存')"> </el-table-column>
-      <el-table-column prop="date" :label="$t('操作库存')" width="180"> </el-table-column>
-      <el-table-column prop="address" :label="$t('操作人')"> </el-table-column>
-      <el-table-column prop="date" :label="$t('操作时间')" width="180"> </el-table-column>
-      <el-table-column prop="name" :label="$t('关联单号')"> </el-table-column>
+      <el-table-column prop="old_num" :label="$t('操作前库存')"> </el-table-column>
+      <el-table-column prop="new_num" :label="$t('当前库存')"> </el-table-column>
+      <el-table-column prop="num" :label="$t('操作库存')" width="180"> </el-table-column>
+      <el-table-column prop="staff.name" :label="$t('操作人')"> </el-table-column>
+      <el-table-column prop="updated_at" :label="$t('操作时间')" width="180"> </el-table-column>
+      <el-table-column prop="external_code" :label="$t('关联单号')"> </el-table-column>
     </el-table>
     <span slot="footer" class="dialog-footer">
       <el-button @click="inventoryRecords = false">{{ $t('取消') }}</el-button>
@@ -58,6 +57,9 @@ export default {
     visible: {
       type: Boolean,
       require: true
+    },
+    recordsData: {
+      type: Array
     }
   },
   computed: {
@@ -72,41 +74,18 @@ export default {
   },
   data() {
     return {
-      tableData: [
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }
-      ],
       value1: '',
       options: [
         {
-          value: '选项1',
-          label: '黄金糕'
+          value: '1',
+          label: '已售库存'
         },
         {
-          value: '选项2',
-          label: '双皮奶'
-        },
-        {
-          value: '选项3',
-          label: '蚵仔煎'
-        },
-        {
-          value: '选项4',
-          label: '龙须面'
-        },
-        {
-          value: '选项5',
-          label: '北京烤鸭'
-        }
-      ]
+          value: '2',
+          label: '编辑库存'
+        }],
+      type_id: '',
+      time: ''
     }
   },
   methods: {
