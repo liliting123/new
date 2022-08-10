@@ -221,7 +221,7 @@ export default {
         this.$http
           .post('/api/shop/staff', {
             ...this.form,
-            shop_id: 1
+            shop_id: localStorage.getItem('shopId')
           })
           .then(res => {
             if (res.ret) {

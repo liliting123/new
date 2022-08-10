@@ -1,9 +1,9 @@
 const baseUrl = location.hostname
 let baseApi
 switch (baseUrl) {
-  case 'dev-adminshop.nle-tech.com':
+  case 'dev-adminshouyin.nle-tech.com':
     baseApi = {
-      BASE_API_URL: 'https://dev-nl-mes-api.nle-tech.com/admin',
+      BASE_API_URL: 'https://dev-shouyin-api.nle-tech.com',
       IMAGE_URL: 'https://dev-nl-mes-api.nle-tech.com',
       EUSHOP_ADDRESS: 'http://dev-wxshop.nle-tech.com',
       SHOP_ADMIN: 'https://dev-adminshop.nle-tech.com'

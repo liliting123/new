@@ -211,6 +211,7 @@ export default {
   '确认要删除吗?': 'Are you sure to delete it？',
   成功: 'Success',
   允许登录: 'Allow Login',
+  禁止登录: 'Prohibit login',
   桌面端: 'Desktop',
   收银: 'Cashier',
   称重: 'Weigh',
@@ -221,6 +222,7 @@ export default {
   供应商名称: 'Supplier Name',
   是否启动: 'Whether to Open',
   添加分类: 'Add Category',
+  编辑分类: 'Edit Category',
   分类名称: 'Category Name',
   是否称重分类: 'Weighing Category',
 

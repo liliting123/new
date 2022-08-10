@@ -3,65 +3,47 @@
     :title="$t('选择退款商品')"
     :visible="visibleRefund"
     width="71%"
-    :before-close="handleClose">
+    :before-close="handleClose"
+  >
     <div class="top">
-      <span>{{`${$t('已选')} ${selectList.length} ${$t('件商品')},${$t('将退款')} €${refundMoney}`}}</span>
+      <span>{{
+        `${$t('已选')} ${selectList.length} ${$t('件商品')},${$t(
+          '将退款'
+        )} €${refundMoney}`
+      }}</span>
       <el-input style="width: 270px">
-        <template slot="append">{{$t('搜索')}}</template>
+        <template slot="append">{{ $t('搜索') }}</template>
       </el-input>
     </div>
     <el-table
-      :header-cell-style="{background:'#F7F7F7'}"
-      :data="tableData"
-      ref="tableData"
+      :header-cell-style="{ background: '#F7F7F7' }"
+      :data="shopData"
+      ref="shopData"
       row-key="id"
       style="width: 100%"
-      @selection-change="zqy()">
-      <el-table-column
-        type="selection"
-        width="55"/>
-      <el-table-column
-        prop="date"
-        :label="$t('商品图片')"
-        width="180">
-      </el-table-column>
-      <el-table-column
-        prop="name"
-        :label="$t('商品名称')"
-        width="180">
-      </el-table-column>
-      <el-table-column
-        prop="address"
-        :label="$t('商品编号')">
-      </el-table-column>
-      <el-table-column
-        prop="date"
-        :label="$t('EAN')"
-        width="180">
-      </el-table-column>
-      <el-table-column
-        prop="name"
-        :label="$t('规格')">
-      </el-table-column>
-      <el-table-column
-        prop="address"
-        :label="$t('单价')">
-      </el-table-column>
-      <el-table-column
-        prop="date"
-        :label="$t('数量')">
+      @selection-change="selectShops()"
+    >
+      <el-table-column type="selection" width="55" />
+      <el-table-column :label="$t('商品图片')">
         <template slot-scope="scope">
-          <el-input size="small"/>
+          <img :src="scope.row.cover" width="100" height="100" alt="商品图片" />
         </template>
       </el-table-column>
-      <el-table-column
-        prop="num"
-        :label="$t('实付')">
+      <el-table-column prop="goods_name" :label="$t('商品名称')"> </el-table-column>
+      <el-table-column prop="goods_id" :label="$t('商品编号')"> </el-table-column>
+      <el-table-column prop="ean" label="EAN"> </el-table-column>
+      <el-table-column prop="spec_name" :label="$t('规格')"> </el-table-column>
+      <el-table-column prop="price" :label="$t('单价')"> </el-table-column>
+      <el-table-column :label="$t('数量')">
+        <template slot-scope="scope">
+          <el-input size="small" v-model="scope.row.num" />
+        </template>
       </el-table-column>
+      <el-table-column prop="payment_fee" :label="$t('实付')"> </el-table-column>
     </el-table>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="visibleRefund = false">{{$t('取消')}}</el-button>
-      <el-button type="primary" @click="visibleRefund = false">{{$t('确定')}}</el-button>
+      <el-button @click="visibleRefund = false">{{ $t('取消') }}</el-button>
+      <el-button type="primary" @click="orderRefund()">{{ $t('确定') }}</el-button>
     </span>
   </el-dialog>
 </template>
@@ -72,6 +54,14 @@ export default {
   props: {
     visible: {
       type: Boolean,
+      require: true
+    },
+    shopData: {
+      type: Array,
+      require: true
+    },
+    ids: {
+      type: Number,
       require: true
     }
   },
@@ -87,42 +77,43 @@ export default {
   },
   data() {
     return {
-      tableData: [{
-        id: 1,
-        date: '图片',
-        name: '上海青',
-        address: 'EWDQ1232FDDSF1221213',
-        num: 10.00
-      }, {
-        id: 2,
-        date: '图片',
-        name: '白菜',
-        address: 'QQ11278218ff198',
-        num: 5.00
-      }, {
-        id: 3,
-        date: '图片',
-        name: '辣椒',
-        address: 'QER165453232323',
-        num: 2.68
-      }, {
-        id: 4,
-        date: '图片',
-        name: '茄子',
-        address: 'JQR121232677887',
-        num: 4.36
-      }],
       selectList: [], // 选中的商品
-      refundMoney: 0 // 退款金额
+      refundMoney: 0, // 退款金额
+      itemShop: [] // 选中的退款商品
     }
   },
+  mounted() {},
   methods: {
     handleClose() {
       this.visibleRefund = false
     },
-    zqy() {
-      this.selectList = this.$refs.tableData.selection // 选中的退款商品
-      this.refundMoney = this.selectList.reduce((sum3, obj) => (sum3 += obj.num), 0) // 计算选中的退款商品总价
+    selectShops() {
+      this.selectList = this.$refs.shopData.selection // 选中的退款商品
+      console.log(this.selectList)
+      this.selectList.forEach(item => {
+        this.itemShop.push({
+          order_item_id: item.order_id,
+          num: item.num,
+          refund_fee: item.payment_fee
+        })
+      })
+      this.refundMoney = this.selectList.reduce(
+        (sum3, obj) => (sum3 += Number(obj.payment_fee)),
+        0
+      ) // 计算选中的退款商品总价
+    },
+    // 退款
+    orderRefund() {
+      console.log(this.ids)
+      this.$http
+        .post(`api/shop/order_refund/store_refund/${this.ids}`, {
+          apply_fee: this.refundMoney,
+          item: this.itemShop
+        })
+        .then(res => {
+          console.log(res)
+          this.visibleRefund = false
+        })
     }
   }
 }

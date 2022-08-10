@@ -65,35 +65,50 @@
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
       >
         <el-table-column type="expand">
-          <template slot-scope="">
+          <template slot-scope="scope">
             <el-table
               :header-cell-style="{ background: '#F7F7F7' }"
-              :data="tableData"
+              :data="scope.row.item"
               style="width: 90%;margin-left: 48px"
             >
-              <el-table-column prop="name" :label="$t('商品图片')"> </el-table-column>
-              <el-table-column prop="name" :label="$t('商品名称')"> </el-table-column>
-              <el-table-column prop="address" :label="$t('商品编号')"> </el-table-column>
-              <el-table-column prop="name" :label="$t('EAN')"> </el-table-column>
-              <el-table-column prop="address" :label="$t('规格')"> </el-table-column>
-              <el-table-column prop="address" :label="$t('单价')"> </el-table-column>
-              <el-table-column prop="name" :label="$t('数量')"> </el-table-column>
-              <el-table-column prop="address" :label="$t('退款金额')"> </el-table-column>
+              <el-table-column :label="$t('商品图片')">
+                <template slot-scope="scope">
+                  <img
+                    :src="scope.row.item.cover"
+                    width="100"
+                    height="100"
+                    alt="商品图片"
+                  />
+                </template>
+              </el-table-column>
+              <el-table-column prop="item.name" :label="$t('商品名称')">
+              </el-table-column>
+              <el-table-column prop="item.code" :label="$t('商品编号')">
+              </el-table-column>
+              <el-table-column prop="item.ean" :label="$t('EAN')"> </el-table-column>
+              <el-table-column prop="item.spec_name" :label="$t('规格')">
+              </el-table-column>
+              <el-table-column prop="item.price" :label="$t('单价')"> </el-table-column>
+              <el-table-column prop="num" :label="$t('数量')"> </el-table-column>
+              <el-table-column prop="refund_fee" :label="$t('退款金额')">
+              </el-table-column>
             </el-table>
           </template>
         </el-table-column>
-        <el-table-column prop="date" :label="$t('会员ID')" width="130"> </el-table-column>
-        <el-table-column prop="name" :label="$t('订单编号')" width="180">
+        <el-table-column prop="order.vip_id" :label="$t('会员ID')" width="130">
         </el-table-column>
-        <el-table-column prop="address" :label="$t('退款状态')" width="130">
+        <el-table-column prop="order.id" :label="$t('订单编号')" width="180">
         </el-table-column>
-        <el-table-column prop="name" :label="$t('退款金额')" width="180">
+        <el-table-column prop="status_id" :label="$t('退款状态')" width="130">
         </el-table-column>
-        <el-table-column prop="address" :label="$t('退款备注')"> </el-table-column>
-        <el-table-column prop="name" :label="$t('申请时间')"> </el-table-column>
-        <el-table-column prop="address" :label="$t('是否已退款')" width="100">
+        <el-table-column prop="refund_fee" :label="$t('退款金额')" width="180">
         </el-table-column>
-        <el-table-column prop="name" :label="$t('操作人')" width="100"> </el-table-column>
+        <el-table-column prop="remark" :label="$t('退款备注')"> </el-table-column>
+        <el-table-column prop="created_at" :label="$t('申请时间')"> </el-table-column>
+        <el-table-column prop="refund_return" :label="$t('是否已退款')" width="100">
+        </el-table-column>
+        <el-table-column prop="order.status_id" :label="$t('操作人')" width="100">
+        </el-table-column>
         <el-table-column prop="address" :label="$t('操作')" width="200">
           <template slot-scope="">
             <el-button type="text" size="small">{{ $t('重推') }}</el-button>
@@ -111,8 +126,8 @@
         <el-form :model="form" label-position="top" :rules="formRules">
           <el-form-item :label="`${$t('审核状态')}:`" prop="region">
             <el-select style="width: 280px" v-model="form.region">
-              <el-option label="区域一" value="shanghai" />
-              <el-option label="区域二" value="beijing" />
+              <el-option :label="$t('成功')" value="0" />
+              <el-option :label="$t('失败')" value="1" />
             </el-select>
           </el-form-item>
           <el-form-item :label="`${$t('退款金额')}:`" prop="name">
@@ -147,94 +162,68 @@ export default {
       refundSelect: [
         {
           value: '',
-          label: '退款状态'
+          label: this.$t('退款状态')
         },
         {
           value: '1',
-          label: '退款成功'
+          label: this.$t('退款成功')
         },
         {
           value: '2',
-          label: '退款失败'
+          label: this.$t('退款失败')
         },
         {
           value: '3',
-          label: '待审核'
+          label: this.$t('待审核')
         }
       ],
       IsRefundedSelect: [
         {
-          value: '',
-          label: '退款状态'
+          label: this.$t('退款状态')
         },
         {
           value: '1',
-          label: '是'
+          label: this.$t('是')
         },
         {
           value: '2',
-          label: '否'
+          label: this.$t('否')
         }
       ],
       orderNoSelect: [
         {
           value: '1',
-          label: '订单编号'
+          label: this.$t('订单编号')
         },
         {
           value: '2',
-          label: '会员名称'
+          label: this.$t('会员名称')
         },
         {
           value: '3',
-          label: '会员ID'
+          label: this.$t('会员ID')
         },
         {
           value: '4',
-          label: '操作人'
+          label: this.$t('操作人')
         },
         {
           value: '5',
-          label: '退款备注'
+          label: this.$t('退款备注')
         },
         {
           value: '6',
-          label: '商品编号'
+          label: this.$t('商品编号')
         }
       ],
       refundValue: '',
       IsRefundedValue: '',
       orderNoValue: '',
       inputValue: '',
-      tableData: [
-        {
-          id: 1,
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '是'
-        },
-        {
-          id: 2,
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '是'
-        },
-        {
-          id: 3,
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '否'
-        },
-        {
-          id: 4,
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '是'
-        }
-      ],
+      tableData: [],
       form: {
         name: '',
-        region: '',
+        region: '0',
         desc: ''
       },
       dialogRefund: false,
@@ -244,7 +233,25 @@ export default {
       }
     }
   },
-  methods: {}
+  mounted() {
+    this.getList()
+  },
+  methods: {
+    getList() {
+      this.$http
+        .get('api/shop/order_refund', {
+          params: {
+            page: 1,
+            size: 10,
+            Keyboard: ''
+          }
+        })
+        .then(res => {
+          this.tableData = res.data.data
+          console.log(this.tableData)
+        })
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>

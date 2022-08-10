@@ -3,7 +3,7 @@
     <!--    筛选条件-->
     <search-list>
       <div slot="left">
-        <el-button type="primary" @click="dialogFormVisible = true">{{
+        <el-button type="primary" @click="addUserGroup()">{{
           $t('添加员工组')
         }}</el-button>
       </div>
@@ -149,8 +149,8 @@ export default {
     return {
       selectOption: '1',
       selectList: [
-        { value: '1', label: '员工组名称' },
-        { value: '2', label: '备注' }
+        { value: '1', label: this.$t('员工组名称') },
+        { value: '2', label: this.$t('备注') }
       ],
       searchValue: '',
       dialogFormVisible: false,
@@ -284,7 +284,10 @@ export default {
       const [method, url] = this.userGroupIds
         ? ['put', `api/shop/staff_group/${this.userGroupIds}`]
         : ['post', 'api/shop/staff_group']
-      const res = await this.$http[method](url, { ...this.form, shop_id: 1 })
+      const res = await this.$http[method](url, {
+        ...this.form,
+        shop_id: localStorage.getItem('shopId')
+      })
       if (res.ret) {
         this.$notify({
           title: this.$t('success'),
@@ -384,6 +387,11 @@ export default {
             type: 'success'
           })
         })
+    },
+    addUserGroup() {
+      this.userGroupIds = ''
+      this.form = {}
+      this.dialogFormVisible = true
     }
   }
 }

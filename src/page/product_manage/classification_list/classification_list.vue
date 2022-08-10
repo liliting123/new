@@ -4,7 +4,7 @@
     <search-list>
       <div slot="left">
         <el-button type="primary" @click="insertClass()">
-          {{$t('添加分类')}}
+          {{ $t('添加分类') }}
         </el-button>
       </div>
       <div slot="right">
@@ -38,16 +38,18 @@
         <el-table-column prop="name" :label="$t('分类名称')"> </el-table-column>
         <el-table-column prop="weigh" :label="$t('是否称重分类')">
           <template slot-scope="scope">
-            {{scope.row.weigh ? '是' : '否'}}
+            {{ scope.row.weigh ? $t('是') : $t('否') }}
           </template>
         </el-table-column>
         <el-table-column prop="created_at" :label="$t('创建时间')"> </el-table-column>
         <el-table-column :label="$t('操作')" width="200">
           <template slot-scope="scope">
             <el-button type="text" @click="editClassifly(scope.row)">
-              {{$t('编辑')}}
+              {{ $t('编辑') }}
             </el-button>
-            <el-button type="text" @click="deleteClassifly(scope.row)">{{ $t('删除') }}</el-button>
+            <el-button type="text" @click="deleteClassifly(scope.row)">{{
+              $t('删除')
+            }}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -58,7 +60,8 @@
       :title="$t(title)"
       :visible.sync="dialogFormVisible"
       width="40%"
-      destroy-on-close>
+      destroy-on-close
+    >
       <TabsLanguage @update="modifyLanguage" />
       <el-form :model="form" :rules="rules" ref="form" label-position="top">
         <el-form-item :label="$t('分类名称')" prop="name">
@@ -72,7 +75,8 @@
             :active-value="1"
             :inactive-value="0"
             active-color="#13ce66"
-            inactive-color="#bfcfd9">
+            inactive-color="#bfcfd9"
+          >
           </el-switch>
         </el-form-item>
       </el-form>
@@ -149,14 +153,16 @@ export default {
     // 添加或编辑分类
     saveClassifly(form) {
       let api
-      this.title === '添加分类' ? api = this.$http.post('api/shop/category', {
-        ...this.form,
-        shop_id: localStorage.getItem('shopId')
-      }) : api = this.$http.put(`api/shop/category/${this.categoryId}`, {
-        name: this.form.name,
-        weigh: this.form.weigh
-      })
-      this.$refs[form].validate((valid) => {
+      this.title === '添加分类'
+        ? (api = this.$http.post('api/shop/category', {
+            ...this.form,
+            shop_id: localStorage.getItem('shopId')
+          }))
+        : (api = this.$http.put(`api/shop/category/${this.categoryId}`, {
+            name: this.form.name,
+            weigh: this.form.weigh
+          }))
+      this.$refs[form].validate(valid => {
         if (valid) {
           api.then(res => {
             if (res.ret) {
@@ -197,18 +203,20 @@ export default {
         confirmButtonText: this.$t('确定'),
         cancelButtonText: this.$t('取消'),
         type: 'warning'
-      }).then(() => {
-        this.$http.delete(`api/shop/category/${row.id}`).then(res => {
-          if (res.ret) {
-            this.$notify({
-              title: this.$t('成功'),
-              type: 'success',
-              message: this.$t('删除成功')
-            })
-            this.getList()
-          }
+      })
+        .then(() => {
+          this.$http.delete(`api/shop/category/${row.id}`).then(res => {
+            if (res.ret) {
+              this.$notify({
+                title: this.$t('成功'),
+                type: 'success',
+                message: this.$t('删除成功')
+              })
+              this.getList()
+            }
+          })
         })
-      }).catch(() => {})
+        .catch(() => {})
     },
     insertClass() {
       this.dialogFormVisible = true

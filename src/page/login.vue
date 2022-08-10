@@ -144,7 +144,8 @@ export default {
                 message: this.$t('LoginSuccessful')
               })
               this.$store.commit('token/saveToken', { token: res.data.token })
-              localStorage.setItem('shopId', res.data.staff.shop_id)
+              console.log(res.data.staff.shop_id, '99')
+              // localStorage.setItem('shopId', res.data.staff.shop_id)
               this.$router.push('/')
             } else {
               this.$message({

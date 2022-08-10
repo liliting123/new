@@ -1,8 +1,6 @@
 <template>
   <div class="nav">
-    <div
-      class="toggle"
-      style="width: 200px;">
+    <div class="toggle" style="width: 200px;">
       <h1>{{ $t('收银后台') }}</h1>
     </div>
     <div class="brand">
@@ -18,12 +16,14 @@
       v-model="shopValue"
       :placeholder="$t('请选择')"
       @change="selectShop()"
-      class="shopSelect">
+      class="shopSelect"
+    >
       <el-option
         v-for="item in shopList"
         :key="item.id"
         :label="item.name"
-        :value="item.id">
+        :value="item.id"
+      >
       </el-option>
     </el-select>
     <el-popover placement="bottom" width="500" trigger="click">
@@ -38,7 +38,7 @@
         <el-table-column :label="$t('operate')">
           <template slot-scope="scope">
             <el-button @click="onDownload(scope.row.file_url, scope.row.status)">
-              {{$t('Download')}}
+              {{ $t('Download') }}
             </el-button>
           </template>
         </el-table-column>
@@ -65,15 +65,17 @@ export default {
   methods: {
     selectShop() {
       localStorage.setItem('shopId', this.shopValue)
+      location.reload()
     },
     getShop() {
       this.$http
         .get('api/shop/shop', {
           params: {
-            keyword: 'admin@nle-tech.com',
-            password: '123456'
+            keyword: localStorage.getItem('EMAIL'),
+            password: localStorage.getItem('PASSWORD')
           }
-        }).then(res => {
+        })
+        .then(res => {
           if (res.ret) {
             this.shopList = res.data.data
             if (!this.shopValue) {

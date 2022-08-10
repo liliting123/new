@@ -19,6 +19,7 @@ module.exports = {
   plugins: ['vue'],
   // add your custom rules here
   rules: {
+    indent: ['off', 2],
     // allow async-await
     'generator-star-spacing': 'off',
     'space-before-function-paren': 0,

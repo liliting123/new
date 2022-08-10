@@ -23,6 +23,8 @@ function interceptorsRequestSuccess(config) {
   config.headers.Authorization = store.state.token.token
   config.headers.language = store.state.lang
   config.headers['shop-id'] = localStorage.getItem('shopId')
+    ? localStorage.getItem('shopId')
+    : 'all'
   return config
 }
 

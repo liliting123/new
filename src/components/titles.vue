@@ -154,7 +154,7 @@ export default {
     },
     // 点击
     tabClick(tab) {
-      if (!this.$route.path.includes(tab.name)) {
+      if (this.$route.path !== tab.name) {
         this.$router.push(tab.name)
         this.active = tab.name
       }
