@@ -9,6 +9,7 @@
           :range-separator="$t('至')"
           :start-placeholder="$t('开始日期')"
           :end-placeholder="$t('结束日期')"
+          value-format="yyyy-MM-dd"
         >
         </el-date-picker>
         <el-select
@@ -130,7 +131,6 @@
     <orderRefundDialog
       v-if="visibleOrderRefund"
       :visible.sync="visibleOrderRefund"
-      :shopData.sync="shopDatas"
       :ids="orderId"
     />
   </div>
@@ -166,6 +166,7 @@ export default {
       ],
       orderSelect: [
         {
+          value: '0',
           label: this.$t('订单状态')
         },
         {
@@ -196,50 +197,49 @@ export default {
       ],
       orderNoSelect: [
         {
-          value: this.$t('订单编号')
+          value: 1,
+          label: this.$t('订单编号')
         },
         {
-          value: '1',
+          value: 2,
           label: this.$t('会员名称')
         },
         {
-          value: '2',
+          value: 3,
           label: this.$t('收银员')
         },
         {
-          value: '3',
+          value: 4,
           label: this.$t('商品编号')
         }
       ],
       customerValue: '',
       orderValue: '',
       paymentValue: '',
-      orderNoValue: '',
+      orderNoValue: 1,
       inputValue: '',
       tableData: [],
       visibleOrderRefund: false,
-      shopDatas: [],
-      orderId: ''
+      orderId: null
     }
   },
   mounted() {
     this.getList()
+    console.log(Number(0.1) + Number(0.2), 'number')
   },
   methods: {
     // 跳转订单详情
     showOrderDetail(id) {
       this.$router.push({
-        path: 'orderDetail',
-        query: { id: id }
+        name: '订单详情',
+        params: { id: id }
       })
     },
+
     // 退款弹窗
     showDiglog(id) {
       this.visibleOrderRefund = true
-      this.$http.get(`api/shop/order/${id}`).then(res => {
-        this.shopDatas = res.data.item
-        this.orderId = id
-      })
+      this.orderId = id
     },
     getList() {
       this.tableLoading = true
@@ -248,8 +248,13 @@ export default {
           params: {
             page: this.page_params.page,
             size: this.page_params.size,
+            type_id: this.orderNoValue,
             keyword: this.inputValue,
-            status_id: this.orderValue
+            created_at_start: this.slectTime ? this.slectTime[0] : '',
+            created_at_end: this.slectTime ? this.slectTime[1] : '',
+            source: this.customerValue,
+            status_id: this.orderValue,
+            payment_id: this.paymentValue
           }
         })
         .then(res => {

@@ -87,7 +87,7 @@ export default {
   .layout-side-left {
     width: 200px;
     // background-color: #304156;
-    background-color: #43495f;
+    background-color: #1c2c3c;
     z-index: 10;
     overflow-x: hidden;
     overflow-y: auto;

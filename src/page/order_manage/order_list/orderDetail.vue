@@ -54,7 +54,7 @@
     <div class="info-top">
       <div class="title">
         <span>{{ $t('商品信息') }}</span>
-        <span>{{ $t('操作时间') }}:{{ basic_Info.created_at }}</span>
+        <span>{{ $t('操作时间') }}:{{ basic_Info.payment_time }}</span>
       </div>
       <div class="table">
         <el-table
@@ -155,7 +155,7 @@ export default {
   },
   methods: {
     getDetail() {
-      this.$http.get(`api/shop/order/${this.$route.query.id}`).then(res => {
+      this.$http.get(`api/shop/order/${this.$route.params.id}`).then(res => {
         console.log(res.data)
         this.basic_Info = res.data
         this.goods_Info = res.data.item

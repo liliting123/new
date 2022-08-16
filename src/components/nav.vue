@@ -143,7 +143,7 @@ export default {
     color: #fff;
     text-align: center;
     // background-color: #1c2c3c;
-    background-color: #43495f;
+    background-color: #1c2c3c;
     h1 {
       padding-top: 10px;
       font-size: 27px;

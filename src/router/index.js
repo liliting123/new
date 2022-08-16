@@ -82,8 +82,7 @@ export const constantRouterMap = [
       {
         path: 'user_list',
         name: '员工列表',
-        component: UserList,
-        meta: { keepAlive: true }
+        component: UserList
       },
       {
         path: 'user_group_list',
@@ -100,13 +99,12 @@ export const constantRouterMap = [
         path: 'order_list',
         name: '订单列表',
         component: OrderList,
-        meta: { keepAlive: true }
+        meta: { keepAlive: false }
       },
       {
-        path: 'orderDetail',
+        path: 'order_list/orderDetail',
         name: '订单详情',
-        component: OrderDetail,
-        meta: { keepAlive: true }
+        component: OrderDetail
       },
       {
         path: 'refund_list',

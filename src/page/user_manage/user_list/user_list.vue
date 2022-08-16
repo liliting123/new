@@ -150,11 +150,11 @@ export default {
   },
   data() {
     return {
-      selectOption: '1',
+      selectOption: 1,
       selectList: [
-        { value: '1', label: this.$t('员工名称') },
-        { value: '2', label: this.$t('邮箱') },
-        { value: '3', label: this.$t('备注') }
+        { value: 1, label: this.$t('员工名称') },
+        { value: 2, label: this.$t('邮箱') },
+        { value: 3, label: this.$t('备注') }
       ],
       searchValue: '',
       tableData: [],

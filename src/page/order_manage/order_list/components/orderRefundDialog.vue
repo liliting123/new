@@ -11,14 +11,14 @@
           '将退款'
         )} €${refundMoney}`
       }}</span>
-      <el-input style="width: 270px">
-        <template slot="append">{{ $t('搜索') }}</template>
+      <el-input v-model="inputValue" style="width: 270px">
+        <el-button slot="append" @click="getList()">{{ $t('搜索') }}</el-button>
       </el-input>
     </div>
     <el-table
       :header-cell-style="{ background: '#F7F7F7' }"
-      :data="shopData"
-      ref="shopData"
+      :data="shopDatas"
+      ref="shopDatas"
       row-key="id"
       style="width: 100%"
       @selection-change="selectShops()"
@@ -29,19 +29,27 @@
           <img :src="scope.row.cover" width="100" height="100" alt="商品图片" />
         </template>
       </el-table-column>
-      <el-table-column prop="goods_name" :label="$t('商品名称')"> </el-table-column>
-      <el-table-column prop="goods_id" :label="$t('商品编号')"> </el-table-column>
+      <el-table-column prop="name" :label="$t('商品名称')"> </el-table-column>
+      <el-table-column prop="code" :label="$t('商品编号')"> </el-table-column>
       <el-table-column prop="ean" label="EAN"> </el-table-column>
       <el-table-column prop="spec_name" :label="$t('规格')"> </el-table-column>
       <el-table-column prop="price" :label="$t('单价')"> </el-table-column>
       <el-table-column :label="$t('数量')">
         <template slot-scope="scope">
-          <el-input size="small" v-model="scope.row.num" />
+          <el-input
+            type="number"
+            :max="scope.row.num"
+            min="1"
+            size="small"
+            v-model="scope.row.num"
+          />
         </template>
       </el-table-column>
       <el-table-column prop="payment_fee" :label="$t('实付')"> </el-table-column>
     </el-table>
     <span slot="footer" class="dialog-footer">
+      <PaginationAndButtons :pageParams="page_params" />
+
       <el-button @click="visibleRefund = false">{{ $t('取消') }}</el-button>
       <el-button type="primary" @click="orderRefund()">{{ $t('确定') }}</el-button>
     </span>
@@ -49,17 +57,21 @@
 </template>
 
 <script>
+import PaginationAndButtons from '@/components/pagination_and_buttons.vue'
+import pagination from '@/mixin/pagination.js'
+
 export default {
+  mixins: [pagination],
+  components: {
+    PaginationAndButtons
+  },
   name: 'orderRefundDialog',
   props: {
     visible: {
       type: Boolean,
       require: true
     },
-    shopData: {
-      type: Array,
-      require: true
-    },
+
     ids: {
       type: Number,
       require: true
@@ -79,16 +91,37 @@ export default {
     return {
       selectList: [], // 选中的商品
       refundMoney: 0, // 退款金额
-      itemShop: [] // 选中的退款商品
+      itemShop: [], // 选中的退款商品
+      inputValue: '',
+      shopDatas: []
     }
   },
-  mounted() {},
+
+  mounted() {
+    this.getList()
+  },
   methods: {
+    getList() {
+      this.$http
+        .get(`api/shop/order/order_item/info/${this.ids}`, {
+          params: {
+            page: this.page_params.page,
+            size: this.page_params.size,
+            order_id: this.ids,
+            keyword: this.inputValue
+          }
+        })
+        .then(res => {
+          this.page_params.total = res.data.total
+
+          this.shopDatas = res.data.data
+        })
+    },
     handleClose() {
       this.visibleRefund = false
     },
     selectShops() {
-      this.selectList = this.$refs.shopData.selection // 选中的退款商品
+      this.selectList = this.$refs.shopDatas.selection // 选中的退款商品
       console.log(this.selectList)
       this.selectList.forEach(item => {
         this.itemShop.push({
@@ -102,18 +135,27 @@ export default {
         0
       ) // 计算选中的退款商品总价
     },
+
     // 退款
-    orderRefund() {
+    async orderRefund() {
       console.log(this.ids)
-      this.$http
-        .post(`api/shop/order_refund/store_refund/${this.ids}`, {
+      const res = await this.$http.post(
+        `api/shop/order_refund/store_refund/${this.ids}`,
+        {
           apply_fee: this.refundMoney,
           item: this.itemShop
+        }
+      )
+      if (res.ret === 1) {
+        this.$notify({
+          title: this.$t('success'),
+          message: res.msg,
+          type: 'success'
         })
-        .then(res => {
-          console.log(res)
-          this.visibleRefund = false
-        })
+        this.visibleRefund = false
+      } else {
+        this.visibleRefund = true
+      }
     }
   }
 }

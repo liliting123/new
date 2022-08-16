@@ -49,7 +49,7 @@
             >
             </el-option>
           </el-select>
-          <el-button slot="append">{{ $t('搜索') }}</el-button>
+          <el-button slot="append" @click="getList()">{{ $t('搜索') }}</el-button>
         </el-input>
       </div>
     </search-list>
@@ -110,50 +110,61 @@
         <el-table-column prop="order.status_id" :label="$t('操作人')" width="100">
         </el-table-column>
         <el-table-column prop="address" :label="$t('操作')" width="200">
-          <template slot-scope="">
+          <template slot-scope="scope">
             <el-button type="text" size="small">{{ $t('重推') }}</el-button>
-            <el-button type="text" size="small">{{ $t('确认已退款') }}</el-button>
-            <el-button type="text" size="small" @click="dialogRefund = true">{{
-              $t('退款审核')
-            }}</el-button>
+            <el-button
+              type="text"
+              size="small"
+              @click="confirmRefund(scope.row.order_id)"
+              >{{ $t('确认已退款') }}</el-button
+            >
+            <el-button
+              type="text"
+              size="small"
+              @click="refundDialog(scope.row.order_id)"
+              >{{ $t('退款审核') }}</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
     </div>
+    <PaginationAndButtons :pageParams="page_params" />
     <!--    退款审核弹窗-->
     <el-dialog :title="$t('退款审核')" :visible.sync="dialogRefund" width="400px">
       <div style="padding: 0 40px 0 40px">
         <el-form :model="form" label-position="top" :rules="formRules">
-          <el-form-item :label="`${$t('审核状态')}:`" prop="region">
-            <el-select style="width: 280px" v-model="form.region">
-              <el-option :label="$t('成功')" value="0" />
-              <el-option :label="$t('失败')" value="1" />
+          <el-form-item :label="`${$t('审核状态')}:`">
+            <el-select style="width: 280px" v-model="form.status_id">
+              <el-option :label="$t('成功')" :value="1" />
+              <el-option :label="$t('失败')" :value="2" />
             </el-select>
           </el-form-item>
-          <el-form-item :label="`${$t('退款金额')}:`" prop="name">
-            <el-input v-model="form.name">
+          <el-form-item :label="`${$t('退款金额')}:`" prop="refund_fee">
+            <el-input v-model="form.refund_fee">
               <span slot="suffix" style="font-size: 16px">€</span>
             </el-input>
           </el-form-item>
-          <el-form-item :label="`${$t('退款备注')}:`">
-            <el-input type="textarea" :rows="3" v-model="form.desc"> </el-input>
+          <el-form-item :label="`${$t('退款备注')}:`" prop="remark">
+            <el-input type="textarea" :rows="3" v-model="form.remark"> </el-input>
           </el-form-item>
         </el-form>
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogRefund = false">{{ $t('取消') }}</el-button>
-        <el-button type="primary" @click="dialogRefund = false">{{
-          $t('确定')
-        }}</el-button>
+        <el-button type="primary" @click="refundReview()">{{ $t('确定') }}</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 <script>
+import PaginationAndButtons from '@/components/pagination_and_buttons.vue'
+import pagination from '@/mixin/pagination.js'
 import searchList from '@/components/searchList.vue'
 export default {
   name: 'refundList',
+  mixins: [pagination],
   components: {
+    PaginationAndButtons,
     searchList
   },
   data() {
@@ -165,15 +176,15 @@ export default {
           label: this.$t('退款状态')
         },
         {
-          value: '1',
+          value: '0',
           label: this.$t('退款成功')
         },
         {
-          value: '2',
+          value: '1',
           label: this.$t('退款失败')
         },
         {
-          value: '3',
+          value: '2',
           label: this.$t('待审核')
         }
       ],
@@ -182,55 +193,56 @@ export default {
           label: this.$t('退款状态')
         },
         {
-          value: '1',
+          value: 0,
           label: this.$t('是')
         },
         {
-          value: '2',
+          value: 1,
           label: this.$t('否')
         }
       ],
       orderNoSelect: [
         {
-          value: '1',
+          value: 1,
           label: this.$t('订单编号')
         },
         {
-          value: '2',
+          value: 2,
           label: this.$t('会员名称')
         },
         {
-          value: '3',
+          value: 3,
           label: this.$t('会员ID')
         },
         {
-          value: '4',
+          value: 4,
           label: this.$t('操作人')
         },
         {
-          value: '5',
+          value: 5,
           label: this.$t('退款备注')
         },
         {
-          value: '6',
+          value: 6,
           label: this.$t('商品编号')
         }
       ],
       refundValue: '',
       IsRefundedValue: '',
-      orderNoValue: '',
+      orderNoValue: 1,
       inputValue: '',
       tableData: [],
       form: {
-        name: '',
-        region: '0',
-        desc: ''
+        status_id: 1,
+        refund_fee: '',
+        remark: ''
       },
       dialogRefund: false,
       formRules: {
-        region: [{ required: true, message: '请输入活动名称', trigger: 'blur' }],
-        name: [{ required: true, message: '请输入退款金额', trigger: 'blur' }]
-      }
+        remark: [{ required: true, message: '请输入备注', trigger: 'blur' }],
+        refund_fee: [{ required: true, message: '请输入退款金额', trigger: 'blur' }]
+      },
+      orderId: ''
     }
   },
   mounted() {
@@ -241,14 +253,53 @@ export default {
       this.$http
         .get('api/shop/order_refund', {
           params: {
-            page: 1,
-            size: 10,
-            Keyboard: ''
+            page: this.page_params.page,
+            size: this.page_params.size,
+            type_id: this.orderNoValue,
+            keyword: this.inputValue,
+            created_at_start: this.slectTime ? this.slectTime[0] : '',
+            created_at_end: this.slectTime ? this.slectTime[1] : '',
+            status_id: this.refundValue,
+            refund_return: this.IsRefundedValue
           }
         })
         .then(res => {
+          this.page_params.total = res.data.total
           this.tableData = res.data.data
-          console.log(this.tableData)
+        })
+    },
+    // 确认已退款
+    confirmRefund(id) {
+      this.$http.put(`api/shop/order_refund/${id}`).then(res => {
+        if (res.ret) {
+          this.$notify({
+            title: this.$t('success'),
+            message: res.msg,
+            type: 'success'
+          })
+        }
+      })
+    },
+    refundDialog(id) {
+      this.dialogRefund = true
+      this.orderId = id
+    },
+    // 退款审核
+    refundReview() {
+      this.$http
+        .post(`/api/shop/order_refund/check/${this.orderId}`, {
+          ...this.form
+        })
+        .then(res => {
+          if (res.ret) {
+            this.$notify({
+              title: this.$t('success'),
+              message: res.msg,
+              type: 'success'
+            })
+            this.dialogRefund = false
+            this.form = {}
+          }
         })
     }
   }
