@@ -3,30 +3,25 @@
     <!--    筛选条件-->
     <search-list>
       <div slot="left">
-        <el-select
-          style="margin-left: 10px;"
-          v-model="value"
-          :placeholder="$t('商品分类')"
-        >
+        <el-select style="margin-left: 10px;" v-model="value" :placeholder="$t('分类')">
           <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+            v-for="item in categoryList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
           >
           </el-option>
         </el-select>
         <el-select
           style="margin-left: 10px;"
-          v-model="value"
+          v-model="label"
           :placeholder="$t('分类标签')"
         >
           <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          >
+            v-for="item in labelList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
           </el-option>
         </el-select>
         <el-select
@@ -35,10 +30,10 @@
           :placeholder="$t('供应商')"
         >
           <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+            v-for="item in supplierList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
           >
           </el-option>
         </el-select>
@@ -53,11 +48,11 @@
       <div slot="right">
         <el-input v-model="input3">
           <el-select v-model="select" slot="prepend" :placeholder="$t('商品名称')">
-            <el-option label="餐厅名" value="1"></el-option>
-            <el-option label="订单号" value="2"></el-option>
-            <el-option label="用户电话" value="3"></el-option>
+            <el-option label="商品名称" value="1"></el-option>
+            <el-option label="商品编号" value="2"></el-option>
+            <el-option label="供应商" value="3"></el-option>
           </el-select>
-          <el-button slot="append">{{ $t('搜索') }}</el-button>
+          <el-button slot="append" @click="getList">{{ $t('搜索') }}</el-button>
         </el-input>
       </div>
     </search-list>
@@ -92,17 +87,17 @@
                 </template>
               </el-table-column>
               <el-table-column prop="code" :label="$t('商品编码')"></el-table-column>
-              <el-table-column prop="name" :label="$t('EAN')"></el-table-column>
+              <el-table-column prop="ean[0].ean" :label="$t('EAN')"></el-table-column>
               <el-table-column prop="supplier_id" :label="$t('供应商')"> </el-table-column>
               <el-table-column prop="name" :label="$t('规格')"> </el-table-column>
               <el-table-column prop="price" :label="$t('价格')"> </el-table-column>
               <el-table-column prop="vip_price" :label="$t('会员价')"> </el-table-column>
               <el-table-column prop="tax_rate" :label="$t('税率')"> </el-table-column>
               <el-table-column prop="address" :label="$t('BBD')"> </el-table-column>
-              <el-table-column prop="address" :label="$t('可售库存')"> </el-table-column>
-              <el-table-column prop="address" :label="$t('已售库存')">
+              <el-table-column prop="num" :label="$t('可售库存')"> </el-table-column>
+              <el-table-column prop="sold_num" :label="$t('已售库存')">
                 <template slot-scope="scope">
-                  <span style="color: #1a79eb" @click="soldRecords()">1</span>
+                  <span style="color: #1a79eb" @click="soldRecords()">{{scope.row.sold_num}}</span>
                 </template>
               </el-table-column>
             </el-table>
@@ -117,10 +112,10 @@
             <img width="100px" height="100px" :src="scope.row.cover">
           </template>
         </el-table-column>
-        <el-table-column prop="name" :label="$t('可售库存')"> </el-table-column>
-        <el-table-column prop="address" :label="$t('已售库存')">
+        <el-table-column prop="num" :label="$t('可售库存')"> </el-table-column>
+        <el-table-column prop="sold_num" :label="$t('已售库存')">
           <template slot-scope="scope">
-            <span style="color: #1a79eb" @click="soldRecords()">50</span>
+            <span style="color: #1a79eb" @click="soldRecords()">{{scope.row.sold_num}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="created_at" :label="$t('创建时间')"> </el-table-column>
@@ -160,29 +155,14 @@ export default {
   mixins: [pagination],
   data() {
     return {
-      value1: '',
-      options: [
-        {
-          value: '选项1',
-          label: '黄金糕'
-        },
-        {
-          value: '选项2',
-          label: '双皮奶'
-        },
-        {
-          value: '选项3',
-          label: '蚵仔煎'
-        },
-        {
-          value: '选项4',
-          label: '龙须面'
-        },
-        {
-          value: '选项5',
-          label: '北京烤鸭'
-        }
+      categoryList: [], // 分类下拉
+      supplierList: [], // 供应商下拉
+      labelList: [
+        {id: 1, name: '普通'},
+        {id: 2, name: '烟酒'},
+        {id: 3, name: '酒精类'}
       ],
+      label: '',
       tableInfo: [],
       value: '',
       input1: '',
@@ -196,6 +176,8 @@ export default {
   },
   created() {
     this.getList()
+    this.getSupplierList()
+    this.getClassList()
   },
   methods: {
     getList() {
@@ -203,7 +185,11 @@ export default {
         params: {
           page: this.page_params.page,
           size: this.page_params.size,
-          keyword: this.page_params.keyword
+          keyword: this.input3,
+          category_id: this.value,
+          label: this.label,
+          supplier_id: this.value,
+          type_id: this.select
         }
       }).then(res => {
         if (res.ret) {
@@ -215,10 +201,6 @@ export default {
     // 已售库存弹窗
     soldRecords() {
       this.dialogSoldRecords = true
-    },
-    unset(arr, item, len = 1) {
-      arr.splice(item, len)
-      return arr
     },
     // 结算密码弹窗
     settlementPassword() {
@@ -242,6 +224,28 @@ export default {
       this.$router.push({
         path: 'normal_product_list/add_product'
       })
+    },
+    // 获取供应商下拉列表
+    async getSupplierList() {
+      const res = await this.$http.get(`api/shop/supplier`, {
+        params: {
+          switch: 1
+        }
+      })
+      if (res.ret) {
+        this.supplierList = res.data.data
+      }
+    },
+    // 获取分类下拉列表
+    async getClassList() {
+      const res = await this.$http.get(`api/shop/category`, {
+        params: {
+          weigh: 0
+        }
+      })
+      if (res.ret) {
+        this.categoryList = res.data.data
+      }
     }
   }
 }

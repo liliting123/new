@@ -5,16 +5,22 @@
     :before-close="handleClose"
     width="500px">
     <div style="padding: 0 40px 0 40px">
-      <el-form :model="form" label-position="top">
-        <el-form-item :label="`${$t('设置结算密码')}:`">
-          <el-input v-model="form.name"></el-input>
+      <el-form
+        :model="form"
+        :rules="rulesPwd"
+        ref="ruleFormPwd"
+        label-position="top">
+        <el-form-item :label="`${$t('设置结算密码')}:`" prop="pwd">
+          <el-input v-model="form.pwd" show-password></el-input>
         </el-form-item>
-        <el-form-item :label="`${$t('确认结算密码')}:`">
-          <el-input v-model="form.name"></el-input>
+        <el-form-item :label="`${$t('确认结算密码')}:`" prop="surePwd">
+          <el-input v-model="form.surePwd" show-password></el-input>
         </el-form-item>
-        <el-form-item :label="`${$t('是否开启')}:`">
+        <el-form-item :label="`${$t('是否开启')}:`" prop="isOpen">
           <el-switch
-            v-model="form.value"
+            v-model="form.isOpen"
+            :active-value="1"
+            :inactive-value="0"
             active-color="#13ce66"
             inactive-color="#d7d7d7">
           </el-switch>
@@ -28,7 +34,7 @@
     </div>
     <div slot="footer" class="dialog-footer">
       <el-button @click="dialogPassword = false">{{$t('取消')}}</el-button>
-      <el-button type="primary" @click="dialogPassword = false">{{$t('确定')}}</el-button>
+      <el-button type="primary" @click="setPwd('ruleFormPwd')">{{$t('确定')}}</el-button>
     </div>
   </el-dialog>
 </template>
@@ -55,14 +61,49 @@ export default {
   data() {
     return {
       form: {
-        name: '',
-        value: false
+        pwd: '',
+        surePwd: '',
+        isOpen: false
+      },
+      rulesPwd: {
+        pwd: [{ required: true, message: '请输入结算密码', trigger: 'blur' }],
+        surePwd: [{ required: true, message: '请再一次输入结算密码', trigger: 'blur' }],
+        isOpen: [{ required: true, message: '请选择', trigger: 'blur' }]
       }
     }
   },
   methods: {
+    // 设置结算密码
+    setPwd(form) {
+      this.$refs[form].validate(valid => {
+        if (valid) {
+          if (this.form.pwd === this.form.surePwd) {
+            this.$http.post(`api/shop/goods/staff_payment_password/22`, {
+              payment_password: this.form.pwd,
+              password_confirmation: this.form.surePwd,
+              is_payment_password: this.form.isOpen
+            }).then(res => {
+              if (res.ret) {
+                this.$notify({
+                  title: this.$t('成功'),
+                  type: 'success',
+                  message: this.$t('设置成功')
+                })
+                this.dialogPassword = false
+                this.form = {}
+              }
+            })
+          } else {
+            this.$message.error(this.$t('两次输入的密码请保持一致'))
+          }
+        } else {
+          return false
+        }
+      })
+    },
     handleClose() {
       this.dialogPassword = false
+      this.form = {}
     }
   }
 }

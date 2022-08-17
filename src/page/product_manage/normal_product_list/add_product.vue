@@ -101,7 +101,7 @@
             <el-table-column prop="ean" :label="`*${$t('EAN')}`">
               <template slot-scope="scope">
                 <el-form-item :prop="'spec.'+scope.$index+'.ean'" :rules="rulesSpec.ean">
-                  <el-input size="small" v-model="scope.row.ean[0].ean"></el-input>
+                  <el-input size="small" v-model="scope.row.ean" :disabled="scope.row.ean != ''"></el-input>
                 </el-form-item>
               </template>
             </el-table-column>
@@ -155,13 +155,13 @@
                 </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column prop="name" :label="$t('操作')" width="100px">
+            <el-table-column :label="$t('操作')" width="100px">
               <template slot-scope="scope">
                 <el-button
                   type="text"
                   size="small"
                   v-if="productId"
-                  @click="showEAN(scope.row.ean)">
+                  @click="showEAN(scope.$index)">
                   {{ $t('EAN') }}
                 </el-button>
                 <el-button type="text" size="small" @click="deleteRow(scope.$index)">
@@ -237,9 +237,7 @@ export default {
           price: '', // 价格
           vip_price: 0, // vip价格
           tax_rate: '', // 汇率
-          ean: [{
-            ean: ''
-          }] // EAN
+          ean: ''// EAN
         }] // 商品规格数组
       },
       fileList: [],
@@ -258,7 +256,8 @@ export default {
       supplierList: [], // 供应商下拉
       wmsList: [], // wms分类
       productId: this.$route.query.id, // 商品id
-      eanData: []
+      eanData: [],
+      form1: []
     }
   },
   computed: {
@@ -320,7 +319,11 @@ export default {
     getProductInfo() {
       this.$http.get(`api/shop/goods/${this.productId}`).then(res => {
         if (res.ret) {
+          console.log(res.data, 'res.data')
           this.form = res.data
+          this.form.spec.forEach(item => {
+            item.ean = item.ean[0].ean
+          })
         }
       })
     },
@@ -336,7 +339,6 @@ export default {
         }) : this.$http.post('api/shop/goods', {
           ...this.form
         })
-        // this.form.spec = JSON.stringify(this.form.spec)
         api.then(res => {
           if (res.ret) {
             this.$notify({
@@ -380,9 +382,12 @@ export default {
       })
     },
     // EAN弹窗
-    showEAN(data) {
+    showEAN(index) {
       this.dialogENATable = true
-      this.eanData = data
+      console.log(this.form1, '222')
+      this.form1.forEach((item, index) => {
+        // this.eanData = item
+      })
     },
     // 添加规格
     addSpec() {
@@ -393,9 +398,7 @@ export default {
         price: '', // 价格
         vip_price: '', // vip价格
         tax_rate: '', // 汇率
-        ean: [{
-          ean: ''
-        }] // ean
+        ean: '' // ean
       })
     },
     modifyLanguage(language) {
