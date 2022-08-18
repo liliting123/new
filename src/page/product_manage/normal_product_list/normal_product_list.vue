@@ -3,7 +3,11 @@
     <!--    筛选条件-->
     <search-list>
       <div slot="left">
-        <el-select style="margin-left: 10px;" v-model="value" :placeholder="$t('分类')">
+        <el-select
+          style="margin-left: 10px;"
+          v-model="categoryValue"
+          :placeholder="$t('分类')"
+        >
           <el-option
             v-for="item in categoryList"
             :key="item.id"
@@ -21,12 +25,13 @@
             v-for="item in labelList"
             :key="item.id"
             :label="item.name"
-            :value="item.id">
+            :value="item.id"
+          >
           </el-option>
         </el-select>
         <el-select
           style="margin:0 10px 0 10px;"
-          v-model="value"
+          v-model="supplierValue"
           :placeholder="$t('供应商')"
         >
           <el-option
@@ -47,10 +52,13 @@
       </div>
       <div slot="right">
         <el-input v-model="input3">
-          <el-select v-model="select" slot="prepend" :placeholder="$t('商品名称')">
-            <el-option label="商品名称" value="1"></el-option>
-            <el-option label="商品编号" value="2"></el-option>
-            <el-option label="供应商" value="3"></el-option>
+          <el-select v-model="searchValue" slot="prepend" :placeholder="$t('商品名称')">
+            <el-option
+              v-for="item in searchLists"
+              :key="item.id"
+              :label="item.label"
+              :value="item.id"
+            ></el-option>
           </el-select>
           <el-button slot="append" @click="getList">{{ $t('搜索') }}</el-button>
         </el-input>
@@ -83,12 +91,13 @@
               <el-table-column type="selection" width="55"></el-table-column>
               <el-table-column width="50" label="#">
                 <template slot-scope="scope">
-                  <span class="table_index">{{scope.$index + 1}}</span>
+                  <span class="table_index">{{ scope.$index + 1 }}</span>
                 </template>
               </el-table-column>
               <el-table-column prop="code" :label="$t('商品编码')"></el-table-column>
               <el-table-column prop="ean[0].ean" :label="$t('EAN')"></el-table-column>
-              <el-table-column prop="supplier_id" :label="$t('供应商')"> </el-table-column>
+              <el-table-column prop="supplier_id" :label="$t('供应商')">
+              </el-table-column>
               <el-table-column prop="name" :label="$t('规格')"> </el-table-column>
               <el-table-column prop="price" :label="$t('价格')"> </el-table-column>
               <el-table-column prop="vip_price" :label="$t('会员价')"> </el-table-column>
@@ -97,7 +106,9 @@
               <el-table-column prop="num" :label="$t('可售库存')"> </el-table-column>
               <el-table-column prop="sold_num" :label="$t('已售库存')">
                 <template slot-scope="scope">
-                  <span style="color: #1a79eb" @click="soldRecords()">{{scope.row.sold_num}}</span>
+                  <span style="color: #1a79eb" @click="soldRecords()">{{
+                    scope.row.sold_num
+                  }}</span>
                 </template>
               </el-table-column>
             </el-table>
@@ -106,22 +117,38 @@
         <el-table-column prop="name" :label="$t('商品名称')" width="150">
         </el-table-column>
         <el-table-column prop="category.name" :label="$t('商品分类')"> </el-table-column>
-        <el-table-column prop="label" :label="$t('分类标签')"> </el-table-column>
+        <el-table-column prop="label" :label="$t('分类标签')">
+          <template slot-scope="scope">
+            {{
+              scope.row.label === 1
+                ? $t('普通')
+                : scope.row.label === 10
+                ? $t('烟类')
+                : scope.row.label === 11
+                ? $t('酒类')
+                : ''
+            }}
+          </template>
+        </el-table-column>
         <el-table-column prop="cover" :label="$t('商品图片')" width="110">
           <template slot-scope="scope">
-            <img width="100px" height="100px" :src="scope.row.cover">
+            <img width="100px" height="100px" :src="scope.row.cover" />
           </template>
         </el-table-column>
         <el-table-column prop="num" :label="$t('可售库存')"> </el-table-column>
         <el-table-column prop="sold_num" :label="$t('已售库存')">
           <template slot-scope="scope">
-            <span style="color: #1a79eb" @click="soldRecords()">{{scope.row.sold_num}}</span>
+            <span style="color: #1a79eb" @click="soldRecords()">{{
+              scope.row.sold_num
+            }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="created_at" :label="$t('创建时间')"> </el-table-column>
         <el-table-column :label="$t('操作')" width="150">
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="editProduct(scope.row.id)">{{ $t('编辑') }}</el-button>
+            <el-button type="text" size="small" @click="editProduct(scope.row.id)">{{
+              $t('编辑')
+            }}</el-button>
             <el-button type="text" size="small">{{ $t('删除') }}</el-button>
           </template>
         </el-table-column>
@@ -155,16 +182,25 @@ export default {
   mixins: [pagination],
   data() {
     return {
+      categoryValue: '',
       categoryList: [], // 分类下拉
       supplierList: [], // 供应商下拉
       labelList: [
-        {id: 1, name: '普通'},
-        {id: 2, name: '烟酒'},
-        {id: 3, name: '酒精类'}
+        { id: 0, name: this.$t('供应商') },
+        { id: 1, name: this.$t('普通') },
+        { id: 10, name: this.$t('烟类') },
+        { id: 11, name: this.$t('酒类') }
+      ], // 分类标签
+      searchLists: [
+        { id: 1, label: this.$t('商品名称') },
+        { id: 2, label: this.$t('商品编号') },
+        { id: 3, label: this.$t('EAN') },
+        { id: 4, label: this.$t('供应商') }
       ],
+      searchValue: 1,
       label: '',
       tableInfo: [],
-      value: '',
+      supplierValue: '',
       input1: '',
       input2: '',
       input3: '',
@@ -181,22 +217,24 @@ export default {
   },
   methods: {
     getList() {
-      this.$http.get('api/shop/goods', {
-        params: {
-          page: this.page_params.page,
-          size: this.page_params.size,
-          keyword: this.input3,
-          category_id: this.value,
-          label: this.label,
-          supplier_id: this.value,
-          type_id: this.select
-        }
-      }).then(res => {
-        if (res.ret) {
-          this.tableInfo = res.data.data
-          this.page_params.total = res.data.total
-        }
-      })
+      this.$http
+        .get('api/shop/goods', {
+          params: {
+            page: this.page_params.page,
+            size: this.page_params.size,
+            keyword: this.input3,
+            category_id: this.value,
+            label: this.label,
+            supplier_id: this.value,
+            type_id: this.select
+          }
+        })
+        .then(res => {
+          if (res.ret) {
+            this.tableInfo = res.data.data
+            this.page_params.total = res.data.total
+          }
+        })
     },
     // 已售库存弹窗
     soldRecords() {

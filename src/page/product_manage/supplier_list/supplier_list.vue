@@ -29,14 +29,14 @@
         <el-table-column prop="name" :label="$t('供应商名称')"> </el-table-column>
         <el-table-column prop="switch" :label="$t('是否启动')">
           <template slot-scope="scope">
-            {{scope.row.switch ? '是' : '否'}}
+            {{ scope.row.switch ? $t('是') : $t('否') }}
           </template>
         </el-table-column>
         <el-table-column prop="created_at" :label="$t('创建时间')"> </el-table-column>
         <el-table-column :label="$t('操作')" width="200">
           <template slot-scope="scope">
             <el-button type="text" @click="editSupplier(scope.row)">
-              {{$t('编辑')}}
+              {{ $t('编辑') }}
             </el-button>
             <el-button type="text" @click="deleteSupplier(scope.row)">
               {{ $t('删除') }}
@@ -114,14 +114,16 @@ export default {
     // 添加或编辑供应商
     saveSupplier(form) {
       let api
-      this.title === '添加供应商' ? api = this.$http.post('api/shop/supplier', {
-        ...this.form,
-        shop_id: localStorage.getItem('shopId')
-      }) : api = this.$http.put(`api/shop/supplier/${this.categoryId}`, {
-        name: this.form.name,
-        switch: this.form.switch
-      })
-      this.$refs[form].validate((valid) => {
+      this.title === '添加供应商'
+        ? (api = this.$http.post('api/shop/supplier', {
+            ...this.form,
+            shop_id: localStorage.getItem('shopId')
+          }))
+        : (api = this.$http.put(`api/shop/supplier/${this.categoryId}`, {
+            name: this.form.name,
+            switch: this.form.switch
+          }))
+      this.$refs[form].validate(valid => {
         if (valid) {
           api.then(res => {
             if (res.ret) {
@@ -152,7 +154,7 @@ export default {
       })
     },
     // 点击添加供应商
-    addSupplier () {
+    addSupplier() {
       this.title = '添加供应商'
       this.dialogFormVisible = true
       this.form = {}
@@ -163,18 +165,20 @@ export default {
         confirmButtonText: this.$t('确定'),
         cancelButtonText: this.$t('取消'),
         type: 'warning'
-      }).then(() => {
-        this.$http.delete(`api/shop/supplier/${row.id}`).then(res => {
-          if (res.ret) {
-            this.$notify({
-              title: this.$t('成功'),
-              type: 'success',
-              message: this.$t('删除成功')
-            })
-            this.getList()
-          }
+      })
+        .then(() => {
+          this.$http.delete(`api/shop/supplier/${row.id}`).then(res => {
+            if (res.ret) {
+              this.$notify({
+                title: this.$t('成功'),
+                type: 'success',
+                message: this.$t('删除成功')
+              })
+              this.getList()
+            }
+          })
         })
-      }).catch(() => {})
+        .catch(() => {})
     },
     // 获取供应商列表
     async getList() {

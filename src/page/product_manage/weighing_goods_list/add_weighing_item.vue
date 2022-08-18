@@ -27,7 +27,8 @@
                     v-for="item in categoryList"
                     :key="item.id"
                     :label="item.name"
-                    :value="item.id">
+                    :value="item.id"
+                  >
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -46,7 +47,8 @@
                     v-for="item in supplierList"
                     :key="item.id"
                     :label="item.name"
-                    :value="item.id">
+                    :value="item.id"
+                  >
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -79,7 +81,8 @@
                   v-model="form.bbd"
                   type="date"
                   value-format="yyyy-MM-dd"
-                  placeholder="请选择保质期">
+                  placeholder="请选择保质期"
+                >
                 </el-date-picker>
               </el-form-item>
             </el-col>
@@ -90,7 +93,8 @@
                 <el-switch
                   v-model="form.vip_special"
                   :active-value="1"
-                  :inactive-value="0">
+                  :inactive-value="0"
+                >
                 </el-switch>
               </el-form-item>
             </el-col>
@@ -98,14 +102,21 @@
               <el-form-item :label="`${$t('商品图片')}:`" prop="cover">
                 <el-upload
                   class="upload-demo"
-                  action="https://dev-shouyin-api.nle-tech.com/api/shop/upload/image"
+                  :action="$baseUrl.BASE_API_URL + '/api/shop/upload/image'"
                   name="image"
                   :on-success="uploadSuccess"
-                  :show-file-list="false">
+                  :show-file-list="false"
+                >
                   <el-button size="small">{{ $t('点击上传') }}</el-button>
                   <span>{{ `（${$t('建议尺寸')} 500*500px）` }}</span>
                 </el-upload>
-                <img width="100" height="100" :src="form.cover"/>
+                <img
+                  class="shopImg"
+                  v-if="form.cover"
+                  width="100"
+                  height="100"
+                  :src="form.cover"
+                />
               </el-form-item>
             </el-col>
           </el-row>
@@ -122,7 +133,8 @@
         <el-button
           type="primary"
           style="width: 180px"
-          @click="addWeightProduct('weighForm')">
+          @click="addWeightProduct('weighForm')"
+        >
           {{ $t('保存') }}
         </el-button>
       </div>
@@ -213,17 +225,19 @@ export default {
       })
     },
     // 添加称重商品
-    addWeightProduct (weighForm) {
-      this.$refs[weighForm].validate((valid) => {
+    addWeightProduct(weighForm) {
+      this.$refs[weighForm].validate(valid => {
         if (valid) {
           let api
-          this.weighProductId ? api = this.$http.put(`api/shop/weigh_goods/${this.weighProductId}`, {
-            ...this.form,
-            shop_id: localStorage.getItem('shopId')
-          }) : api = this.$http.post('api/shop/weigh_goods', {
-            ...this.form,
-            shop_id: localStorage.getItem('shopId')
-          })
+          this.weighProductId
+            ? (api = this.$http.put(`api/shop/weigh_goods/${this.weighProductId}`, {
+                ...this.form,
+                shop_id: localStorage.getItem('shopId')
+              }))
+            : (api = this.$http.post('api/shop/weigh_goods', {
+                ...this.form,
+                shop_id: localStorage.getItem('shopId')
+              }))
           api.then(res => {
             if (res.ret) {
               this.$notify({
@@ -231,7 +245,7 @@ export default {
                 message: res.msg,
                 type: 'success'
               })
-              this.$router.push({path: '/product_manage/weighing_goods_list'})
+              this.$router.push({ path: '/product_manage/weighing_goods_list' })
             }
           })
         } else {
@@ -301,5 +315,8 @@ export default {
 .bottom-btn {
   width: 100%;
   padding: 20px 0 50px 15px;
+}
+.shopImg {
+  position: absolute;
 }
 </style>

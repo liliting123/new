@@ -161,7 +161,6 @@ import PaginationAndButtons from '@/components/pagination_and_buttons.vue'
 import pagination from '@/mixin/pagination.js'
 import searchList from '@/components/searchList.vue'
 export default {
-  name: 'refundList',
   mixins: [pagination],
   components: {
     PaginationAndButtons,

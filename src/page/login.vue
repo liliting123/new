@@ -45,7 +45,13 @@
                     style="width: 50%;"
                   ></el-input>
                   <img class="codeImg" src="../assets/images/code.png" alt="code" />
-                  <span class="codeNumber forgetPsd">wxmf</span>
+
+                  <img
+                    class="codeNumber forgetPsd"
+                    :src="'data:image/png;base64,' + reg_pic"
+                    @click="verificationCode()"
+                    alt="验证码"
+                  />
                 </div>
               </div>
               <div class="marginTopTen">
@@ -88,11 +94,14 @@ export default {
     return {
       email: '',
       password: '',
-      code: '1',
-      keep: false
+      code: '', // 验证码
+      keep: false,
+      reg_pic: '', // 验证码图片
+      reg_key: '' // 验证码标识
     }
   },
   mounted() {
+    this.verificationCode()
     this.email = localStorage.getItem(NLE.EMAIL)
     this.password = localStorage.getItem(NLE.PASSWORD)
     if (!this.email || !this.password) {
@@ -103,6 +112,13 @@ export default {
     }
   },
   methods: {
+    // 获取验证码
+    verificationCode() {
+      this.$http.get('api/shop/staff/pic_code').then(res => {
+        this.reg_pic = res.data.reg_pic
+        this.reg_key = res.data.reg_key
+      })
+    },
     login() {
       if (this.keep) {
         localStorage.setItem(NLE.EMAIL, this.email)
@@ -133,7 +149,9 @@ export default {
         this.$http
           .post('api/shop/staff/login', {
             email: this.email,
-            password: this.password
+            password: this.password,
+            reg_code: this.code,
+            reg_key: this.reg_key
           })
           .then(res => {
             console.log(res)
@@ -141,17 +159,12 @@ export default {
               this.$notify({
                 type: 'success',
                 title: this.$t('success'),
-                message: this.$t('LoginSuccessful')
+                message: this.$t('登录成功')
               })
               this.$store.commit('token/saveToken', { token: res.data.token })
               console.log(res.data.staff.shop_id, '99')
               // localStorage.setItem('shopId', res.data.staff.shop_id)
               this.$router.push('/')
-            } else {
-              this.$message({
-                message: res.msg,
-                type: 'error'
-              })
             }
           })
       }
@@ -262,8 +275,8 @@ export default {
     top: 198px;
   }
   .codeNumber {
-    width: 45%;
-    height: 40px;
+    width: 44%;
+    height: 36px;
     margin-top: 10px;
     background: #d7d7d7;
     text-align: center;

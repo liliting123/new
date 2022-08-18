@@ -10,12 +10,14 @@
           :start-placeholder="$t('开始日期')"
           :end-placeholder="$t('结束日期')"
           value-format="yyyy-MM-dd"
+          clearable
         >
         </el-date-picker>
         <el-select
           style="margin-left: 20px;"
           v-model="customerValue"
           :placeholder="$t('客户来源')"
+          clearable
         >
           <el-option
             v-for="item in customerSelect"
@@ -29,6 +31,7 @@
           style="margin-left: 20px;"
           v-model="orderValue"
           :placeholder="$t('订单状态')"
+          clearable
         >
           <el-option
             v-for="item in orderSelect"
@@ -39,15 +42,16 @@
           </el-option>
         </el-select>
         <el-select
-          style="margin-left: 20px;"
+          clearable
           v-model="paymentValue"
           :placeholder="$t('支付方式')"
+          style="margin-left: 20px;"
         >
           <el-option
             v-for="item in paymentSelect"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
           >
           </el-option>
         </el-select>
@@ -141,7 +145,6 @@ import pagination from '@/mixin/pagination.js'
 import searchList from '@/components/searchList.vue'
 import orderRefundDialog from './components/orderRefundDialog.vue'
 export default {
-  name: 'orderList',
   mixins: [pagination],
   components: {
     searchList,
@@ -178,23 +181,7 @@ export default {
           label: this.$t('退款成功')
         }
       ],
-      paymentSelect: [
-        {
-          label: this.$t('支付方式')
-        },
-        {
-          value: '1',
-          label: this.$t('现金')
-        },
-        {
-          value: '2',
-          label: this.$t('余额')
-        },
-        {
-          value: '3',
-          label: this.$t('银行卡')
-        }
-      ],
+      paymentSelect: [],
       orderNoSelect: [
         {
           value: 1,
@@ -225,7 +212,7 @@ export default {
   },
   mounted() {
     this.getList()
-    console.log(Number(0.1) + Number(0.2), 'number')
+    this.paymentList()
   },
   methods: {
     // 跳转订单详情
@@ -264,6 +251,14 @@ export default {
         .catch(() => {
           this.tableLoading = false
         })
+    },
+    // 获取支付方式
+    paymentList() {
+      this.$http.get('api/shop/payment').then(res => {
+        if (res.ret) {
+          this.paymentSelect = res.data.data
+        }
+      })
     }
   }
 }

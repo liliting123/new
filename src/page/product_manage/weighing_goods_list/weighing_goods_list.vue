@@ -3,7 +3,11 @@
     <!--    筛选条件-->
     <search-list>
       <div slot="left">
-        <el-select style="margin-left: 10px;" v-model="value" :placeholder="$t('分类')">
+        <el-select
+          style="margin-left: 10px;"
+          v-model="categoryValue"
+          :placeholder="$t('分类')"
+        >
           <el-option
             v-for="item in categoryList"
             :key="item.id"
@@ -14,7 +18,7 @@
         </el-select>
         <el-select
           style="margin:0 10px 0 10px;"
-          v-model="value"
+          v-model="supplierValue"
           :placeholder="$t('供应商')"
         >
           <el-option
@@ -30,11 +34,18 @@
         }}</el-button>
       </div>
       <div slot="right">
-        <el-input v-model="input3">
-          <el-select slot="prepend" v-model="input3" :placeholder="$t('商品名称')">
-            <el-option label="餐厅名" value="1"></el-option>
-            <el-option label="订单号" value="2"></el-option>
-            <el-option label="用户电话" value="3"></el-option>
+        <el-input v-model="inputValue">
+          <el-select
+            slot="prepend"
+            v-model="inputSelectValue"
+            :placeholder="$t('商品名称')"
+          >
+            <el-option
+              v-for="item in inputSelectList"
+              :key="item.id"
+              :label="item.label"
+              :value="item.id"
+            ></el-option>
           </el-select>
           <el-button slot="append">{{ $t('搜索') }}</el-button>
         </el-input>
@@ -53,7 +64,7 @@
       >
         <el-table-column width="50" label="#">
           <template slot-scope="scope">
-            <span class="table_index">{{scope.$index + 1}}</span>
+            <span class="table_index">{{ scope.$index + 1 }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="name" :label="$t('商品名称')" width="180">
@@ -62,7 +73,7 @@
         <el-table-column prop="category.name" :label="$t('商品分类')"> </el-table-column>
         <el-table-column prop="cover" :label="$t('商品图片')">
           <template slot-scope="scope">
-            <img width="100px" height="100px" :src="scope.row.cover">
+            <img width="100px" height="100px" :src="scope.row.cover" />
           </template>
         </el-table-column>
         <el-table-column prop="supplier.name" :label="$t('供应商')"> </el-table-column>
@@ -77,8 +88,12 @@
             <el-button type="text" size="small" @click="inventoryRecords(scope.row.id)">{{
               $t('库存记录')
             }}</el-button>
-            <el-button type="text" size="small" @click="editweighProduct(scope.row.id)">{{ $t('编辑') }}</el-button>
-            <el-button type="text" size="small" @click="delWeighProduct(scope.row.id)">{{ $t('删除') }}</el-button>
+            <el-button type="text" size="small" @click="editweighProduct(scope.row.id)">{{
+              $t('编辑')
+            }}</el-button>
+            <el-button type="text" size="small" @click="delWeighProduct(scope.row.id)">{{
+              $t('删除')
+            }}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -107,6 +122,13 @@ export default {
   mixins: [pagination],
   data() {
     return {
+      inputSelectList: [
+        { id: 1, label: this.$t('商品名称') },
+        { id: 2, label: this.$t('商品编号') },
+        { id: 3, label: this.$t('供应商') }
+      ],
+      inputSelectValue: 1,
+      inputValue: '',
       value: '',
       input1: '',
       input2: '',
@@ -116,7 +138,9 @@ export default {
       id: '',
       recordsData: [], // 库存记录
       categoryList: [], // 分类下拉
-      supplierList: [] // 供应商下拉
+      categoryValue: '',
+      supplierList: [], // 供应商下拉
+      supplierValue: ''
     }
   },
   created() {
@@ -131,18 +155,20 @@ export default {
         confirmButtonText: this.$t('确定'),
         cancelButtonText: this.$t('取消'),
         type: 'warning'
-      }).then(() => {
-        this.$http.delete(`api/shop/weigh_goods/${id}`).then(res => {
-          if (res.ret) {
-            this.$notify({
-              title: this.$t('成功'),
-              type: 'success',
-              message: this.$t('删除成功')
-            })
-            this.getWeighList()
-          }
+      })
+        .then(() => {
+          this.$http.delete(`api/shop/weigh_goods/${id}`).then(res => {
+            if (res.ret) {
+              this.$notify({
+                title: this.$t('成功'),
+                type: 'success',
+                message: this.$t('删除成功')
+              })
+              this.getWeighList()
+            }
+          })
         })
-      }).catch(() => {})
+        .catch(() => {})
     },
     // 编辑商品
     editweighProduct(id) {
@@ -155,18 +181,20 @@ export default {
     },
     // 获取称重商品列表
     getList() {
-      this.$http.get('api/shop/weigh_goods', {
-        params: {
-          page: this.page_params.page,
-          size: this.page_params.size,
-          keyword: this.page_params.keyword
-        }
-      }).then(res => {
-        if (res.ret) {
-          this.page_params.total = res.data.total
-          this.tableDataWeigh = res.data.data
-        }
-      })
+      this.$http
+        .get('api/shop/weigh_goods', {
+          params: {
+            page: this.page_params.page,
+            size: this.page_params.size,
+            keyword: this.page_params.keyword
+          }
+        })
+        .then(res => {
+          if (res.ret) {
+            this.page_params.total = res.data.total
+            this.tableDataWeigh = res.data.data
+          }
+        })
     },
     // 添加称重商品
     addWeightProduct() {
@@ -182,11 +210,13 @@ export default {
     },
     // 获取库存记录
     getRecordList() {
-      this.$http.get(`api/shop/weigh_goods_record?weigh_goods_id=${this.id}`).then(res => {
-        if (res.ret) {
-          this.recordsData = res.data.data
-        }
-      })
+      this.$http
+        .get(`api/shop/weigh_goods_record?weigh_goods_id=${this.id}`)
+        .then(res => {
+          if (res.ret) {
+            this.recordsData = res.data.data
+          }
+        })
     },
     // 获取供应商下拉列表
     async getSupplierList() {

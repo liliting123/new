@@ -25,7 +25,8 @@
                 <el-switch
                   v-model="form.vip_special"
                   :active-value="1"
-                  :inactive-value="0">
+                  :inactive-value="0"
+                >
                 </el-switch>
               </el-form-item>
             </el-col>
@@ -38,7 +39,8 @@
                     v-for="item in categoryList"
                     :key="item.id"
                     :label="item.name"
-                    :value="item.id">
+                    :value="item.id"
+                  >
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -47,14 +49,21 @@
               <el-form-item :label="`${$t('商品图片')}:`" prop="cover">
                 <el-upload
                   class="upload-demo"
-                  action="https://dev-shouyin-api.nle-tech.com/api/shop/upload/image"
+                  :action="$baseUrl.BASE_API_URL + '/api/shop/upload/image'"
                   name="image"
                   :on-success="uploadSuccess"
-                  :show-file-list="false">
+                  :show-file-list="false"
+                >
                   <el-button size="small">{{ $t('点击上传') }}</el-button>
                   <span>{{ `（${$t('建议尺寸')} 500*500px）` }}</span>
                 </el-upload>
-                <img width="100px" height="100px" :src="form.cover"/>
+                <img
+                  class="shopImg"
+                  v-if="form.cover"
+                  width="100px"
+                  height="100px"
+                  :src="form.cover"
+                />
               </el-form-item>
             </el-col>
           </el-row>
@@ -66,7 +75,8 @@
                     v-for="item in labelList"
                     :key="item.id"
                     :label="item.name"
-                    :value="item.id">
+                    :value="item.id"
+                  >
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -93,27 +103,44 @@
             </el-table-column>
             <el-table-column prop="code" :label="`*${$t('商品编码')}`">
               <template slot-scope="scope">
-                <el-form-item :prop="'spec.'+scope.$index+'.code'" :rules="rulesSpec.code">
+                <el-form-item
+                  :prop="'spec.' + scope.$index + '.code'"
+                  :rules="rulesSpec.code"
+                >
                   <el-input size="small" v-model="scope.row.code"></el-input>
                 </el-form-item>
               </template>
             </el-table-column>
             <el-table-column prop="ean" :label="`*${$t('EAN')}`">
               <template slot-scope="scope">
-                <el-form-item :prop="'spec.'+scope.$index+'.ean'" :rules="rulesSpec.ean">
-                  <el-input size="small" v-model="scope.row.ean" :disabled="scope.row.ean != ''"></el-input>
+                <el-form-item
+                  :prop="'spec.' + scope.$index + '.ean'"
+                  :rules="rulesSpec.ean"
+                >
+                  <el-input
+                    size="small"
+                    v-model="scope.row.ean"
+                    :disabled="scope.row.ean != ''"
+                  ></el-input>
                 </el-form-item>
               </template>
             </el-table-column>
             <el-table-column prop="supplier_id" :label="`*${$t('供应商')}`">
               <template slot-scope="scope">
-                <el-form-item :prop="'spec.'+scope.$index+'.supplier_id'" :rules="rulesSpec.supplier_id">
-                  <el-select v-model="scope.row.supplier_id" :placeholder="$t('请选择供应商')">
+                <el-form-item
+                  :prop="'spec.' + scope.$index + '.supplier_id'"
+                  :rules="rulesSpec.supplier_id"
+                >
+                  <el-select
+                    v-model="scope.row.supplier_id"
+                    :placeholder="$t('请选择供应商')"
+                  >
                     <el-option
                       v-for="item in supplierList"
                       :key="item.id"
                       :label="item.name"
-                      :value="item.id">
+                      :value="item.id"
+                    >
                     </el-option>
                   </el-select>
                 </el-form-item>
@@ -121,14 +148,20 @@
             </el-table-column>
             <el-table-column prop="name" :label="`*${$t('规格')}`">
               <template slot-scope="scope">
-                <el-form-item :prop="'spec.'+scope.$index+'.name'" :rules="rulesSpec.name">
+                <el-form-item
+                  :prop="'spec.' + scope.$index + '.name'"
+                  :rules="rulesSpec.name"
+                >
                   <el-input size="small" v-model="scope.row.name"></el-input>
                 </el-form-item>
               </template>
             </el-table-column>
             <el-table-column prop="price" :label="`*${$t('价格')}`">
               <template slot-scope="scope">
-                <el-form-item :prop="'spec.'+scope.$index+'.price'" :rules="rulesSpec.price">
+                <el-form-item
+                  :prop="'spec.' + scope.$index + '.price'"
+                  :rules="rulesSpec.price"
+                >
                   <el-input size="small" v-model="scope.row.price"></el-input>
                 </el-form-item>
               </template>
@@ -139,14 +172,20 @@
               :label="`*${$t('会员价')}`"
             >
               <template slot-scope="scope">
-                <el-form-item :prop="'spec.'+scope.$index+'.vip_price'" :rules="rulesSpec.vip_price">
+                <el-form-item
+                  :prop="'spec.' + scope.$index + '.vip_price'"
+                  :rules="rulesSpec.vip_price"
+                >
                   <el-input size="small" v-model="scope.row.vip_price"></el-input>
                 </el-form-item>
               </template>
             </el-table-column>
             <el-table-column prop="tax_rate" :label="`*${$t('税率')}`" width="180">
               <template slot-scope="scope">
-                <el-form-item :prop="'spec.'+scope.$index+'.tax_rate'" :rules="rulesSpec.tax_rate">
+                <el-form-item
+                  :prop="'spec.' + scope.$index + '.tax_rate'"
+                  :rules="rulesSpec.tax_rate"
+                >
                   <el-select v-model="scope.row.tax_rate" size="small">
                     <el-option label="0%" value="1"></el-option>
                     <el-option label="9%" value="2"></el-option>
@@ -161,7 +200,8 @@
                   type="text"
                   size="small"
                   v-if="productId"
-                  @click="showEAN(scope.$index)">
+                  @click="showEAN(scope.$index)"
+                >
                   {{ $t('EAN') }}
                 </el-button>
                 <el-button type="text" size="small" @click="deleteRow(scope.$index)">
@@ -186,7 +226,8 @@
             v-for="item in wmsList"
             :key="item.id"
             :label="item.name_cn"
-            :value="item.id">
+            :value="item.id"
+          >
           </el-option>
         </el-select>
       </div>
@@ -195,14 +236,13 @@
       <el-button
         type="primary"
         style="width: 180px"
-        @click="insertProduct('form','formSpec',)">
+        @click="insertProduct('form', 'formSpec')"
+      >
         {{ $t('保存') }}
       </el-button>
     </div>
     <!--    EAN弹窗-->
-    <addEANDialog
-      :visible.sync="dialogENATable"
-      :eanData="eanData"/>
+    <addEANDialog :visible.sync="dialogENATable" :eanData="eanData" />
   </div>
 </template>
 
@@ -218,9 +258,9 @@ export default {
   data() {
     return {
       labelList: [
-        {id: 1, name: '普通'},
-        {id: 2, name: '烟酒'},
-        {id: 3, name: '酒精类'}
+        { id: 1, name: this.$t('普通') },
+        { id: 10, name: this.$t('烟类') },
+        { id: 11, name: this.$t('酒类') }
       ],
       form: {
         name: {}, // 商品名称
@@ -230,15 +270,17 @@ export default {
         cover: '', // 封面图
         vip_special: false, // 是否vip价格
         wms_category_id: '', // wms分类id
-        spec: [{
-          supplier_id: '', // 供应商id
-          code: '', // 商品编号
-          name: '', // 规格名称
-          price: '', // 价格
-          vip_price: 0, // vip价格
-          tax_rate: '', // 汇率
-          ean: ''// EAN
-        }] // 商品规格数组
+        spec: [
+          {
+            supplier_id: '', // 供应商id
+            code: '', // 商品编号
+            name: '', // 规格名称
+            price: '', // 价格
+            vip_price: 0, // vip价格
+            tax_rate: '', // 汇率
+            ean: '' // EAN
+          }
+        ] // 商品规格数组
       },
       fileList: [],
       dialogENATable: false, // EAN弹窗
@@ -329,27 +371,28 @@ export default {
     },
     // 保存商品
     insertProduct(form, formSpec) {
-      Promise.all([
-        this.$refs[form].validate(),
-        this.$refs[formSpec].validate()
-      ]).then(() => {
-        let api
-        this.productId ? api = this.$http.put(`api/shop/goods/${this.productId}`, {
-          ...this.form
-        }) : this.$http.post('api/shop/goods', {
-          ...this.form
-        })
-        api.then(res => {
-          if (res.ret) {
-            this.$notify({
-              title: res.msg,
-              message: res.msg,
-              type: 'success'
-            })
-            this.$router.push({path: '/product_manage/normal_product_list'})
-          }
-        })
-      })
+      Promise.all([this.$refs[form].validate(), this.$refs[formSpec].validate()]).then(
+        () => {
+          let api
+          this.productId
+            ? (api = this.$http.put(`api/shop/goods/${this.productId}`, {
+                ...this.form
+              }))
+            : this.$http.post('api/shop/goods', {
+                ...this.form
+              })
+          api.then(res => {
+            if (res.ret) {
+              this.$notify({
+                title: res.msg,
+                message: res.msg,
+                type: 'success'
+              })
+              this.$router.push({ path: '/product_manage/normal_product_list' })
+            }
+          })
+        }
+      )
     },
     // 获取分类下拉列表
     async getClassList() {
@@ -473,5 +516,8 @@ export default {
   width: 100%;
   text-align: center;
   padding: 20px;
+}
+.shopImg {
+  position: absolute;
 }
 </style>

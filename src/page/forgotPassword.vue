@@ -32,10 +32,13 @@
                   class="input"
                 ></el-input>
                 <img class="codeImg" src="../assets/images/code.png" alt="code" />
-                <span class="verification sendOut border-radius" @click="getCode()">{{
-                  $t('发送')
-                }}</span>
-                <span class="verification sendOutTime border-radius" v-if="countdown"
+                <span
+                  v-if="!countdown"
+                  class="verification sendOut border-radius"
+                  @click="getCode()"
+                  >{{ $t('发送') }}</span
+                >
+                <span v-if="countdown" class="verification sendOutTime border-radius"
                   >{{ count }}s</span
                 >
                 <div>
@@ -116,6 +119,16 @@ export default {
               this.timer = null
             }
           }, 1000)
+          this.$http
+            .get('api/shop/staff/reset_password', {
+              params: {
+                email: this.email
+              }
+            })
+            .then(res => {
+              console.log(res)
+              this.emailCode = res.data
+            })
         }
       }
     },
@@ -139,6 +152,21 @@ export default {
           type: 'warning'
         })
       } else {
+        this.$http
+          .post('api/shop/staff/reset_password', {
+            email: this.email,
+            email_code: this.emailCode,
+            password: this.newPassword
+          })
+          .then(res => {
+            if (res.ret === 1) {
+              this.$notify({
+                title: this.$t('成功'),
+                message: res.msg,
+                type: 'success'
+              })
+            }
+          })
       }
     }
   }
