@@ -9,12 +9,14 @@
           :range-separator="$t('至')"
           :start-placeholder="$t('开始日期')"
           :end-placeholder="$t('结束日期')"
+          clearable
         >
         </el-date-picker>
         <el-select
           style="margin-left: 20px;"
           v-model="refundValue"
           :placeholder="$t('退款状态')"
+          clearable
         >
           <el-option
             v-for="item in refundSelect"
@@ -28,6 +30,7 @@
           style="margin-left: 20px;"
           v-model="IsRefundedValue"
           :placeholder="$t('是否已退款')"
+          clearable
         >
           <el-option
             v-for="item in IsRefundedSelect"
@@ -100,14 +103,26 @@
         <el-table-column prop="order.id" :label="$t('订单编号')" width="180">
         </el-table-column>
         <el-table-column prop="status_id" :label="$t('退款状态')" width="130">
+          <template slot-scope="scope">
+            {{
+              scope.row.status_id === 0
+                ? $t('未退款')
+                : scope.row.status_id === 1
+                ? $t('已退款')
+                : $t('退款拒绝')
+            }}
+          </template>
         </el-table-column>
         <el-table-column prop="refund_fee" :label="$t('退款金额')" width="180">
         </el-table-column>
         <el-table-column prop="remark" :label="$t('退款备注')"> </el-table-column>
         <el-table-column prop="created_at" :label="$t('申请时间')"> </el-table-column>
         <el-table-column prop="refund_return" :label="$t('是否已退款')" width="100">
+          <template slot-scope="scope">
+            {{ scope.row.refund_return === 0 ? $t('否') : $t('是') }}
+          </template>
         </el-table-column>
-        <el-table-column prop="order.status_id" :label="$t('操作人')" width="100">
+        <el-table-column prop="staff.name" :label="$t('操作人')" width="100">
         </el-table-column>
         <el-table-column prop="address" :label="$t('操作')" width="200">
           <template slot-scope="scope">
@@ -175,28 +190,29 @@ export default {
           label: this.$t('退款状态')
         },
         {
-          value: '0',
-          label: this.$t('退款成功')
+          value: 0,
+          label: this.$t('未退款')
         },
         {
-          value: '1',
-          label: this.$t('退款失败')
+          value: 1,
+          label: this.$t('已退款')
         },
         {
-          value: '2',
-          label: this.$t('待审核')
+          value: 2,
+          label: this.$t('退款拒绝')
         }
       ],
       IsRefundedSelect: [
         {
+          value: '',
           label: this.$t('退款状态')
         },
         {
-          value: 0,
+          value: 1,
           label: this.$t('是')
         },
         {
-          value: 1,
+          value: 0,
           label: this.$t('否')
         }
       ],

@@ -4,49 +4,57 @@
       <h1>{{ $t('收银后台') }}</h1>
     </div>
     <div class="brand">
-      <span style="padding: 10px;">Admin</span>
+      <span style="padding: 10px;">{{ userName }}</span>
       <router-link to="" @click.native="onLoyout()">
         <i class="el-icon-switch-button"></i>
       </router-link>
     </div>
-    <span @click="$store.state.sider_show_flag = !$store.state.sider_show_flag">
+
+    <span
+      style="padding: 25px"
+      @click="$store.state.sider_show_flag = !$store.state.sider_show_flag"
+    >
       <i class="el-icon-s-fold"></i>
     </span>
-    <el-select
-      v-model="shopValue"
-      :placeholder="$t('请选择')"
-      @change="selectShop()"
-      class="shopSelect"
-    >
-      <el-option
-        v-for="item in shopList"
-        :key="item.id"
-        :label="item.name"
-        :value="item.id"
+
+    <span style="position: relative; top: -3px;">
+      <el-select
+        v-model="shopValue"
+        :placeholder="$t('请选择')"
+        @change="selectShop()"
+        class="shopSelect"
       >
-      </el-option>
-    </el-select>
-    <el-popover placement="bottom" width="500" trigger="click">
-      <el-table :data="downloads" border stripe>
-        <el-table-column prop="name" :label="$t('Name')"></el-table-column>
-        <el-table-column prop="updated_at" :label="$t('time')"></el-table-column>
-        <el-table-column :label="$t('state')" width="90">
-          <template slot-scope="scope">
-            {{ scope.row.status ? $t('complete') : $t('inComplete') }}
-          </template>
-        </el-table-column>
-        <el-table-column :label="$t('operate')">
-          <template slot-scope="scope">
-            <el-button @click="onDownload(scope.row.file_url, scope.row.status)">
-              {{ $t('Download') }}
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <el-button slot="reference" plain @click="getDownloads()">
-        {{ $t('下载管理') }}
-      </el-button>
-    </el-popover>
+        <el-option
+          v-for="item in shopList"
+          :key="item.id"
+          :label="item.name"
+          :value="item.id"
+        >
+        </el-option>
+      </el-select>
+
+      <el-popover placement="bottom" width="500" trigger="click">
+        <el-table :data="downloads" border stripe>
+          <el-table-column prop="name" :label="$t('Name')"></el-table-column>
+          <el-table-column prop="updated_at" :label="$t('time')"></el-table-column>
+          <el-table-column :label="$t('state')" width="90">
+            <template slot-scope="scope">
+              {{ scope.row.status ? $t('complete') : $t('inComplete') }}
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('operate')">
+            <template slot-scope="scope">
+              <el-button @click="onDownload(scope.row.file_url, scope.row.status)">
+                {{ $t('Download') }}
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-button slot="reference" plain @click="getDownloads()">
+          {{ $t('下载管理') }}
+        </el-button>
+      </el-popover>
+    </span>
   </div>
 </template>
 <script>
@@ -56,7 +64,8 @@ export default {
     return {
       shopList: [],
       downloads: [],
-      shopValue: +localStorage.getItem('shopId')
+      shopValue: +localStorage.getItem('shopId'),
+      userName: localStorage.getItem('UserName')
     }
   },
   mounted() {
@@ -130,7 +139,7 @@ export default {
 .nav {
   background-color: #fff;
   width: 100%;
-  height: 76px;
+
   & > div {
     display: inline-block;
   }
@@ -138,14 +147,14 @@ export default {
   .toggle {
     font-size: 16px;
     height: 80px;
-    padding-top: 12px;
+    line-height: 80px;
+    padding-top: 0;
     width: 172px;
     color: #fff;
     text-align: center;
     // background-color: #1c2c3c;
-    background-color: #1c2c3c;
+    background-color: #0a1a2a;
     h1 {
-      padding-top: 10px;
       font-size: 27px;
     }
     p {
@@ -156,7 +165,7 @@ export default {
     float: right;
     padding-top: 18px;
     font-size: 21px;
-    padding-right: 30px;
+    padding-right: 7px;
     margin-top: 13px;
     div {
       padding-top: 10px;
@@ -196,13 +205,15 @@ export default {
       color: #1a79eb;
     }
   }
+
   span {
-    padding: 25px;
+    // padding: 25px;
     font-size: 25px;
   }
   .shopSelect {
     width: 150px;
     margin-right: 15px;
+    margin-top: 10px;
   }
 }
 </style>

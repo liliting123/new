@@ -278,5 +278,13 @@ export default {
   'Supplier List': 'Supplier List',
   'Store Settings': 'Store Settings',
   'Payment Settings': 'Payment Settings',
-  '这是最后一页, 不能在关闭了': `This is the last page. You can't close it anymore`
+  '这是最后一页, 不能在关闭了': `This is the last page. You can't close it anymore`,
+  未退款: 'No Refund',
+  已退款: 'Refunded',
+  退款拒绝: 'Refund Rejection',
+  未付款: 'Unpaid',
+  已付款: 'Paid',
+  普通: 'Ordinary',
+  烟类: 'Smoke',
+  酒类: 'Liquor'
 }

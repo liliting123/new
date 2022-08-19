@@ -7,6 +7,7 @@
           style="margin-left: 10px;"
           v-model="categoryValue"
           :placeholder="$t('分类')"
+          clearable
         >
           <el-option
             v-for="item in categoryList"
@@ -18,8 +19,9 @@
         </el-select>
         <el-select
           style="margin-left: 10px;"
-          v-model="label"
+          v-model="classificationLabel"
           :placeholder="$t('分类标签')"
+          clearable
         >
           <el-option
             v-for="item in labelList"
@@ -33,6 +35,7 @@
           style="margin:0 10px 0 10px;"
           v-model="supplierValue"
           :placeholder="$t('供应商')"
+          clearable
         >
           <el-option
             v-for="item in supplierList"
@@ -51,7 +54,7 @@
         }}</el-button>
       </div>
       <div slot="right">
-        <el-input v-model="input3">
+        <el-input v-model="inputValue">
           <el-select v-model="searchValue" slot="prepend" :placeholder="$t('商品名称')">
             <el-option
               v-for="item in searchLists"
@@ -138,7 +141,7 @@
         <el-table-column prop="num" :label="$t('可售库存')"> </el-table-column>
         <el-table-column prop="sold_num" :label="$t('已售库存')">
           <template slot-scope="scope">
-            <span style="color: #1a79eb" @click="soldRecords()">{{
+            <span style="color: #1a79eb" @click="soldRecords(scope.row.shop_id)">{{
               scope.row.sold_num
             }}</span>
           </template>
@@ -159,7 +162,11 @@
     <pullGoodsDialog :visible.sync="dialogPullGoods" />
     <!--  结算密码弹窗-->
     <setPasswordDialog :visible.sync="dialogPassword" />
-    <soldRecordsDialog :visible.sync="dialogSoldRecords" />
+    <soldRecordsDialog
+      v-if="dialogSoldRecords"
+      :visible.sync="dialogSoldRecords"
+      :shopId="shopId"
+    />
   </div>
 </template>
 
@@ -186,7 +193,6 @@ export default {
       categoryList: [], // 分类下拉
       supplierList: [], // 供应商下拉
       labelList: [
-        { id: 0, name: this.$t('供应商') },
         { id: 1, name: this.$t('普通') },
         { id: 10, name: this.$t('烟类') },
         { id: 11, name: this.$t('酒类') }
@@ -198,16 +204,14 @@ export default {
         { id: 4, label: this.$t('供应商') }
       ],
       searchValue: 1,
-      label: '',
+      classificationLabel: '', // 分类标签
       tableInfo: [],
-      supplierValue: '',
-      input1: '',
-      input2: '',
-      input3: '',
-      select: '',
+      supplierValue: '', // 供应商
+      inputValue: '',
       dialogPassword: false, // 结算密码弹窗
       dialogSoldRecords: false, // 已售库存弹窗
-      dialogPullGoods: false // 拉取后台商品弹窗
+      dialogPullGoods: false, // 拉取后台商品弹窗
+      shopId: ''
     }
   },
   created() {
@@ -222,11 +226,11 @@ export default {
           params: {
             page: this.page_params.page,
             size: this.page_params.size,
-            keyword: this.input3,
-            category_id: this.value,
-            label: this.label,
-            supplier_id: this.value,
-            type_id: this.select
+            keyword: this.inputValue,
+            category_id: this.categoryValue, // 商品分类
+            label: this.classificationLabel, // 分类标签
+            supplier_id: this.supplierValue, // 供应商
+            type_id: this.searchValue
           }
         })
         .then(res => {
@@ -237,7 +241,8 @@ export default {
         })
     },
     // 已售库存弹窗
-    soldRecords() {
+    soldRecords(id) {
+      this.shopId = id
       this.dialogSoldRecords = true
     },
     // 结算密码弹窗

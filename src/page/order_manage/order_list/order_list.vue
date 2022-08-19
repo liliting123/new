@@ -98,8 +98,7 @@
                   <img :src="scope.row.cover" width="100" height="100" alt="商品图片" />
                 </template>
               </el-table-column>
-              <el-table-column prop="goods_name" :label="$t('商品名称')">
-              </el-table-column>
+              <el-table-column prop="name" :label="$t('商品名称')"> </el-table-column>
               <el-table-column prop="goods_id" :label="$t('商品编号')"> </el-table-column>
               <el-table-column prop="ean" label="EAN"> </el-table-column>
               <el-table-column prop="spec_name" :label="$t('规格')"> </el-table-column>
@@ -113,9 +112,23 @@
         </el-table-column>
         <el-table-column prop="vip_id" :label="$t('会员ID')"> </el-table-column>
         <el-table-column prop="code" :label="$t('订单编号')"> </el-table-column>
-        <el-table-column prop="status_id" :label="$t('订单状态')"> </el-table-column>
+        <el-table-column :label="$t('订单状态')">
+          <template slot-scope="scope">
+            {{
+              scope.row.status_id === 0
+                ? $t('未付款')
+                : scope.row.status_id === 1
+                ? $t('已付款')
+                : $t('已退款')
+            }}
+          </template>
+        </el-table-column>
         <el-table-column prop="total_fee" :label="$t('订单金额')"> </el-table-column>
-        <el-table-column prop="source" :label="$t('客户来源')"> </el-table-column>
+        <el-table-column :label="$t('客户来源')">
+          <template slot-scope="scope">
+            {{ scope.row.vip_id ? $t('会员') : $t('散客') }}
+          </template>
+        </el-table-column>
         <el-table-column prop="staff.name" :label="$t('收银员')"> </el-table-column>
         <el-table-column prop="payment.name" :label="$t('支付方式')"> </el-table-column>
         <el-table-column prop="payment_time" :label="$t('支付时间')"> </el-table-column>
@@ -124,9 +137,13 @@
             <el-button type="text" size="small" @click="showOrderDetail(scope.row.id)">{{
               $t('查看')
             }}</el-button>
-            <el-button type="text" size="small" @click="showDiglog(scope.row.id)">{{
-              $t('退款')
-            }}</el-button>
+            <el-button
+              v-if="scope.row.status_id === 1"
+              type="text"
+              size="small"
+              @click="showDiglog(scope.row.id)"
+              >{{ $t('退款') }}</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -159,26 +176,29 @@ export default {
           label: this.$t('客户来源')
         },
         {
-          value: '1',
+          value: 1,
           label: this.$t('散客')
         },
         {
-          value: '2',
+          value: 2,
           label: this.$t('会员')
         }
       ],
       orderSelect: [
         {
-          value: '0',
           label: this.$t('订单状态')
         },
         {
-          value: '1',
-          label: this.$t('已支付')
+          value: 0,
+          label: this.$t('未付款')
         },
         {
-          value: '2',
-          label: this.$t('退款成功')
+          value: 1,
+          label: this.$t('已付款')
+        },
+        {
+          value: 2,
+          label: this.$t('已退款')
         }
       ],
       paymentSelect: [],

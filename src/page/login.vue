@@ -162,7 +162,8 @@ export default {
                 message: this.$t('登录成功')
               })
               this.$store.commit('token/saveToken', { token: res.data.token })
-              console.log(res.data.staff.shop_id, '99')
+              localStorage.setItem('UserName', res.data.staff.name)
+
               // localStorage.setItem('shopId', res.data.staff.shop_id)
               this.$router.push('/')
             }

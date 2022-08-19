@@ -81,7 +81,6 @@ export default {
     top: 0;
     left: 0;
     width: 100%;
-    height: 76px;
     z-index: 88;
   }
   .layout-side-left {
@@ -92,14 +91,12 @@ export default {
     overflow-x: hidden;
     overflow-y: auto;
     position: fixed;
-    top: 26px;
+    top: 80px;
     left: 0px;
     bottom: 0px;
     right: 0px;
-    padding-top: 50px;
   }
   .layout-side-right {
-    // padding-top: 76px;
     margin-left: 200px;
     z-index: 88;
     font-size: 14px;

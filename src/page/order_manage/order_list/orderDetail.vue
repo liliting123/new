@@ -41,7 +41,7 @@
       <div class="content">
         <div class="conten-item">
           <span>{{ $t('订单状态') }}:</span>
-          <el-input v-model="basic_Info.status_id" :disabled="true"> </el-input>
+          <el-input v-model="status_id" :disabled="true"> </el-input>
         </div>
       </div>
       <div class="content">
@@ -67,7 +67,7 @@
               <img :src="scope.row.cover" alt="商品图片" width="100" height="100" />
             </template>
           </el-table-column>
-          <el-table-column prop="goods_name" :label="$t('商品名称')" width="180">
+          <el-table-column prop="name" :label="$t('商品名称')" width="180">
           </el-table-column>
           <el-table-column prop="goods_id" :label="$t('商品编号')"> </el-table-column>
           <el-table-column prop="ean" :label="$t('EAN')" width="180"> </el-table-column>
@@ -107,11 +107,7 @@
               />
             </template>
           </el-table-column>
-          <el-table-column
-            prop="item[0].item.goods_name"
-            :label="$t('商品名称')"
-            width="180"
-          >
+          <el-table-column prop="item[0].item.name" :label="$t('商品名称')" width="180">
           </el-table-column>
           <el-table-column prop="item[0].item.goods_id" :label="$t('商品编号')">
           </el-table-column>
@@ -147,16 +143,26 @@ export default {
       basic_Info: {},
       email: '',
       cashier: '',
-      paymentName: ''
+      paymentName: '',
+      orderStatus: ''
     }
   },
+  computed: {
+    status_id() {
+      return this.basic_Info.status_id === 0
+        ? this.$t('未付款')
+        : this.basic_Info.status_id === 1
+        ? this.$t('已付款')
+        : this.$t('已退款')
+    }
+  },
+
   mounted() {
     this.getDetail()
   },
   methods: {
     getDetail() {
       this.$http.get(`api/shop/order/${this.$route.params.id}`).then(res => {
-        console.log(res.data)
         this.basic_Info = res.data
         this.goods_Info = res.data.item
         this.email = res.data.staff.email

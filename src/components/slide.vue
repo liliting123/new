@@ -1,7 +1,7 @@
 <template>
   <div>
     <ul class="slide" v-for="item in structure" :key="item.name">
-      <li v-bind:class="{ expanded: item.expanded }">
+      <li class="slide-title" v-bind:class="{ expanded: item.expanded }">
         <a
           href="JavaScript:"
           class="slide-nav-title"
@@ -130,5 +130,8 @@ a {
   border-left: #409eff 5px solid;
   color: #fff;
   cursor: default;
+}
+.slide-nav-title:hover {
+  background: #434a50;
 }
 </style>

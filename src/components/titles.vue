@@ -218,8 +218,7 @@ export default {
   position: relative;
   z-index: 999;
   .title_main {
-    padding: 18px 0;
-    padding-left: 25px;
+    padding: 18px;
     border-top: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
     h3 {
@@ -326,7 +325,7 @@ export default {
 }
 /deep/ .el-tabs__nav-next,
 /deep/ .el-tabs__nav-prev {
-  line-height: 46px;
+  line-height: 33px;
   width: 30px;
   text-align: center;
 }

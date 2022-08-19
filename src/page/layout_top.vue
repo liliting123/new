@@ -1,6 +1,6 @@
 <template>
   <div class="nav">
-    <div class="toggle">
+    <div class="toggles">
       <h1>MyEUShop</h1>
       <p>{{ $t('shopmanage') }}</p>
     </div>
@@ -80,7 +80,7 @@ export default {
 .nav {
   background-color: #27283a;
   width: 100%;
-  height: 76px;
+
   // & > div {
   //   display: inline-block;
   // }
@@ -89,15 +89,12 @@ export default {
     position: relative;
     bottom: 10px;
   }
-  .toggle {
+  .toggles {
     font-size: 16px;
-    height: 76px;
     width: 172px;
     color: #fff;
     text-align: center;
-    h1 {
-      padding-top: 10px;
-    }
+    line-height: 80px;
     p {
       padding-top: 5px;
     }
@@ -108,7 +105,7 @@ export default {
     font-size: 16px;
     padding-right: 30px;
     div {
-      padding-top: 10px;
+      // padding-top: 10px;
       float: right;
     }
     a {

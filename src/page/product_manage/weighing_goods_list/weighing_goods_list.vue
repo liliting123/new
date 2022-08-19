@@ -7,6 +7,7 @@
           style="margin-left: 10px;"
           v-model="categoryValue"
           :placeholder="$t('分类')"
+          clearable
         >
           <el-option
             v-for="item in categoryList"
@@ -20,6 +21,7 @@
           style="margin:0 10px 0 10px;"
           v-model="supplierValue"
           :placeholder="$t('供应商')"
+          clearable
         >
           <el-option
             v-for="item in supplierList"
@@ -35,11 +37,7 @@
       </div>
       <div slot="right">
         <el-input v-model="inputValue">
-          <el-select
-            slot="prepend"
-            v-model="inputSelectValue"
-            :placeholder="$t('商品名称')"
-          >
+          <el-select slot="prepend" v-model="searchValue" :placeholder="$t('商品名称')">
             <el-option
               v-for="item in inputSelectList"
               :key="item.id"
@@ -47,7 +45,7 @@
               :value="item.id"
             ></el-option>
           </el-select>
-          <el-button slot="append">{{ $t('搜索') }}</el-button>
+          <el-button slot="append" @click="getList()">{{ $t('搜索') }}</el-button>
         </el-input>
       </div>
     </search-list>
@@ -127,12 +125,8 @@ export default {
         { id: 2, label: this.$t('商品编号') },
         { id: 3, label: this.$t('供应商') }
       ],
-      inputSelectValue: 1,
+      searchValue: 1,
       inputValue: '',
-      value: '',
-      input1: '',
-      input2: '',
-      input3: '',
       tableDataWeigh: [], // 称重商品列表
       dialoginventoryRecords: false, // 库存记录弹窗
       id: '',
@@ -186,7 +180,10 @@ export default {
           params: {
             page: this.page_params.page,
             size: this.page_params.size,
-            keyword: this.page_params.keyword
+            keyword: this.inputValue,
+            type_id: this.searchValue,
+            label: this.categoryValue, // 分类标签
+            supplier_id: this.supplierValue // 供应商
           }
         })
         .then(res => {
