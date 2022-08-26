@@ -10,10 +10,11 @@
           :start-placeholder="$t('开始日期')"
           :end-placeholder="$t('结束日期')"
           clearable
+          style="margin-right: 20px;"
         >
         </el-date-picker>
         <el-select
-          style="margin-left: 20px;"
+          style="margin-right: 20px;"
           v-model="refundValue"
           :placeholder="$t('退款状态')"
           clearable
@@ -26,12 +27,7 @@
           >
           </el-option>
         </el-select>
-        <el-select
-          style="margin-left: 20px;"
-          v-model="IsRefundedValue"
-          :placeholder="$t('是否已退款')"
-          clearable
-        >
+        <el-select v-model="IsRefundedValue" :placeholder="$t('是否已退款')" clearable>
           <el-option
             v-for="item in IsRefundedSelect"
             :key="item.value"
@@ -91,18 +87,24 @@
               <el-table-column prop="item.ean" :label="$t('EAN')"> </el-table-column>
               <el-table-column prop="item.spec_name" :label="$t('规格')">
               </el-table-column>
-              <el-table-column prop="item.price" :label="$t('单价')"> </el-table-column>
+              <el-table-column prop="item.price" :label="$t('单价')">
+                <template slot-scope="scope"> €{{ scope.row.item.price }} </template>
+              </el-table-column>
               <el-table-column prop="num" :label="$t('数量')"> </el-table-column>
-              <el-table-column prop="refund_fee" :label="$t('退款金额')">
+              <el-table-column :label="$t('退款金额')">
+                <template slot-scope="scope"> €{{ scope.row.refund_fee }} </template>
               </el-table-column>
             </el-table>
           </template>
         </el-table-column>
-        <el-table-column prop="order.vip_id" :label="$t('会员ID')" width="130">
+        <el-table-column :label="$t('会员ID')" width="130">
+          <template slot-scope="scope">
+            {{ scope.row.order.vip_id || $t('散客') }}
+          </template>
         </el-table-column>
-        <el-table-column prop="order.id" :label="$t('订单编号')" width="180">
+        <el-table-column prop="order.code" :label="$t('订单编号')" width="180">
         </el-table-column>
-        <el-table-column prop="status_id" :label="$t('退款状态')" width="130">
+        <el-table-column prop="status_id" :label="$t('退款状态')">
           <template slot-scope="scope">
             {{
               scope.row.status_id === 0
@@ -113,7 +115,11 @@
             }}
           </template>
         </el-table-column>
-        <el-table-column prop="refund_fee" :label="$t('退款金额')" width="180">
+        <el-table-column :label="$t('申请金额')">
+          <template slot-scope="scope"> €{{ scope.row.apply_fee }} </template>
+        </el-table-column>
+        <el-table-column :label="$t('退款金额')">
+          <template slot-scope="scope"> €{{ scope.row.refund_fee }} </template>
         </el-table-column>
         <el-table-column prop="remark" :label="$t('退款备注')"> </el-table-column>
         <el-table-column prop="created_at" :label="$t('申请时间')"> </el-table-column>
@@ -130,15 +136,18 @@
             <el-button
               type="text"
               size="small"
-              @click="confirmRefund(scope.row.order_id)"
+              v-if="scope.row.refund_return !== 1"
+              @click="confirmRefund(scope.row.id)"
               >{{ $t('确认已退款') }}</el-button
             >
             <el-button
               type="text"
               size="small"
-              @click="refundDialog(scope.row.order_id)"
+              v-if="scope.row.status_id !== 1"
+              @click="refundDialog(scope.row)"
               >{{ $t('退款审核') }}</el-button
             >
+            <!-- <el-button @click="del(scope.row.id)">删除</el-button> -->
           </template>
         </el-table-column>
       </el-table>
@@ -155,7 +164,12 @@
             </el-select>
           </el-form-item>
           <el-form-item :label="`${$t('退款金额')}:`" prop="refund_fee">
-            <el-input v-model="form.refund_fee">
+            <el-input
+              v-model="form.refund_fee"
+              type="number"
+              :max="form.refund_fee"
+              :min="0"
+            >
               <span slot="suffix" style="font-size: 16px">€</span>
             </el-input>
           </el-form-item>
@@ -257,13 +271,30 @@ export default {
         remark: [{ required: true, message: '请输入备注', trigger: 'blur' }],
         refund_fee: [{ required: true, message: '请输入退款金额', trigger: 'blur' }]
       },
-      orderId: ''
+      thisRefund: ''
     }
   },
   mounted() {
     this.getList()
   },
   methods: {
+    // del(id) {
+    //   this.$confirm(this.$t('确认要删除吗?'), this.$t('提示'), {
+    //     confirmButtonText: this.$t('确定'),
+    //     cancelButtonText: this.$t('取消'),
+    //     type: 'warning'
+    //   }).then(async () => {
+    //     const res = await this.$http.delete(`api/shop/order_refund/${id}`)
+    //     if (res.ret === 1) {
+    //       this.$notify({
+    //         title: this.$t('success'),
+    //         message: res.msg,
+    //         type: 'success'
+    //       })
+    //       this.getList()
+    //     }
+    //   })
+    // },
     getList() {
       this.$http
         .get('api/shop/order_refund', {
@@ -292,17 +323,23 @@ export default {
             message: res.msg,
             type: 'success'
           })
+          this.getList()
         }
       })
     },
-    refundDialog(id) {
+    refundDialog(info) {
       this.dialogRefund = true
-      this.orderId = id
+      this.thisRefund = info
+      this.form.refund_fee = info.apply_fee
     },
     // 退款审核
     refundReview() {
+      if (Number(this.form.refund_fee) > Number(this.thisRefund.apply_fee)) {
+        this.$message.error('退款金额不能大于申请金额')
+        return
+      }
       this.$http
-        .post(`/api/shop/order_refund/check/${this.orderId}`, {
+        .post(`/api/shop/order_refund/check/${this.thisRefund.id}`, {
           ...this.form
         })
         .then(res => {
@@ -314,6 +351,7 @@ export default {
             })
             this.dialogRefund = false
             this.form = {}
+            this.getList()
           }
         })
     }

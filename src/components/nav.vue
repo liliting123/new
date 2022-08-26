@@ -107,6 +107,9 @@ export default {
         this.$store.commit('token/removeToken')
         this.$store.commit('switchPermissionMapFilterStatus', { status: false }) // 重新筛选路由
         this.$router.push('/login')
+        localStorage.removeItem('shopId')
+        localStorage.removeItem('tagInfo2')
+        localStorage.removeItem('permission')
       })
     },
     // 获取下载列表

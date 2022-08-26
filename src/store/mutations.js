@@ -2,6 +2,8 @@ export default {
   savePermissionMap(state, { permissionMap }) {
     // 储存权限表
     state.permissionMap = permissionMap
+    localStorage.setItem('permission', permissionMap)
+    // console.log(permissionMap, 'permissionMapmu78')
   },
   switchPermissionMapFilterStatus(state, { status }) {
     // 切换权限表过滤状态

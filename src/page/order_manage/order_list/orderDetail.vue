@@ -35,7 +35,9 @@
       <div class="content">
         <div class="conten-item">
           <span>{{ $t('订单金额') }}:</span>
-          <el-input v-model="basic_Info.total_fee" :disabled="true"> </el-input>
+          <el-input v-model="basic_Info.total_fee" :disabled="true">
+            <i slot="prefix" style="line-height: 40px;margin-left:10px">€</i>
+          </el-input>
         </div>
       </div>
       <div class="content">
@@ -73,62 +75,67 @@
           <el-table-column prop="ean" :label="$t('EAN')" width="180"> </el-table-column>
           <el-table-column prop="spec_name" :label="$t('规格')" width="180">
           </el-table-column>
-          <el-table-column prop="price" :label="$t('单价')"> </el-table-column>
+          <el-table-column :label="$t('单价')">
+            <template slot-scope="scope"> € {{ scope.row.price }} </template>
+          </el-table-column>
           <el-table-column prop="num" :label="$t('数量')" width="180"> </el-table-column>
-          <el-table-column prop="payment_fee" :label="$t('实付')" width="180">
+          <el-table-column :label="$t('实付')" width="180">
+            <template slot-scope="scope"> € {{ scope.row.payment_fee }} </template>
           </el-table-column>
         </el-table>
       </div>
       <div class="bottom-text">
-        <span>{{ $t('总计') }}:</span>
-        <span>{{ $t('改价') }}:</span>
-        <span>{{ $t('找零') }}:</span>
-        <span>{{ $t('实收') }}:</span>
+        <span>{{ $t('总计') }}:€{{ basic_Info.payment_fee }}</span>
+        <span
+          >{{ $t('改价') }}:€{{
+            (basic_Info.cash && basic_Info.cash.payment_fee) || '0.00'
+          }}</span
+        >
+        <span
+          >{{ $t('找零') }}:€{{
+            (basic_Info.cash && basic_Info.cash.change_fee) || '0.00'
+          }}</span
+        >
+        <span
+          >{{ $t('实收') }}:€{{
+            (basic_Info.cash && basic_Info.cash.received_fee) || '0.00'
+          }}</span
+        >
       </div>
     </div>
-    <div class="info-top">
+    <div class="info-top" v-for="itemRefund in refundTable" :key="itemRefund.id">
       <div class="title">
         <span>{{ $t('退款记录') }}</span>
-        <span>{{ $t('操作时间') }}:2022.05.27 12:00:00</span>
+        <span>{{ $t('操作时间') }}:{{ itemRefund.audit_time }}</span>
       </div>
       <div class="table">
         <el-table
           :header-cell-style="{ background: '#F7F7F7' }"
-          :data="basic_Info.refund"
+          :data="itemRefund.item"
           style="width: 100%"
         >
           <el-table-column prop="date" :label="$t('商品图片')" width="180">
             <template slot-scope="scope">
-              <img
-                :src="scope.row.item[0].item.cover"
-                alt="商品图片"
-                width="100"
-                height="100"
-              />
+              <img :src="scope.row.item.cover" alt="商品图片" width="100" height="100" />
             </template>
           </el-table-column>
-          <el-table-column prop="item[0].item.name" :label="$t('商品名称')" width="180">
+          <el-table-column prop="item.name" :label="$t('商品名称')" width="180">
           </el-table-column>
-          <el-table-column prop="item[0].item.goods_id" :label="$t('商品编号')">
+          <el-table-column prop="item.goods_id" :label="$t('商品编号')">
           </el-table-column>
-          <el-table-column prop="item[0].item.ean" :label="$t('EAN')" width="180">
+          <el-table-column prop="item.ean" :label="$t('EAN')" width="180">
           </el-table-column>
-          <el-table-column prop="item[0].item.spec_name" :label="$t('规格')" width="180">
+          <el-table-column prop="item.spec_name" :label="$t('规格')" width="180">
           </el-table-column>
-          <el-table-column prop="item[0].item.price" :label="$t('单价')">
+          <el-table-column prop="item.price" :label="$t('单价')"> </el-table-column>
+          <el-table-column prop="item.num" :label="$t('数量')" width="180">
           </el-table-column>
-          <el-table-column prop="item[0].item.num" :label="$t('数量')" width="180">
-          </el-table-column>
-          <el-table-column
-            prop="item[0].item.payment_fee"
-            :label="$t('退款金额')"
-            width="180"
-          >
+          <el-table-column prop="item.payment_fee" :label="$t('退款金额')" width="180">
           </el-table-column>
         </el-table>
       </div>
       <div class="bottom-sum">
-        <span>{{ $t('总计') }}:</span>
+        <span>{{ $t('总计') }}:€{{ itemRefund.refund_fee }}</span>
       </div>
     </div>
   </div>
@@ -141,6 +148,7 @@ export default {
     return {
       goods_Info: [],
       basic_Info: {},
+      refundTable: [], // 仅显示退款成功的记录
       email: '',
       cashier: '',
       paymentName: '',
@@ -164,6 +172,9 @@ export default {
     getDetail() {
       this.$http.get(`api/shop/order/${this.$route.params.id}`).then(res => {
         this.basic_Info = res.data
+        this.refundTable = this.basic_Info.refund.filter(item => {
+          return item.status_id === 1
+        })
         this.goods_Info = res.data.item
         this.email = res.data.staff.email
         this.cashier = res.data.staff.name

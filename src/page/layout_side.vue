@@ -95,6 +95,7 @@ export default {
     left: 0px;
     bottom: 0px;
     right: 0px;
+    padding-top: 13px;
   }
   .layout-side-right {
     margin-left: 200px;

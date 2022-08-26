@@ -19,15 +19,15 @@
         <el-descriptions style="padding:16px" :column="6" direction="vertical">
           <el-descriptions-item :label="$t('销售金额')">€0.00</el-descriptions-item>
           <el-descriptions-item :label="$t('下单数量')">0</el-descriptions-item>
-          <el-descriptions-item :label="$t('客单价')">kooriookami</el-descriptions-item>
-          <el-descriptions-item :label="$t('会员人数')">18100000000</el-descriptions-item>
-          <el-descriptions-item :label="$t('散客人数')">苏州市</el-descriptions-item>
+          <el-descriptions-item :label="$t('客单价')">€0.00</el-descriptions-item>
+          <el-descriptions-item :label="$t('会员人数')">0</el-descriptions-item>
+          <el-descriptions-item :label="$t('散客人数')">0</el-descriptions-item>
           <el-descriptions-item :label="$t('总人数')"> 0</el-descriptions-item><br />
           <el-descriptions-item :label="$t('余额支付金额')">€0.00</el-descriptions-item>
           <el-descriptions-item :label="$t('余额支付单量')">0</el-descriptions-item>
           <el-descriptions-item :label="$t('余额占比率')">0.00%</el-descriptions-item>
           <el-descriptions-item :label="$t('退款金额')">€0.00</el-descriptions-item>
-          <el-descriptions-item :label="$t('退款单数')">00</el-descriptions-item>
+          <el-descriptions-item :label="$t('退款单数')">0</el-descriptions-item>
           <el-descriptions-item :label="$t('退款率')">0.00%</el-descriptions-item>
         </el-descriptions>
       </div>
@@ -151,7 +151,7 @@ export default {
               obj.name +
               '<br>' +
               _this.$t('商品价格') +
-              '：' +
+              '：€' +
               obj.price +
               '<br>' +
               _this.$t('商品销量') +
@@ -430,7 +430,7 @@ export default {
     background-color: #fff;
     margin-bottom: 0.5em;
     .pickerDate {
-      margin-top: 5px;
+      margin-top: 7px;
       margin-right: 20px;
     }
     .content_box {

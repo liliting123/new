@@ -286,5 +286,6 @@ export default {
   已付款: 'Paid',
   普通: 'Ordinary',
   烟类: 'Smoke',
-  酒类: 'Liquor'
+  酒类: 'Liquor',
+  申请金额: 'Application Amount'
 }

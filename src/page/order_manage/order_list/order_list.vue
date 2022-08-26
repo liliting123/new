@@ -11,10 +11,11 @@
           :end-placeholder="$t('结束日期')"
           value-format="yyyy-MM-dd"
           clearable
+          style="margin-right: 20px;"
         >
         </el-date-picker>
         <el-select
-          style="margin-left: 20px;"
+          style="margin-right: 20px;"
           v-model="customerValue"
           :placeholder="$t('客户来源')"
           clearable
@@ -28,7 +29,7 @@
           </el-option>
         </el-select>
         <el-select
-          style="margin-left: 20px;"
+          style="margin-right: 20px;"
           v-model="orderValue"
           :placeholder="$t('订单状态')"
           clearable
@@ -41,12 +42,7 @@
           >
           </el-option>
         </el-select>
-        <el-select
-          clearable
-          v-model="paymentValue"
-          :placeholder="$t('支付方式')"
-          style="margin-left: 20px;"
-        >
+        <el-select clearable v-model="paymentValue" :placeholder="$t('支付方式')">
           <el-option
             v-for="item in paymentSelect"
             :key="item.id"
@@ -99,18 +95,25 @@
                 </template>
               </el-table-column>
               <el-table-column prop="name" :label="$t('商品名称')"> </el-table-column>
-              <el-table-column prop="goods_id" :label="$t('商品编号')"> </el-table-column>
+              <el-table-column prop="code" :label="$t('商品编号')"> </el-table-column>
               <el-table-column prop="ean" label="EAN"> </el-table-column>
               <el-table-column prop="spec_name" :label="$t('规格')"> </el-table-column>
-              <el-table-column prop="price" :label="$t('单价')"> </el-table-column>
+              <el-table-column :label="$t('单价')">
+                <template slot-scope="scope"> €{{ scope.row.price }} </template>
+              </el-table-column>
               <el-table-column prop="num" :label="$t('数量')"> </el-table-column>
-              <el-table-column prop="payment_fee" :label="$t('实付')"> </el-table-column>
+              <el-table-column :label="$t('实付')">
+                <template slot-scope="scope"> €{{ scope.row.payment_fee }} </template>
+              </el-table-column>
             </el-table>
           </template>
         </el-table-column>
-        <el-table-column prop="name" :label="$t('会员名称')" width="180">
+
+        <el-table-column prop="vip_id" :label="$t('会员ID')">
+          <template slot-scope="scope">
+            {{ scope.row.vip_id || $t('散客') }}
+          </template>
         </el-table-column>
-        <el-table-column prop="vip_id" :label="$t('会员ID')"> </el-table-column>
         <el-table-column prop="code" :label="$t('订单编号')"> </el-table-column>
         <el-table-column :label="$t('订单状态')">
           <template slot-scope="scope">
@@ -123,7 +126,9 @@
             }}
           </template>
         </el-table-column>
-        <el-table-column prop="total_fee" :label="$t('订单金额')"> </el-table-column>
+        <el-table-column :label="$t('订单金额')">
+          <template slot-scope="scope"> €{{ scope.row.total_fee }} </template>
+        </el-table-column>
         <el-table-column :label="$t('客户来源')">
           <template slot-scope="scope">
             {{ scope.row.vip_id ? $t('会员') : $t('散客') }}

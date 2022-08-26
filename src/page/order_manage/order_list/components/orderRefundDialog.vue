@@ -38,10 +38,12 @@
         <template slot-scope="scope">
           <el-input
             type="number"
-            :max="scope.row.num"
+            :max="scope.row.shopNum"
             min="1"
             size="small"
             v-model="scope.row.num"
+            onkeyup="this.value=this.value.replace(/\D|^0/g,'')"
+            @change="selectShops()"
           />
         </template>
       </el-table-column>
@@ -113,8 +115,10 @@ export default {
         })
         .then(res => {
           this.page_params.total = res.data.total
-
           this.shopDatas = res.data.data
+          this.shopDatas.forEach(item => {
+            item.shopNum = item.num
+          })
         })
     },
     handleClose() {
@@ -123,38 +127,51 @@ export default {
     selectShops() {
       this.selectList = this.$refs.shopDatas.selection // 选中的退款商品
       console.log(this.selectList)
-      this.selectList.forEach(item => {
-        this.itemShop.push({
-          order_item_id: item.order_id,
-          num: item.num,
-          refund_fee: item.payment_fee
-        })
-      })
       this.refundMoney = this.selectList.reduce(
-        (sum3, obj) => (sum3 += Number(obj.payment_fee)),
+        (sum3, obj) => (sum3 += Number(obj.price * obj.num)),
         0
       ) // 计算选中的退款商品总价
     },
 
     // 退款
     async orderRefund() {
-      console.log(this.ids)
-      const res = await this.$http.post(
-        `api/shop/order_refund/store_refund/${this.ids}`,
-        {
-          apply_fee: this.refundMoney,
-          item: this.itemShop
-        }
-      )
-      if (res.ret === 1) {
-        this.$notify({
-          title: this.$t('success'),
-          message: res.msg,
-          type: 'success'
+      this.itemShop = []
+      this.selectList.forEach(item => {
+        this.itemShop.push({
+          order_item_id: item.id,
+          num: item.num,
+          shopNum: item.shopNum,
+          refund_fee: item.payment_fee
         })
-        this.visibleRefund = false
+      })
+      for (let i = 0; i < this.itemShop.length; i++) {
+        if (Number(this.itemShop[i].num) > this.itemShop[i].shopNum) {
+          this.$message.error('退款商品数量不能大于下单数量')
+          return
+        }
+        // 删除shopNum属性
+        delete this.itemShop[i].shopNum
+      }
+      if (this.itemShop.length > 0) {
+        const res = await this.$http.post(
+          `api/shop/order_refund/store_refund/${this.ids}`,
+          {
+            apply_fee: this.refundMoney,
+            item: this.itemShop
+          }
+        )
+        if (res.ret === 1) {
+          this.$notify({
+            title: this.$t('success'),
+            message: res.msg,
+            type: 'success'
+          })
+          this.visibleRefund = false
+        } else {
+          this.visibleRefund = true
+        }
       } else {
-        this.visibleRefund = true
+        this.$message.error('请选择退款商品')
       }
     }
   }

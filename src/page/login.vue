@@ -162,9 +162,12 @@ export default {
                 message: this.$t('登录成功')
               })
               this.$store.commit('token/saveToken', { token: res.data.token })
+              this.$store.commit('permission/savePermission', {
+                permission: res.data.permission
+              })
               localStorage.setItem('UserName', res.data.staff.name)
-
-              // localStorage.setItem('shopId', res.data.staff.shop_id)
+              // localStorage.setItem('permission', res.data.permission)
+              console.log(res.data.permission)
               this.$router.push('/')
             }
           })

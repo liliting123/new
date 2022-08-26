@@ -5,7 +5,7 @@ export default [
       {
         name: '首页',
         path: '/my_home/home',
-        subname: '首页'
+        subname: 'web'
       }
     ],
     expanded: false,
@@ -19,12 +19,12 @@ export default [
       {
         name: '员工列表',
         path: '/user_manage/user_list/user_list',
-        subname: '员工列表'
+        subname: 'staff'
       },
       {
         name: '员工组列表',
         path: '/user_manage/user_group_list/user_group_list',
-        subname: '员工组列表'
+        subname: 'staff_group'
       }
     ],
     expanded: false,
@@ -38,12 +38,12 @@ export default [
       {
         name: '订单列表',
         path: '/order_manage/order_list/order_list',
-        subname: '订单列表'
+        subname: 'order'
       },
       {
         name: '退款列表',
         path: '/order_manage/refund_list/refund_list',
-        subname: '退款列表'
+        subname: 'order_refund'
       }
     ],
     expanded: false,
@@ -57,22 +57,22 @@ export default [
       {
         name: '普通商品列表',
         path: '/product_manage/normal_product_list/normal_product_list',
-        subname: '普通商品列表'
+        subname: 'goods'
       },
       {
         name: '称重商品列表',
         path: '/product_manage/weighing_goods_list/weighing_goods_list',
-        subname: '称重商品列表'
+        subname: 'weigh_goods'
       },
       {
         name: '分类列表',
         path: '/product_manage/classification_list/classification_list',
-        subname: '分类列表'
+        subname: 'category'
       },
       {
         name: '供应商列表',
         path: '/product_manage/supplier_list/supplier_list',
-        subname: '供应商列表'
+        subname: 'supplier'
       }
     ],
     expanded: false,
@@ -86,12 +86,12 @@ export default [
       {
         name: '店铺设置',
         path: 'configuration_manage/store_settings',
-        subname: '店铺设置'
+        subname: 'shop'
       },
       {
         name: '支付设置',
         path: '/configuration_manage/payment_settings',
-        subname: '支付设置'
+        subname: 'payment'
       }
     ],
     expanded: false,

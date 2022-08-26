@@ -22,7 +22,7 @@ Vue.use(axios)
 // 初始化 token
 store.commit('token/initToken')
 store.commit('initLang')
-
+store.commit('permission/initPermission')
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

@@ -24,7 +24,7 @@
             :key="subItem.subname"
           >
             <a class="slide-nav-title-sub-item" href="#"
-              ><router-link :to="{ name: subItem.subname }">{{
+              ><router-link :to="{ name: subItem.name }">{{
                 $t(subItem.name)
               }}</router-link></a
             >
@@ -35,19 +35,9 @@
   </div>
 </template>
 <script>
+import store from '@/store'
 export default {
   props: ['structure'],
-  methods: {
-    toggle(name) {
-      this.structure.forEach(function(item, index) {
-        if (item.name === name) {
-          item.expanded = !item.expanded
-        } else {
-          item.expanded = false
-        }
-      })
-    }
-  },
   watch: {
     $route: {
       handler(newValue) {
@@ -69,6 +59,45 @@ export default {
         })
       },
       immediate: true
+    }
+  },
+  mounted() {
+    let permission = store.state.permission.permission
+    // permission.push('web')
+    console.log(this.structure)
+    console.log(permission)
+    // this.routers(this.structure, permission)
+  },
+  methods: {
+    toggle(name) {
+      this.structure.forEach(function(item, index) {
+        if (item.name === name) {
+          item.expanded = !item.expanded
+        } else {
+          item.expanded = false
+        }
+      })
+    },
+
+    routers(router, roles) {
+      for (var i = 0; i < router.length; i++) {
+        if (router[i].subRoutes.length > 0) {
+          for (var j = 0; j < router[i].subRoutes.length; j++) {
+            if (
+              router[i].subRoutes[j].subname &&
+              roles.indexOf(router[i].subRoutes[j].subname) === -1
+            ) {
+              console.log(router[i].subRoutes[j].subname)
+
+              router[i].subRoutes.splice(j, 1)
+              j--
+              if (router[i].subRoutes.length === 0) {
+                router.splice(i, 1)
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
