@@ -147,7 +147,9 @@ export default {
       this.categoryId = row.id
       this.dialogFormVisible = true
       this.$http.get(`api/shop/category/${row.id}`).then(res => {
-        this.form = res.data
+        if (res.ret) {
+          this.form = res.data
+        }
       })
     },
     // 添加或编辑分类
@@ -221,8 +223,6 @@ export default {
     insertClass() {
       this.dialogFormVisible = true
       this.title = '添加分类'
-      this.form = {}
-      this.form.name = {}
     },
     // 拖拽排序
     dragSort() {

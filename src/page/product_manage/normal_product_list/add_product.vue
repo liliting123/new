@@ -120,7 +120,7 @@
                   <el-input
                     size="small"
                     v-model="scope.row.ean"
-                    :disabled="scope.row.ean != ''"
+                    :disabled="scope.row.id && scope.row.id !== ''"
                   ></el-input>
                 </el-form-item>
               </template>
@@ -199,8 +199,8 @@
                 <el-button
                   type="text"
                   size="small"
-                  v-if="productId"
-                  @click="showEAN(scope.$index)"
+                  v-if="productId && scope.row.id"
+                  @click="showEAN(scope.row.id)"
                 >
                   {{ $t('EAN') }}
                 </el-button>
@@ -242,7 +242,11 @@
       </el-button>
     </div>
     <!--    EAN弹窗-->
-    <addEANDialog :visible.sync="dialogENATable" :eanData="eanData" />
+    <addEANDialog
+      v-if="dialogENATable"
+      :visible.sync="dialogENATable"
+      :id="eanId"
+    />
   </div>
 </template>
 
@@ -298,8 +302,7 @@ export default {
       supplierList: [], // 供应商下拉
       wmsList: [], // wms分类
       productId: this.$route.query.id, // 商品id
-      eanData: [],
-      form1: []
+      eanId: ''
     }
   },
   computed: {
@@ -361,38 +364,38 @@ export default {
     getProductInfo() {
       this.$http.get(`api/shop/goods/${this.productId}`).then(res => {
         if (res.ret) {
-          console.log(res.data, 'res.data')
           this.form = res.data
-          this.form.spec.forEach(item => {
-            item.ean = item.ean[0].ean
-          })
         }
       })
     },
     // 保存商品
-    insertProduct(form, formSpec) {
-      Promise.all([this.$refs[form].validate(), this.$refs[formSpec].validate()]).then(
-        () => {
-          let api
-          this.productId
-            ? (api = this.$http.put(`api/shop/goods/${this.productId}`, {
+    async insertProduct(form, formSpec) {
+      try {
+        await Promise.all([this.$refs[form].validate(), this.$refs[formSpec].validate()]).then(
+          () => {
+            let api
+            this.productId
+              ? (api = this.$http.put(`api/shop/goods/${this.productId}`, {
                 ...this.form
               }))
-            : this.$http.post('api/shop/goods', {
+              : this.$http.post('api/shop/goods', {
                 ...this.form
               })
-          api.then(res => {
-            if (res.ret) {
-              this.$notify({
-                title: res.msg,
-                message: res.msg,
-                type: 'success'
-              })
-              this.$router.push({ path: '/product_manage/normal_product_list' })
-            }
-          })
-        }
-      )
+            api.then(res => {
+              if (res.ret) {
+                this.$notify({
+                  title: res.msg,
+                  message: res.msg,
+                  type: 'success'
+                })
+                this.$router.push({ path: '/product_manage/normal_product_list' })
+              }
+            })
+          }
+        )
+      } catch (error) {
+        return '1'
+      }
     },
     // 获取分类下拉列表
     async getClassList() {
@@ -425,12 +428,9 @@ export default {
       })
     },
     // EAN弹窗
-    showEAN(index) {
+    showEAN(id) {
       this.dialogENATable = true
-      console.log(this.form1, '222')
-      this.form1.forEach((item, index) => {
-        // this.eanData = item
-      })
+      this.eanId = id
     },
     // 添加规格
     addSpec() {
@@ -439,7 +439,7 @@ export default {
         code: '', // 商品编号
         name: '', // 规格名称
         price: '', // 价格
-        vip_price: '', // vip价格
+        vip_price: 0, // vip价格
         tax_rate: '', // 汇率
         ean: '' // ean
       })

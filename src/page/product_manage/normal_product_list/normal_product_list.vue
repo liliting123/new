@@ -47,11 +47,11 @@
         </el-select>
         <el-button type="primary" @click="settlementPassword()">{{
           $t('结算密码')
-        }}</el-button>
+          }}</el-button>
         <el-button type="primary" @click="addProduct()">{{ $t('添加商品') }}</el-button>
         <el-button type="primary" @click="pullGoods()">{{
           $t('拉取后台商品')
-        }}</el-button>
+          }}</el-button>
       </div>
       <div slot="right">
         <el-input v-model="inputValue">
@@ -70,17 +70,20 @@
     <!--    table列表-->
     <div class="table_list" style="padding-top: 10px">
       <div class="top_btn">
-        <button>{{ $t('拉取库存') }}</button>
+        <button @click="pullWmsStock">{{ $t('拉取库存') }}</button>
         <button>{{ $t('拉取BBD') }}</button>
       </div>
       <el-table
+        ref="tableInfo"
         :header-cell-style="{ background: '#F7F7F7' }"
         :data="tableInfo"
+        :default-expand-all="false"
+        :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+        @select="selectChange"
+        @select-all="selectAllChange"
         style="width: 100%;margin-bottom: 20px;"
         row-key="id"
         border
-        :default-expand-all="false"
-        :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
       >
         <el-table-column type="selection" width="55"> </el-table-column>
         <el-table-column type="expand">
@@ -91,14 +94,22 @@
               border
               style="width: 80%;margin-left: 48px"
             >
-              <el-table-column type="selection" width="55"></el-table-column>
+              <el-table-column width="50">
+                <template slot-scope="scope">
+                  <el-checkbox-group
+                    v-model="selections"
+                    @change="zqy(scope.row.code)">
+                    <el-checkbox :label="scope.row.code">{{''}}</el-checkbox>
+                  </el-checkbox-group>
+                </template>
+              </el-table-column>
               <el-table-column width="50" label="#">
                 <template slot-scope="scope">
                   <span class="table_index">{{ scope.$index + 1 }}</span>
                 </template>
               </el-table-column>
               <el-table-column prop="code" :label="$t('商品编码')"></el-table-column>
-              <el-table-column prop="ean[0].ean" :label="$t('EAN')"></el-table-column>
+              <el-table-column prop="ean" :label="$t('EAN')"></el-table-column>
               <el-table-column prop="supplier_id" :label="$t('供应商')">
               </el-table-column>
               <el-table-column prop="name" :label="$t('规格')"> </el-table-column>
@@ -109,9 +120,9 @@
               <el-table-column prop="num" :label="$t('可售库存')"> </el-table-column>
               <el-table-column prop="sold_num" :label="$t('已售库存')">
                 <template slot-scope="scope">
-                  <span style="color: #1a79eb" @click="soldRecords()">{{
-                    scope.row.sold_num
-                  }}</span>
+                  <span style="color: #1a79eb" @click="soldRecords(scope.row, 'goods_spec_id')">
+                    {{scope.row.sold_num}}
+                  </span>
                 </template>
               </el-table-column>
             </el-table>
@@ -123,13 +134,13 @@
         <el-table-column prop="label" :label="$t('分类标签')">
           <template slot-scope="scope">
             {{
-              scope.row.label === 1
-                ? $t('普通')
-                : scope.row.label === 10
-                ? $t('烟类')
-                : scope.row.label === 11
-                ? $t('酒类')
-                : ''
+            scope.row.label === 1
+            ? $t('普通')
+            : scope.row.label === 10
+            ? $t('烟类')
+            : scope.row.label === 11
+            ? $t('酒类')
+            : ''
             }}
           </template>
         </el-table-column>
@@ -141,7 +152,7 @@
         <el-table-column prop="num" :label="$t('可售库存')"> </el-table-column>
         <el-table-column prop="sold_num" :label="$t('已售库存')">
           <template slot-scope="scope">
-            <span style="color: #1a79eb" @click="soldRecords(scope.row.shop_id)">{{
+            <span style="color: #1a79eb" @click="soldRecords(scope.row.id, 'goods_id')">{{
               scope.row.sold_num
             }}</span>
           </template>
@@ -151,8 +162,8 @@
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="editProduct(scope.row.id)">{{
               $t('编辑')
-            }}</el-button>
-            <el-button type="text" size="small">{{ $t('删除') }}</el-button>
+              }}</el-button>
+            <el-button type="text" size="small" @click="deleteProduct(scope.row.id)">{{ $t('删除') }}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -165,158 +176,248 @@
     <soldRecordsDialog
       v-if="dialogSoldRecords"
       :visible.sync="dialogSoldRecords"
-      :shopId="shopId"
+      :recordsId="recordsId"
+      :keyValue="keyValue"
+      :row="row"
     />
   </div>
 </template>
 
 <script>
-import searchList from '@/components/searchList.vue'
-import setPasswordDialog from './components/setPasswordDialog'
-import soldRecordsDialog from './components/soldRecordsDialog'
-import pullGoodsDialog from './components/pullGoodsDialog'
-import PaginationAndButtons from '@/components/pagination_and_buttons.vue'
-import pagination from '@/mixin/pagination'
-export default {
-  name: 'normal_product_list',
-  components: {
-    searchList,
-    setPasswordDialog,
-    soldRecordsDialog,
-    pullGoodsDialog,
-    PaginationAndButtons
-  },
-  mixins: [pagination],
-  data() {
-    return {
-      categoryValue: '',
-      categoryList: [], // 分类下拉
-      supplierList: [], // 供应商下拉
-      labelList: [
-        { id: 1, name: this.$t('普通') },
-        { id: 10, name: this.$t('烟类') },
-        { id: 11, name: this.$t('酒类') }
-      ], // 分类标签
-      searchLists: [
-        { id: 1, label: this.$t('商品名称') },
-        { id: 2, label: this.$t('商品编号') },
-        { id: 3, label: this.$t('EAN') },
-        { id: 4, label: this.$t('供应商') }
-      ],
-      searchValue: 1,
-      classificationLabel: '', // 分类标签
-      tableInfo: [],
-      supplierValue: '', // 供应商
-      inputValue: '',
-      dialogPassword: false, // 结算密码弹窗
-      dialogSoldRecords: false, // 已售库存弹窗
-      dialogPullGoods: false, // 拉取后台商品弹窗
-      shopId: ''
-    }
-  },
-  created() {
-    this.getList()
-    this.getSupplierList()
-    this.getClassList()
-  },
-  methods: {
-    getList() {
-      this.$http
-        .get('api/shop/goods', {
-          params: {
-            page: this.page_params.page,
-            size: this.page_params.size,
-            keyword: this.inputValue,
-            category_id: this.categoryValue, // 商品分类
-            label: this.classificationLabel, // 分类标签
-            supplier_id: this.supplierValue, // 供应商
-            type_id: this.searchValue
-          }
+  import searchList from '@/components/searchList.vue'
+  import setPasswordDialog from './components/setPasswordDialog'
+  import soldRecordsDialog from './components/soldRecordsDialog'
+  import pullGoodsDialog from './components/pullGoodsDialog'
+  import PaginationAndButtons from '@/components/pagination_and_buttons.vue'
+  import pagination from '@/mixin/pagination'
+  export default {
+    name: 'normal_product_list',
+    components: {
+      searchList,
+      setPasswordDialog,
+      soldRecordsDialog,
+      pullGoodsDialog,
+      PaginationAndButtons
+    },
+    mixins: [pagination],
+    data() {
+      return {
+        categoryValue: '',
+        categoryList: [], // 分类下拉
+        supplierList: [], // 供应商下拉
+        labelList: [
+          { id: 1, name: this.$t('普通') },
+          { id: 10, name: this.$t('烟类') },
+          { id: 11, name: this.$t('酒类') }
+        ], // 分类标签
+        searchLists: [
+          { id: 1, label: this.$t('商品名称') },
+          { id: 2, label: this.$t('商品编号') },
+          { id: 3, label: this.$t('EAN') },
+          { id: 4, label: this.$t('供应商') }
+        ],
+        searchValue: 1,
+        classificationLabel: '', // 分类标签
+        tableInfo: [],
+        supplierValue: '', // 供应商
+        inputValue: '',
+        dialogPassword: false, // 结算密码弹窗
+        dialogSoldRecords: false, // 已售库存弹窗
+        dialogPullGoods: false, // 拉取后台商品弹窗
+        recordsId: '', // 商品id或规格id
+        keyValue: '', // 查看商品已售弹窗或规格信息已售弹窗标识
+        row: {},
+        selections: [],
+        isCheckAll: false // 是否全选标识
+      }
+    },
+    created() {
+      this.getList()
+      this.getSupplierList()
+      this.getClassList()
+    },
+    methods: {
+      // 拉取库存
+      pullWmsStock() {
+        console.log(this.isCheckAll,'this.isCheckAll')
+        this.$http.post('api/shop/goods/sync_stock', {
+          is_all: this.isCheckAll ? 1 : 0,
+          code: this.isCheckAll ? undefined : this.selections
+        }).then(res => {
+          console.log(res, '22')
         })
-        .then(res => {
+      },
+      zqy(code) {
+        if (this.selections.indexOf(code) === -1) {
+          this.isCheckAll = false
+        }
+        this.$refs.tableInfo.toggleRowSelection(code)
+      },
+      selectChange(selection, row) {
+        // 如果selection中存在row代表是选中，否则是取消选中
+        if (selection && selection.length && selection.find(val => { return val.id === row.id })) {
+          if (selection.length === this.tableInfo.length) {
+            this.isCheckAll = true
+          }
+          if (row.spec) {
+            row.spec.forEach(val => {
+              this.selections.push(val.code)
+            })
+          }
+        } else {
+          this.isCheckAll = false
+          console.log(11,' 11')
+          row.spec.forEach(item => {
+            this.selections = this.selections.filter(val => {
+              return item.code !== val
+            })
+          })
+        }
+      },
+      // 选中所有
+      selectAllChange(selection) {
+        // 如果选中的数目与请求到的数目相同就选中子节点，否则就清空选中
+        if (selection && selection.length && selection.length === this.tableInfo.length) {
+          selection.forEach(val => {
+            this.selectChange(selection, val)
+          })
+        } else {
+          this.selections = []
+        }
+      },
+
+      // 选项发生改变时触发
+      // selectionChangeHandler(val) {
+      //   if (val && val.length) {
+      //     val.forEach(item => {
+      //       item.spec.forEach(item => {
+      //         this.selections.push(item.code)
+      //         this.selections = [...new Set(this.selections)]
+      //       })
+      //     })
+      //   } else {
+      //     this.selections = []
+      //   }
+      // },
+      // 获取商品列表
+      getList() {
+        this.isCheckAll = true
+        this.selections = []
+        this.$http
+          .get('api/shop/goods', {
+            params: {
+              page: this.page_params.page,
+              size: this.page_params.size,
+              keyword: this.inputValue,
+              category_id: this.categoryValue, // 商品分类
+              label: this.classificationLabel, // 分类标签
+              supplier_id: this.supplierValue, // 供应商
+              type_id: this.searchValue
+            }
+          }).then(res => {
           if (res.ret) {
             this.tableInfo = res.data.data
             this.page_params.total = res.data.total
           }
         })
-    },
-    // 已售库存弹窗
-    soldRecords(id) {
-      this.shopId = id
-      this.dialogSoldRecords = true
-    },
-    // 结算密码弹窗
-    settlementPassword() {
-      this.dialogPassword = true
-    },
-    // 拉取后台商品弹窗
-    pullGoods() {
-      this.dialogPullGoods = true
-    },
-    // 编辑商品
-    editProduct(id) {
-      this.$router.push({
-        path: 'normal_product_list/add_product',
-        query: {
-          id: id
+      },
+      // 已售库存弹窗
+      soldRecords(value, keyValue) {
+        // 获取商品已售库存还是规格已售库存赋值判断
+        keyValue === 'goods_id' ? this.recordsId = value : this.row = value
+        this.keyValue = keyValue
+        this.dialogSoldRecords = true
+      },
+      // 结算密码弹窗
+      settlementPassword() {
+        this.dialogPassword = true
+      },
+      // 拉取后台商品弹窗
+      pullGoods() {
+        this.dialogPullGoods = true
+      },
+      // 删除商品
+      deleteProduct(id) {
+        this.$confirm(this.$t('确认要删除吗?'), this.$t('提示'), {
+          confirmButtonText: this.$t('确定'),
+          cancelButtonText: this.$t('取消'),
+          type: 'warning'
+        }).then(async () => {
+          const res = await this.$http.delete(`api/shop/goods/${id}`)
+          if (res.ret === 1) {
+            this.$notify({
+              title: this.$t('success'),
+              message: res.msg,
+              type: 'success'
+            })
+            this.getList()
+          }
+        })
+      },
+      // 编辑商品
+      editProduct(id) {
+        this.$router.push({
+          path: 'normal_product_list/add_product',
+          query: {
+            id: id
+          }
+        })
+      },
+      // 跳转到添加商品页面
+      addProduct() {
+        this.$router.push({
+          path: 'normal_product_list/add_product'
+        })
+      },
+      // 获取供应商下拉列表
+      async getSupplierList() {
+        const res = await this.$http.get(`api/shop/supplier`, {
+          params: {
+            switch: 1
+          }
+        })
+        if (res.ret) {
+          this.supplierList = res.data.data
         }
-      })
-    },
-    // 跳转到添加商品页面
-    addProduct() {
-      this.$router.push({
-        path: 'normal_product_list/add_product'
-      })
-    },
-    // 获取供应商下拉列表
-    async getSupplierList() {
-      const res = await this.$http.get(`api/shop/supplier`, {
-        params: {
-          switch: 1
+      },
+      // 获取分类下拉列表
+      async getClassList() {
+        const res = await this.$http.get(`api/shop/category`, {
+          params: {
+            weigh: 0
+          }
+        })
+        if (res.ret) {
+          this.categoryList = res.data.data
         }
-      })
-      if (res.ret) {
-        this.supplierList = res.data.data
-      }
-    },
-    // 获取分类下拉列表
-    async getClassList() {
-      const res = await this.$http.get(`api/shop/category`, {
-        params: {
-          weigh: 0
-        }
-      })
-      if (res.ret) {
-        this.categoryList = res.data.data
       }
     }
   }
-}
 </script>
 
 <style lang="scss" scoped>
-.top_btn {
-  padding: 10px 0 10px 0;
-  button {
-    background: white;
-    border: 1px solid rgba(128, 128, 128, 0.49);
-    height: 30px;
+  .top_btn {
+    padding: 10px 0 10px 0;
+    button {
+      background: white;
+      border: 1px solid rgba(128, 128, 128, 0.49);
+      height: 30px;
+      width: 100px;
+      color: gray;
+    }
+    button:first-child {
+      border-top-left-radius: 5px;
+      border-bottom-left-radius: 5px;
+    }
+    button:last-child {
+      border-top-right-radius: 5px;
+      border-bottom-right-radius: 5px;
+      margin-left: -5px;
+    }
+  }
+  /deep/ .el-input-group__prepend {
     width: 100px;
-    color: gray;
+    background: white;
+    padding: 0 10px;
   }
-  button:first-child {
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-  }
-  button:last-child {
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-    margin-left: -5px;
-  }
-}
-/deep/ .el-input-group__prepend {
-  width: 100px;
-  background: white;
-  padding: 0 10px;
-}
 </style>

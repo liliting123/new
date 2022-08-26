@@ -2,6 +2,7 @@
   <el-dialog
     :title="$t('添加EAN')"
     :visible="dialogENATable"
+    :before-close="handleClose"
     width="40%">
     <el-table :data="eanData">
       <el-table-column width="50" label="#">
@@ -11,13 +12,19 @@
       </el-table-column>
       <el-table-column prop="ean" :label="`*${$t('EAN')}`" width="150">
         <template slot-scope="scope">
-          <el-input size="small"  v-model="scope.row.ean"></el-input>
+          <el-input
+            size="small"
+            v-model="scope.row.ean"
+            :disabled="scope.row.id && scope.row.id !== ''">
+          </el-input>
         </template>
       </el-table-column>
-      <el-table-column prop="created_at" :label="$t('添加时间')" width="250"></el-table-column>
+      <el-table-column prop="created_at" :label="$t('添加时间')" width="250">
+        {{dateStrFormat(new Date())}}
+      </el-table-column>
       <el-table-column :label="$t('操作')">
         <template slot-scope="scope">
-          <el-button type="text" @click="deleteEan(scope.$index)">{{$t('删除')}}</el-button>
+          <el-button type="text" @click="deleteEan(scope.$index, scope.row.id)">{{$t('删除')}}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -32,7 +39,7 @@
 </template>
 
 <script>
-// import moment from 'moment'
+import moment from 'moment'
 export default {
   name: 'addEANDialog',
   props: {
@@ -40,10 +47,11 @@ export default {
       type: Boolean,
       require: true
     },
-    eanData: []
+    id: ''
   },
   data() {
     return {
+      eanData: []
     }
   },
   computed: {
@@ -56,25 +64,41 @@ export default {
       }
     }
   },
+  mounted() {
+    this.getList()
+  },
   methods: {
+    getList() {
+      this.$http.get(`api/shop/goods_spec_ean/${this.id}`).then(res => {
+        if (res.ret) {
+          this.eanData = res.data.data
+        }
+      })
+    },
     saveEAN() {
-      console.log(this.eanData)
-      this.$http.post(`api/shop/goods/store_ean/${this.eanData[0].goods_spec_id}`, {
-        spec_ean: this.eanData
+      let eanArry = this.eanData.filter(item => {
+        return !item.id
+        })
+      this.$http.post(`api/shop/goods_spec_ean/${this.id}`, {
+        spec_ean: eanArry
       }).then(res => {
         if (res.ret) {
-          console.log(1)
-          // this.dialogENATable = false
+          this.$notify({
+            title: this.$t('success'),
+            message: res.msg,
+            type: 'success'
+          })
+          this.dialogENATable = false
         }
       })
     },
     // 时间格式化
-    // dateStrFormat(strTime) {
-    //   if (strTime === undefined) {
-    //     return ''
-    //   }
-    //   return moment(strTime).format('YYYY-MM-DD HH:mm:ss')
-    // },
+    dateStrFormat(strTime) {
+      if (strTime === undefined) {
+        return ''
+      }
+      return moment(strTime).format('YYYY-MM-DD HH:mm:ss')
+    },
     // 添加EAN
     addEAN() {
       this.eanData.push({
@@ -82,8 +106,30 @@ export default {
       })
     },
     // 删除EAN
-    deleteEan (index) {
-      this.eanData.splice(index, 1)
+    deleteEan (index, id) {
+      if (id) {
+        this.$confirm(this.$t('确认要删除吗?'), this.$t('提示'), {
+          confirmButtonText: this.$t('确定'),
+          cancelButtonText: this.$t('取消'),
+          type: 'warning'
+        }).then(async () => {
+          const res = await this.$http.delete(`api/shop/goods_spec_ean/${id}`)
+          if (res.ret === 1) {
+            this.$notify({
+              title: this.$t('success'),
+              message: res.msg,
+              type: 'success'
+            })
+            this.getList()
+          }
+        })
+      } else {
+        this.eanData.splice(index, 1)
+      }
+    },
+    // 关闭弹窗
+    handleClose() {
+      this.dialogENATable = false
     }
   }
 }
