@@ -16,7 +16,7 @@
           <el-tab-pane
             class="isActive"
             v-for="item in tabList"
-            :key="item.name"
+            :key="$t(item.name)"
             :label="$t(item.name)"
             :name="item.path"
           >
@@ -56,7 +56,7 @@ export default {
   data() {
     return {
       format_router_map: {}, // 格式化后的侧边栏路由表
-      active: '/',
+      active: '/my_home/home',
       tabList: [],
       // 右键的元素
       contextMenu: {
@@ -91,7 +91,10 @@ export default {
     })
     let tagInfo2 = localStorage.getItem('tagInfo2')
       ? JSON.parse(localStorage.getItem('tagInfo2'))
-      : { active: '/', tabList: [{ name: this.$t('首页'), path: '/' }] }
+      : {
+          active: '/my_home/home',
+          tabList: [{ name: this.$t('首页'), path: '/my_home/home' }]
+        }
     this.active = tagInfo2.active
     this.tabList = tagInfo2.tabList
   },
@@ -161,13 +164,17 @@ export default {
     },
     // 判断当前页
     getThisPage() {
-      let index = this.tabList.findIndex(tag => tag.path === this.$route.path)
+      // let index = this.tabList.findIndex(tag => tag.path === this.$route.path)
+      let index = this.tabList.findIndex(tag => tag.name === this.$route.name)
       if (index === -1) {
         this.tabList.push({
           name: this.$t(this.$route.name),
           path: this.$route.path
         })
+      } else {
+        this.tabList[index].path = this.$route.path
       }
+      console.log(this.tabList[index])
       // 当前选择页
       this.active = this.$route.path
     },

@@ -67,7 +67,7 @@
               :value="item.value"
             ></el-option>
           </el-select>
-          <el-button slot="append" @click="getList()">{{ $t('搜索') }}</el-button>
+          <el-button slot="append" @click="getOrderList()">{{ $t('搜索') }}</el-button>
         </el-input>
       </div>
     </search-list>
@@ -91,7 +91,13 @@
             >
               <el-table-column :label="$t('商品图片')">
                 <template slot-scope="scope">
-                  <img :src="scope.row.cover" width="100" height="100" alt="商品图片" />
+                  <img
+                    id="img"
+                    :src="scope.row.cover"
+                    width="100"
+                    height="100"
+                    alt="商品图片"
+                  />
                 </template>
               </el-table-column>
               <el-table-column prop="name" :label="$t('商品名称')"> </el-table-column>
@@ -173,11 +179,13 @@ export default {
     PaginationAndButtons,
     orderRefundDialog
   },
+  name: 'OrderList',
   data() {
     return {
       slectTime: '',
       customerSelect: [
         {
+          value: '',
           label: this.$t('客户来源')
         },
         {
@@ -191,6 +199,7 @@ export default {
       ],
       orderSelect: [
         {
+          value: '',
           label: this.$t('订单状态')
         },
         {
@@ -235,15 +244,22 @@ export default {
       orderId: null
     }
   },
-  mounted() {
-    this.getList()
+  created() {
+    this.getOrderList()
     this.paymentList()
+  },
+  activated() {
+    if (this.$store.state.search_flag === true) {
+      Object.assign(this.$data, this.$options.data.call(this))
+      this.paymentList()
+    }
+    this.getOrderList()
   },
   methods: {
     // 跳转订单详情
     showOrderDetail(id) {
       this.$router.push({
-        name: '订单详情',
+        name: this.$t('订单详情'),
         params: { id: id }
       })
     },
@@ -253,7 +269,7 @@ export default {
       this.visibleOrderRefund = true
       this.orderId = id
     },
-    getList() {
+    getOrderList() {
       this.tableLoading = true
       this.$http
         .get('api/shop/order', {

@@ -56,7 +56,9 @@
     <div class="info-top">
       <div class="title">
         <span>{{ $t('商品信息') }}</span>
-        <span>{{ $t('操作时间') }}:{{ basic_Info.payment_time }}</span>
+        <span v-if="basic_Info.payment_time"
+          >{{ $t('操作时间') }}:{{ basic_Info.payment_time }}</span
+        >
       </div>
       <div class="table">
         <el-table
@@ -178,7 +180,7 @@ export default {
         this.goods_Info = res.data.item
         this.email = res.data.staff.email
         this.cashier = res.data.staff.name
-        this.paymentName = res.data.payment.name
+        this.paymentName = res.data.payment ? res.data.payment.name : ''
       })
     }
   }

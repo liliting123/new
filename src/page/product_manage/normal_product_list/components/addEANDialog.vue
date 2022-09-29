@@ -3,11 +3,12 @@
     :title="$t('添加EAN')"
     :visible="dialogENATable"
     :before-close="handleClose"
-    width="40%">
+    width="40%"
+  >
     <el-table :data="eanData">
       <el-table-column width="50" label="#">
         <template slot-scope="scope">
-          <span class="table_index">{{scope.$index + 1}}</span>
+          <span class="table_index">{{ scope.$index + 1 }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="ean" :label="`*${$t('EAN')}`" width="150">
@@ -15,25 +16,30 @@
           <el-input
             size="small"
             v-model="scope.row.ean"
-            :disabled="scope.row.id && scope.row.id !== ''">
+            :disabled="scope.row.id && scope.row.id !== ''"
+          >
           </el-input>
         </template>
       </el-table-column>
       <el-table-column prop="created_at" :label="$t('添加时间')" width="250">
-        {{dateStrFormat(new Date())}}
+        <template slot-scope="scope">
+          {{ scope.row.created_at ? scope.row.created_at : dateStrFormat(new Date()) }}
+        </template>
       </el-table-column>
       <el-table-column :label="$t('操作')">
         <template slot-scope="scope">
-          <el-button type="text" @click="deleteEan(scope.$index, scope.row.id)">{{$t('删除')}}</el-button>
+          <el-button type="text" @click="deleteEan(scope.$index, scope.row.id)">{{
+            $t('删除')
+          }}</el-button>
         </template>
       </el-table-column>
     </el-table>
     <div class="bottom-text">
-      <button @click="addEAN()">{{'+'+$t('EAN')}}</button>
+      <button @click="addEAN()">{{ '+' + $t('EAN') }}</button>
     </div>
     <div slot="footer" class="dialog-footer">
-      <el-button @click="dialogENATable = false">{{$t('取消')}}</el-button>
-      <el-button type="primary" @click="saveEAN()">{{$t('确定')}}</el-button>
+      <el-button @click="dialogENATable = false">{{ $t('取消') }}</el-button>
+      <el-button type="primary" @click="saveEAN()">{{ $t('确定') }}</el-button>
     </div>
   </el-dialog>
 </template>
@@ -78,19 +84,21 @@ export default {
     saveEAN() {
       let eanArry = this.eanData.filter(item => {
         return !item.id
-        })
-      this.$http.post(`api/shop/goods_spec_ean/${this.id}`, {
-        spec_ean: eanArry
-      }).then(res => {
-        if (res.ret) {
-          this.$notify({
-            title: this.$t('success'),
-            message: res.msg,
-            type: 'success'
-          })
-          this.dialogENATable = false
-        }
       })
+      this.$http
+        .post(`api/shop/goods_spec_ean/${this.id}`, {
+          spec_ean: eanArry
+        })
+        .then(res => {
+          if (res.ret) {
+            this.$notify({
+              title: this.$t('success'),
+              message: res.msg,
+              type: 'success'
+            })
+            this.dialogENATable = false
+          }
+        })
     },
     // 时间格式化
     dateStrFormat(strTime) {
@@ -106,7 +114,7 @@ export default {
       })
     },
     // 删除EAN
-    deleteEan (index, id) {
+    deleteEan(index, id) {
       if (id) {
         this.$confirm(this.$t('确认要删除吗?'), this.$t('提示'), {
           confirmButtonText: this.$t('确定'),

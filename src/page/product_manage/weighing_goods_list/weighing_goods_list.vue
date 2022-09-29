@@ -45,7 +45,7 @@
               :value="item.id"
             ></el-option>
           </el-select>
-          <el-button slot="append" @click="getList()">{{ $t('搜索') }}</el-button>
+          <el-button slot="append" @click="getProductList">{{ $t('搜索') }}</el-button>
         </el-input>
       </div>
     </search-list>
@@ -69,29 +69,48 @@
         </el-table-column>
         <el-table-column prop="code" :label="$t('商品编码')"> </el-table-column>
         <el-table-column prop="category.name" :label="$t('商品分类')"> </el-table-column>
-        <el-table-column prop="cover" :label="$t('商品图片')">
+        <el-table-column prop="cover" :label="$t('商品图片')" width="110">
           <template slot-scope="scope">
             <img width="100px" height="100px" :src="scope.row.cover" />
           </template>
         </el-table-column>
         <el-table-column prop="supplier.name" :label="$t('供应商')"> </el-table-column>
-        <el-table-column prop="price" :label="$t('价格/KG')"> </el-table-column>
-        <el-table-column prop="tax_rate" :label="$t('税率')"> </el-table-column>
+        <el-table-column :label="$t('价格/KG')">
+          <template slot-scope="scope"> €{{ scope.row.price }} </template>
+        </el-table-column>
+        <el-table-column :label="$t('会员价/KG')">
+          <template slot-scope="scope"> €{{ scope.row.vip_price }} </template>
+        </el-table-column>
+        <el-table-column :label="$t('税率')">
+          <template slot-scope="scope">
+            {{
+              scope.row.tax_rate === 1 ? '0%' : scope.row.tax_rate === 2 ? '9%' : '21%'
+            }}
+          </template>
+        </el-table-column>
         <el-table-column prop="bbd" :label="$t('BBD')"> </el-table-column>
-        <el-table-column prop="num" :label="$t('可售库存')"> </el-table-column>
-        <el-table-column prop="sold_num" :label="$t('已售库存')"> </el-table-column>
+        <el-table-column :label="$t('可售库存')">
+          <template slot-scope="scope">{{ scope.row.num }}KG</template>
+        </el-table-column>
+        <el-table-column :label="$t('已售库存')">
+          <template slot-scope="scope">{{ scope.row.sold_num }}KG </template>
+        </el-table-column>
         <el-table-column prop="created_at" :label="$t('创建时间')"> </el-table-column>
         <el-table-column prop="address" :label="$t('操作')" width="250">
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="inventoryRecords(scope.row.id)">{{
+            <el-button type="text" size="small" @click="inventoryRecords(scope.row)">{{
               $t('库存记录')
             }}</el-button>
             <el-button type="text" size="small" @click="editweighProduct(scope.row.id)">{{
               $t('编辑')
             }}</el-button>
-            <el-button type="text" size="small" @click="delWeighProduct(scope.row.id)">{{
-              $t('删除')
-            }}</el-button>
+            <el-button
+              v-if="Number(scope.row.sold_num) === 0"
+              type="text"
+              size="small"
+              @click="delWeighProduct(scope.row.id)"
+              >{{ $t('删除') }}</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -99,8 +118,9 @@
     <PaginationAndButtons :pageParams="page_params" />
     <!--    库存记录弹窗-->
     <inventoryRecordsDialog
+      v-if="dialoginventoryRecords"
       :visible.sync="dialoginventoryRecords"
-      :recordsData="recordsData"
+      :records="records"
     />
   </div>
 </template>
@@ -111,7 +131,7 @@ import inventoryRecordsDialog from './components/inventoryRecordsDialog'
 import PaginationAndButtons from '@/components/pagination_and_buttons.vue'
 import pagination from '@/mixin/pagination'
 export default {
-  name: 'weighing_goods_list',
+  name: 'weighingGoodsList',
   components: {
     searchList,
     inventoryRecordsDialog,
@@ -129,7 +149,7 @@ export default {
       inputValue: '',
       tableDataWeigh: [], // 称重商品列表
       dialoginventoryRecords: false, // 库存记录弹窗
-      id: '',
+      records: '',
       recordsData: [], // 库存记录
       categoryList: [], // 分类下拉
       categoryValue: '',
@@ -138,9 +158,19 @@ export default {
     }
   },
   created() {
-    this.getList()
+    this.getProductList()
     this.getClassList()
     this.getSupplierList()
+  },
+  activated() {
+    if (this.$store.state.search_flag === true) {
+      Object.assign(this.$data, this.$options.data.call(this))
+      this.categoryValue = ''
+      this.supplierValue = ''
+      this.getSupplierList()
+      this.getClassList()
+    }
+    this.getProductList()
   },
   methods: {
     // 删除称重商品
@@ -167,14 +197,15 @@ export default {
     // 编辑商品
     editweighProduct(id) {
       this.$router.push({
-        path: 'weighing_goods_list/add_weighing_item',
-        query: {
+        // path: 'weighing_goods_list/edit_weighing_item',
+        name: this.$t('编辑称重商品'),
+        params: {
           id: id
         }
       })
     },
     // 获取称重商品列表
-    getList() {
+    getProductList() {
       this.$http
         .get('api/shop/weigh_goods', {
           params: {
@@ -200,21 +231,11 @@ export default {
       })
     },
     // 已售库存弹窗
-    inventoryRecords(id) {
+    inventoryRecords(row) {
       this.dialoginventoryRecords = true
-      this.id = id
-      this.getRecordList()
+      this.records = row
     },
-    // 获取库存记录
-    getRecordList() {
-      this.$http
-        .get(`api/shop/weigh_goods_record?weigh_goods_id=${this.id}`)
-        .then(res => {
-          if (res.ret) {
-            this.recordsData = res.data.data
-          }
-        })
-    },
+
     // 获取供应商下拉列表
     async getSupplierList() {
       const res = await this.$http.get(`api/shop/supplier`, {

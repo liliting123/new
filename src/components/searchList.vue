@@ -10,9 +10,7 @@
 </template>
 
 <script>
-export default {
-  name: 'searchList'
-}
+export default {}
 </script>
 
 <style lang="scss" scoped>
@@ -24,11 +22,12 @@ export default {
   display: flex;
   justify-content: space-between;
   padding: 0 15px 0 15px;
+  line-height: 50px;
 }
 .left {
   padding: 20px 0;
 }
 .right {
-  line-height: 80px;
+  line-height: 90px;
 }
 </style>

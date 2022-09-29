@@ -61,6 +61,7 @@
       :visible.sync="dialogFormVisible"
       width="40%"
       destroy-on-close
+      v-if="dialogFormVisible"
     >
       <TabsLanguage @update="modifyLanguage" />
       <el-form :model="form" :rules="rules" ref="form" label-position="top">
@@ -78,6 +79,19 @@
             inactive-color="#bfcfd9"
           >
           </el-switch>
+        </el-form-item>
+        <el-form-item :label="`${$t('分类图片')}:`" prop="cover">
+          <el-upload
+            class="upload-demo"
+            :action="$baseUrl.BASE_API_URL + '/api/shop/upload/image'"
+            name="image"
+            :on-success="uploadSuccess"
+            :show-file-list="false"
+          >
+            <el-button size="small">{{ $t('点击上传') }}</el-button>
+            <span>{{ `（${$t('建议尺寸')} 200*100px）` }}</span>
+          </el-upload>
+          <img v-if="form.cover" :src="form.cover" width="200px" height="100px" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -103,6 +117,7 @@ export default {
     PaginationAndButtons
   },
   mixins: [pagination],
+  name: 'classificationList',
   data() {
     return {
       searchValue: '',
@@ -110,7 +125,8 @@ export default {
       dialogFormVisible: false,
       form: {
         name: {},
-        weigh: ''
+        weigh: '',
+        cover: ''
       },
       currentLanguage: '',
       title: '',
@@ -130,7 +146,8 @@ export default {
       }
       return {
         name: [{ required: true, validator: validateLanguage, trigger: 'blur' }],
-        weigh: [{ required: true }]
+        weigh: [{ required: true }],
+        cover: [{ required: true }]
       }
     }
   },
@@ -162,7 +179,8 @@ export default {
           }))
         : (api = this.$http.put(`api/shop/category/${this.categoryId}`, {
             name: this.form.name,
-            weigh: this.form.weigh
+            weigh: this.form.weigh,
+            cover: this.form.cover
           }))
       this.$refs[form].validate(valid => {
         if (valid) {
@@ -174,7 +192,8 @@ export default {
                 message: this.$t('添加成功')
               })
               this.dialogFormVisible = false
-              this.form = {}
+              this.form.cover = ''
+              this.form.weigh = ''
               this.form.name = {}
               this.getList()
             }
@@ -223,6 +242,9 @@ export default {
     insertClass() {
       this.dialogFormVisible = true
       this.title = '添加分类'
+      this.form.cover = ''
+      this.form.weigh = ''
+      this.form.name = {}
     },
     // 拖拽排序
     dragSort() {
@@ -246,7 +268,7 @@ export default {
               index_sort: item.index_sort
             }
           })
-          const res = await this.$http.post(`api/countries/sort`, {
+          const res = await this.$http.post(`api/shop/category/sort`, {
             sort_data: sortData
           })
           if (res.ret) {
@@ -261,6 +283,10 @@ export default {
     },
     modifyLanguage(language) {
       this.currentLanguage = language
+    },
+    // 图片上传成功时触发的钩子
+    uploadSuccess(response, file, fileList) {
+      this.form.cover = response.data.path
     }
   }
 }

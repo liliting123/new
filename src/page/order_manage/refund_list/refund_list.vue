@@ -195,6 +195,7 @@ export default {
     PaginationAndButtons,
     searchList
   },
+  name: 'refundList',
   data() {
     return {
       slectTime: '',

@@ -4,20 +4,20 @@ export default {
     permission: ''
   },
   mutations: {
-    // 初始化token
+    // 初始化permission
     initPermission(state) {
       state.permission = localStorage.getItem('Permission') || ''
     },
-    // 保存token
+    // 保存permission
     savePermission(state, { permission }) {
       state.permission = permission
       localStorage.setItem('Permission', permission)
       console.log(permission)
+    },
+    // 删除permission
+    removePermission(state) {
+      state.permission = ''
+      localStorage.removeItem('Permission')
     }
-    // 删除token
-    // removeToken(state) {
-    //   state.token = ''
-    //   localStorage.removeItem('TOKEN')
-    // }
   }
 }

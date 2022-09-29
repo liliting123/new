@@ -28,7 +28,10 @@
       ></my-title>
       <transition name="fade" mode="out-in">
         <keep-alive :include="/List/" :structures="navData">
-          <router-view class="layout-main-view list-main"></router-view>
+          <router-view
+            :key="$route.fullPath"
+            class="layout-main-view list-main"
+          ></router-view>
         </keep-alive>
       </transition>
       <div class="bottom">
@@ -60,6 +63,9 @@ export default {
       navData,
       showLoyout: false
     }
+  },
+  mounted() {
+    console.log(this.navData)
   },
   methods: {
     // 确定 注销

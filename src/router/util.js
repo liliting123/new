@@ -1,38 +1,44 @@
 // 深拷贝
-const _getType = function (value) {
-  return Object.prototype.toString.call(value).slice(8).slice(0, -1).toLowerCase()
+const _getType = function(value) {
+  return Object.prototype.toString
+    .call(value)
+    .slice(8)
+    .slice(0, -1)
+    .toLowerCase()
 }
 let clone = {
-  array (arr) {
+  array(arr) {
     let newArr = []
     for (let item of arr) {
       newArr.push(this[_getType(item)](item))
     }
     return newArr
   },
-  object (obj) {
+  object(obj) {
     let newObj = {}
     for (let [key, value] of Object.entries(obj)) {
       if (obj.hasOwnProperty(key)) {
-        newObj[key] = this[_getType(value)](value)
+        newObj[key] = this[_getType(value)]
       }
     }
     return newObj
   }
 }
 for (let type of ['null', 'string', 'number', 'function', 'Promise']) {
-  clone[type] = function (value) {
+  clone[type] = function(value) {
     return value
   }
 }
 // 多叉树遍历
-const multiTree = function (node, flag) {
+const multiTree = function(node, flag) {
   let stack = []
-  const pushStack = function (node) { // 将子节点加入栈
+  const pushStack = function(node) {
+    // 将子节点加入栈
     let children = node.children
     if (children && children.length) {
       for (let subNode of children) {
-        subNode.filter = function () { // 添加过滤函数
+        subNode.filter = function() {
+          // 添加过滤函数
           children.splice(children.indexOf(this), 1)
         }
         stack.push(subNode)
@@ -54,4 +60,4 @@ const multiTree = function (node, flag) {
   return node
 }
 
-export {clone, multiTree}
+export { clone, multiTree }

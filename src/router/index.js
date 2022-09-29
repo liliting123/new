@@ -121,7 +121,7 @@ export const constantRouterMap = [
         path: 'normal_product_list',
         name: '普通商品列表',
         component: NormalProductList,
-        meta: { keepAlive: true }
+        meta: { keepAlive: false }
       },
       {
         path: 'normal_product_list/add_product',
@@ -130,16 +130,26 @@ export const constantRouterMap = [
         meta: { keepAlive: true }
       },
       {
+        path: 'normal_product_list/edit_product/:id',
+        name: '编辑商品',
+        component: AddProduct,
+        meta: { keepAlive: false }
+      },
+      {
         path: 'weighing_goods_list',
         name: '称重商品列表',
-        component: WeighingGoods,
-        meta: { keepAlive: true }
+        component: WeighingGoods
       },
       {
         path: 'weighing_goods_list/add_weighing_item',
         name: '添加称重商品',
         component: AddWeighingItem,
         meta: { keepAlive: true }
+      },
+      {
+        path: 'weighing_goods_list/edit_weighing_item/:id',
+        name: '编辑称重商品',
+        component: AddWeighingItem
       },
       {
         path: 'classification_list',

@@ -20,7 +20,7 @@
     <span style="position: relative; top: -3px;">
       <el-select
         v-model="shopValue"
-        :placeholder="$t('请选择')"
+        :placeholder="$t('请选择店铺')"
         @change="selectShop()"
         class="shopSelect"
       >
@@ -64,16 +64,17 @@ export default {
     return {
       shopList: [],
       downloads: [],
-      shopValue: +localStorage.getItem('shopId'),
+      shopValue: +localStorage.getItem('shopId') || '',
       userName: localStorage.getItem('UserName')
     }
   },
-  mounted() {
+  created() {
     this.getShop()
   },
   methods: {
     selectShop() {
       localStorage.setItem('shopId', this.shopValue)
+      console.log(localStorage.getItem('shopId'))
       location.reload()
     },
     getShop() {
@@ -89,6 +90,7 @@ export default {
             this.shopList = res.data.data
             if (!this.shopValue) {
               this.shopValue = res.data.data[0].id
+              localStorage.setItem('shopId', res.data.data[0].id)
             }
           }
         })
@@ -105,13 +107,20 @@ export default {
           message: this.$t('success')
         })
         this.$store.commit('token/removeToken')
+        this.$store.commit('permission/removePermission')
         this.$store.commit('switchPermissionMapFilterStatus', { status: false }) // 重新筛选路由
         this.$router.push('/login')
-        localStorage.removeItem('shopId')
+
         localStorage.removeItem('tagInfo2')
-        localStorage.removeItem('permission')
+        localStorage.removeItem('shopId')
+        // console.log(localStorage.getItem('tagInfo2'), "localStorage.getItem('tagInfo2')")
+        if (localStorage.getItem('tagInfo2') === null) {
+          // console.log('reload')
+          location.reload()
+        }
       })
     },
+
     // 获取下载列表
     getDownloads(flag) {
       if (flag) {

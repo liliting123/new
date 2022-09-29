@@ -24,7 +24,7 @@
             :key="subItem.subname"
           >
             <a class="slide-nav-title-sub-item" href="#"
-              ><router-link :to="{ name: subItem.name }">{{
+              ><router-link :to="{ name: subItem.name }" :key="subItem.name">{{
                 $t(subItem.name)
               }}</router-link></a
             >
@@ -63,10 +63,12 @@ export default {
   },
   mounted() {
     let permission = store.state.permission.permission
-    // permission.push('web')
+    if (permission.indexOf('web') === -1) {
+      permission = permission.concat('web') // 添加首页
+      console.log(permission)
+    }
+    this.routers(this.structure, permission)
     console.log(this.structure)
-    console.log(permission)
-    // this.routers(this.structure, permission)
   },
   methods: {
     toggle(name) {
@@ -88,7 +90,6 @@ export default {
               roles.indexOf(router[i].subRoutes[j].subname) === -1
             ) {
               console.log(router[i].subRoutes[j].subname)
-
               router[i].subRoutes.splice(j, 1)
               j--
               if (router[i].subRoutes.length === 0) {

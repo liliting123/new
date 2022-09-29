@@ -118,16 +118,35 @@
       </div>
     </el-dialog>
     <el-dialog :title="$t('权限')" :visible.sync="dialogAuthorityVisible" width="40%">
-      <el-tree
-        :data="permissionData"
-        show-checkbox
-        default-expand-all
-        node-key="id"
-        ref="tree"
-        highlight-current
-        :props="defaultProps"
-      >
-      </el-tree>
+      <el-row>
+        <el-col :span="12"
+          ><div class="grid-content bg-purple">
+            <el-tree
+              :data="permissionData"
+              show-checkbox
+              default-expand-all
+              node-key="id"
+              ref="tree"
+              highlight-current
+              :props="defaultProps"
+            >
+            </el-tree></div
+        ></el-col>
+        <el-col :span="12"
+          ><div class="grid-content bg-purple-light">
+            <el-tree
+              :data="desktopPermissionData"
+              show-checkbox
+              default-expand-all
+              node-key="id"
+              ref="desktoptree"
+              highlight-current
+              :props="defaultProps"
+            >
+            </el-tree></div
+        ></el-col>
+      </el-row>
+
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogAuthorityVisible = false">{{ $t('取消') }}</el-button>
         <el-button type="primary" @click="getCheckedKeys()">{{ $t('确定') }}</el-button>
@@ -145,6 +164,7 @@ export default {
     PaginationAndButtons
   },
   mixins: [pagination],
+  name: 'userGroupList',
   data() {
     return {
       selectOption: '1',
@@ -164,18 +184,15 @@ export default {
       },
       value: '',
       rules: {
-        email: [{ required: true }],
-        name: [{ required: true, message: this.$t('请输入员工名称') }],
-        password: [{ required: true, message: this.$t('请输入密码') }],
-        userGroup: [{ required: true, message: this.$t('请选择员工组') }],
-        password2: [{ required: true, message: this.$t('请输入确认密码') }]
+        name: [{ required: true, message: this.$t('请输入员工组名称') }]
       },
       userGroupIds: '',
       powerIds: '',
       // 权限
       permissionData: [
         {
-          label: '后台',
+          id: 1,
+          label: this.$t('后台'),
           children: [
             // {
             //   label: '我的面板',
@@ -186,65 +203,82 @@ export default {
             //   ]
             // },
             {
-              label: '用户管理',
+              label: this.$t('用户管理'),
               children: [
                 {
                   id: 2,
-                  label: '用户列表'
+                  label: this.$t('用户列表')
                 },
                 {
                   id: 3,
-                  label: '用户组列表'
+                  label: this.$t('用户组列表')
                 }
               ]
             },
             {
-              label: '订单管理',
+              label: this.$t('订单管理'),
               children: [
                 {
                   id: 4,
-                  label: '订单列表'
+                  label: this.$t('订单列表')
                 },
                 {
                   id: 5,
-                  label: '退款列表'
+                  label: this.$t('退款列表')
                 }
               ]
             },
             {
-              label: '商品管理',
+              label: this.$t('商品管理'),
               children: [
                 {
                   id: 6,
-                  label: '普通商品列表'
+                  label: this.$t('普通商品列表')
                 },
                 {
                   id: 7,
-                  label: '称重商品列表'
+                  label: this.$t('称重商品列表')
                 },
                 {
                   id: 8,
-                  label: '分类列表'
+                  label: this.$t('分类列表')
                 },
                 {
                   id: 9,
-                  label: '供应商列表'
+                  label: this.$t('供应商列表')
                 }
               ]
             },
 
             {
-              label: '配置设置',
+              label: this.$t('配置设置'),
               children: [
                 {
                   id: 10,
-                  label: '店铺设置'
+                  label: this.$t('店铺设置')
                 },
                 {
                   id: 11,
-                  label: '支付设置'
+                  label: this.$t('支付设置')
                 }
               ]
+            }
+          ]
+        }
+      ],
+      // 桌面端权限
+      desktopPermissionData: [
+        {
+          id: 12,
+          label: this.$t('桌面端'),
+          children: [
+            {
+              label: this.$t('收银'),
+              id: 13
+            },
+            {
+              label: this.$t('称重'),
+              id: 14
             }
           ]
         }
@@ -256,9 +290,12 @@ export default {
       group_permission: []
     }
   },
-
-  mounted() {
-    this.getList()
+  created() {
+    console.log('111111111111creat')
+    // this.getList()
+  },
+  activated() {
+    console.log('aaaaaaaaaaaaaaaaaaaaaaaaaa')
   },
   methods: {
     getList() {
@@ -303,6 +340,7 @@ export default {
     // 显示权限
     setCheckedKeys(groupPermission) {
       this.$refs.tree.setCheckedKeys(groupPermission)
+      this.$refs.desktoptree.setCheckedKeys(groupPermission)
     },
     onDetail(id, type) {
       this.userGroupIds = id
@@ -340,8 +378,8 @@ export default {
       this.dialogTableVisible = true
       const res = await this.$http.get(`api/shop/staff_group/${id}/staff`, {
         params: {
-          page: 1,
-          size: 10,
+          page: this.page_params.page,
+          size: this.page_params.size,
           keyword: ''
         }
       })
@@ -372,20 +410,26 @@ export default {
       this.dialogAuthorityVisible = true
     },
     getCheckedKeys() {
-      this.dialogAuthorityVisible = false
-      const arrs = this.$refs.tree.getCheckedKeys().filter(res => {
-        return res !== undefined
-      })
+      const arrs = this.$refs.desktoptree
+        .getCheckedKeys()
+        .concat(this.$refs.tree.getCheckedKeys())
+        .filter(res => {
+          return res !== undefined
+        })
       this.$json
         .post(`api/shop/staff_group/${this.userGroupIds}/permission`, {
           permission_ids: arrs
         })
         .then(res => {
-          this.$notify({
-            title: this.$t('success'),
-            message: res.msg,
-            type: 'success'
-          })
+          if (res.ret === 1) {
+            console.log(this.dialogAuthorityVisible)
+            this.dialogAuthorityVisible = false
+            this.$notify({
+              title: this.$t('success'),
+              message: res.msg,
+              type: 'success'
+            })
+          }
         })
     },
     addUserGroup() {

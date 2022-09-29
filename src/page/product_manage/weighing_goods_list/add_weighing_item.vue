@@ -2,10 +2,11 @@
   <div>
     <div class="info-top">
       <div class="title">{{ $t('基本信息') }}</div>
-      <div class="nav">
-        <TabsLanguage @update="modifyLanguage" />
-      </div>
+
       <div class="form-content">
+        <div class="nav">
+          <TabsLanguage @update="modifyLanguage" />
+        </div>
         <el-form
           ref="weighForm"
           :model="form"
@@ -63,8 +64,9 @@
             <el-col :span="8" :offset="6">
               <el-form-item :label="`${$t('税率')}:`" prop="tax_rate">
                 <el-select v-model="form.tax_rate">
-                  <el-option label="区域一" value="1"></el-option>
-                  <el-option label="区域二" value="2"></el-option>
+                  <el-option label="0%" :value="1"></el-option>
+                  <el-option label="9%" :value="2"></el-option>
+                  <el-option label="21%" :value="3"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -145,10 +147,10 @@
 <script>
 import TabsLanguage from '@/components/tabs-language.vue'
 export default {
-  name: 'add_weighing_item',
   components: {
     TabsLanguage
   },
+  name: 'addWeighProductList',
   data() {
     return {
       form: {
@@ -170,7 +172,7 @@ export default {
         name: [{ required: true, message: '请填写商品名称', trigger: 'change' }]
       },
       currentLanguage: '',
-      weighProductId: this.$route.query.id // 称重商品id
+      weighProductId: this.$route.params.id // 称重商品id
     }
   },
   computed: {
@@ -318,5 +320,6 @@ export default {
 }
 .shopImg {
   position: absolute;
+  margin-top: 10px;
 }
 </style>

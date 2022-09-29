@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    :title="$t('库存记录')"
+    :title="'(' + this.records.name + ')' + $t('库存记录')"
     :visible="inventoryRecords"
     width="60%"
     :before-close="handleClose"
@@ -12,9 +12,11 @@
         range-separator="-"
         :start-placeholder="$t('开始日期')"
         :end-placeholder="$t('结束日期')"
+        value-format="yyyy-MM-dd"
+        @change="getRecordList()"
       >
       </el-date-picker>
-      <el-select v-model="type_id" :placeholder="$t('全部')">
+      <el-select v-model="type_id" :placeholder="$t('全部')" @change="getRecordList()">
         <el-option
           v-for="item in options"
           :key="item.value"
@@ -27,39 +29,59 @@
     <el-table
       :header-cell-style="{ background: '#F7F7F7' }"
       :data="recordsData"
-      style="width: 100%">
-      <el-table-column width="50">
+      style="width: 100%"
+    >
+      <el-table-column width="50" label="#">
         <template slot-scope="scope">
           <span class="table_index">{{ scope.$index + 1 }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="date" :label="$t('类型')" width="180"> </el-table-column>
-      <el-table-column prop="old_num" :label="$t('操作前库存')"> </el-table-column>
-      <el-table-column prop="new_num" :label="$t('当前库存')"> </el-table-column>
-      <el-table-column prop="num" :label="$t('操作库存')" width="180"> </el-table-column>
+      <el-table-column :label="$t('类型')">
+        <template slot-scope="scope">
+          {{ scope.row.type_id === 1 ? '已售库存' : '编辑库存' }}
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('操作前库存')">
+        <template slot-scope="scope"> {{ scope.row.old_num }}KG </template>
+      </el-table-column>
+      <el-table-column :label="$t('当前库存')">
+        <template slot-scope="scope"> {{ scope.row.new_num }}KG </template>
+      </el-table-column>
+      <el-table-column :label="$t('操作库存')">
+        <template slot-scope="scope">
+          {{
+            recordSymbol(
+              Number(scope.row.old_num),
+              Number(scope.row.num),
+              Number(scope.row.new_num)
+            ) + scope.row.num
+          }}KG
+        </template>
+      </el-table-column>
       <el-table-column prop="staff.name" :label="$t('操作人')"> </el-table-column>
-      <el-table-column prop="updated_at" :label="$t('操作时间')" width="180"> </el-table-column>
+      <el-table-column prop="updated_at" :label="$t('操作时间')"> </el-table-column>
       <el-table-column prop="external_code" :label="$t('关联单号')"> </el-table-column>
     </el-table>
-    <span slot="footer" class="dialog-footer">
-      <el-button @click="inventoryRecords = false">{{ $t('取消') }}</el-button>
-      <el-button type="primary" @click="inventoryRecords = false">{{
-        $t('确定')
-      }}</el-button>
-    </span>
+    <PaginationAndButtons :pageParams="page_params" />
   </el-dialog>
 </template>
 
 <script>
+import PaginationAndButtons from '@/components/pagination_and_buttons.vue'
+import pagination from '@/mixin/pagination'
 export default {
   name: 'inventoryRecordsDialog',
+  components: {
+    PaginationAndButtons
+  },
+  mixins: [pagination],
   props: {
     visible: {
       type: Boolean,
       require: true
     },
-    recordsData: {
-      type: Array
+    records: {
+      type: Object
     }
   },
   computed: {
@@ -74,24 +96,57 @@ export default {
   },
   data() {
     return {
-      value1: '',
       options: [
         {
-          value: '1',
+          value: '',
+          label: '全部'
+        },
+        {
+          value: 1,
           label: '已售库存'
         },
         {
-          value: '2',
+          value: 2,
           label: '编辑库存'
-        }],
+        }
+      ],
       type_id: '',
-      time: ''
+      time: '',
+      recordsData: []
     }
   },
+  mounted() {
+    this.getRecordList()
+  },
   methods: {
+    recordSymbol(before, after, news) {
+      if (news === before - after) {
+        return '-'
+      } else {
+        return '+'
+      }
+    },
     // 关闭弹窗
     handleClose() {
       this.inventoryRecords = false
+    },
+    // 获取库存记录
+    getRecordList() {
+      this.$http
+        .get(`api/shop/weigh_goods_record?weigh_goods_id=${this.records.id}`, {
+          params: {
+            page: this.page_params.page,
+            size: this.page_params.size,
+            start_time: this.time ? this.time[0] : '',
+            end_time: this.time ? this.time[1] : '',
+            type_id: this.type_id
+          }
+        })
+        .then(res => {
+          if (res.ret) {
+            this.recordsData = res.data.data
+          }
+        })
     }
   }
 }
@@ -104,5 +159,8 @@ export default {
   line-height: 40px;
   justify-content: space-between;
   margin-bottom: 15px;
+}
+/deep/ .el-dialog__header {
+  border-bottom: 1px solid #dcdfe6;
 }
 </style>

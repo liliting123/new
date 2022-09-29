@@ -90,6 +90,7 @@ export default {
     searchList,
     PaginationAndButtons
   },
+  name: 'supplierList',
   data() {
     return {
       searchValue: '',

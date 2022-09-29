@@ -96,7 +96,7 @@
             :data="form.spec"
             style="width: 100%"
           >
-            <el-table-column label="#" width="80">
+            <el-table-column label="#" width="50">
               <template slot-scope="scope">
                 <span class="table_index">{{ scope.$index + 1 }}</span>
               </template>
@@ -187,9 +187,9 @@
                   :rules="rulesSpec.tax_rate"
                 >
                   <el-select v-model="scope.row.tax_rate" size="small">
-                    <el-option label="0%" value="1"></el-option>
-                    <el-option label="9%" value="2"></el-option>
-                    <el-option label="21%" value="3"></el-option>
+                    <el-option label="0%" :value="1"></el-option>
+                    <el-option label="9%" :value="2"></el-option>
+                    <el-option label="21%" :value="3"></el-option>
                   </el-select>
                 </el-form-item>
               </template>
@@ -242,11 +242,7 @@
       </el-button>
     </div>
     <!--    EAN弹窗-->
-    <addEANDialog
-      v-if="dialogENATable"
-      :visible.sync="dialogENATable"
-      :id="eanId"
-    />
+    <addEANDialog v-if="dialogENATable" :visible.sync="dialogENATable" :id="eanId" />
   </div>
 </template>
 
@@ -254,11 +250,11 @@
 import TabsLanguage from '@/components/tabs-language.vue'
 import addEANDialog from './components/addEANDialog.vue'
 export default {
-  name: 'add_product',
   components: {
     TabsLanguage,
     addEANDialog
   },
+  name: 'addProductList',
   data() {
     return {
       labelList: [
@@ -267,7 +263,11 @@ export default {
         { id: 11, name: this.$t('酒类') }
       ],
       form: {
-        name: {}, // 商品名称
+        name: {
+          cn: '',
+          en: '',
+          nl: ''
+        }, // 商品名称
         shop_id: localStorage.getItem('shopId'), // 店铺账号id
         category_id: '', // 分类id
         label: '', // 分类标签
@@ -275,17 +275,28 @@ export default {
         vip_special: false, // 是否vip价格
         wms_category_id: '', // wms分类id
         spec: [
-          {
-            supplier_id: '', // 供应商id
-            code: '', // 商品编号
-            name: '', // 规格名称
-            price: '', // 价格
-            vip_price: 0, // vip价格
-            tax_rate: '', // 汇率
-            ean: '' // EAN
-          }
+          // {
+          //   supplier_id: '', // 供应商id
+          //   code: '', // 商品编号
+          //   name: '', // 规格名称
+          //   price: '', // 价格
+          //   vip_price: 0, // vip价格
+          //   tax_rate: '', // 汇率
+          //   ean: '' // EAN
+          // }
         ] // 商品规格数组
       },
+      spec: [
+        {
+          supplier_id: '', // 供应商id
+          code: '', // 商品编号
+          name: '', // 规格名称
+          price: '', // 价格
+          vip_price: 0, // vip价格
+          tax_rate: '', // 汇率
+          ean: '' // EAN
+        }
+      ], // 商品规格数组
       fileList: [],
       dialogENATable: false, // EAN弹窗
       rulesSpec: {
@@ -301,7 +312,7 @@ export default {
       categoryList: [], // 分类下拉
       supplierList: [], // 供应商下拉
       wmsList: [], // wms分类
-      productId: this.$route.query.id, // 商品id
+      productId: this.$route.params.id, // 商品id
       eanId: ''
     }
   },
@@ -310,7 +321,6 @@ export default {
     rulesInfo() {
       // 商品图片自定义校验
       const validataImg = (rule, value, callback) => {
-        console.log(this.form.cover, 'this.form.cover')
         if (!this.form.cover) {
           callback(new Error('请上传商品图片'))
         } else {
@@ -352,47 +362,70 @@ export default {
     }
   },
   created() {
+    this.form.spec = this.spec
     this.getClassList()
     this.getSupplierList()
     this.getWMSCategoryList()
-    if (this.productId) {
-      this.getProductInfo()
+    console.log(this.$route)
+    if (this.productId && this.$route.params && !this.$route.params.shops) {
+      this.getList()
+    }
+    if (this.$route.params && this.$route.params.shops) {
+      console.log('5555', this.form.name)
+
+      let shopInfo = this.$route.params && this.$route.params.shops
+      this.form.name.cn = shopInfo.product.cn_name || ''
+      this.form.name.en = shopInfo.product.en_name || ''
+      this.form.name.nl = shopInfo.product.nl_name || ''
+      for (let i = 0; i < this.spec.length; i++) {
+        this.spec[i].code = shopInfo.relevance_code
+        this.spec[i].name = shopInfo.spec_name
+        this.spec[i].price = shopInfo.spec_price
+        this.spec[i].tax_rate = shopInfo.tax_rate
+      }
+      this.form.spec = this.spec
+      this.form.cover = shopInfo.product.major_photo
+      console.log(shopInfo, '999999')
     }
   },
+
   methods: {
     // 编辑回显
-    getProductInfo() {
+    getList() {
       this.$http.get(`api/shop/goods/${this.productId}`).then(res => {
         if (res.ret) {
+          this.form.spec = this.spec
           this.form = res.data
         }
+        console.log(this.form)
       })
     },
     // 保存商品
     async insertProduct(form, formSpec) {
       try {
-        await Promise.all([this.$refs[form].validate(), this.$refs[formSpec].validate()]).then(
-          () => {
-            let api
-            this.productId
-              ? (api = this.$http.put(`api/shop/goods/${this.productId}`, {
+        await Promise.all([
+          this.$refs[form].validate(),
+          this.$refs[formSpec].validate()
+        ]).then(() => {
+          let api
+          this.productId
+            ? (api = this.$http.put(`api/shop/goods/${this.productId}`, {
                 ...this.form
               }))
-              : this.$http.post('api/shop/goods', {
+            : this.$http.post('api/shop/goods', {
                 ...this.form
               })
-            api.then(res => {
-              if (res.ret) {
-                this.$notify({
-                  title: res.msg,
-                  message: res.msg,
-                  type: 'success'
-                })
-                this.$router.push({ path: '/product_manage/normal_product_list' })
-              }
-            })
-          }
-        )
+          api.then(res => {
+            if (res.ret) {
+              this.$notify({
+                title: res.msg,
+                message: res.msg,
+                type: 'success'
+              })
+              this.$router.push({ path: '/product_manage/normal_product_list' })
+            }
+          })
+        })
       } catch (error) {
         return '1'
       }
@@ -519,5 +552,10 @@ export default {
 }
 .shopImg {
   position: absolute;
+  margin-top: 10px;
+}
+/deep/.table .el-form-item {
+  margin-bottom: 15px !important;
+  margin-top: 14px;
 }
 </style>

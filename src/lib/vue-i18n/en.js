@@ -142,7 +142,8 @@ export default {
   商品列表: 'Product List',
   商品分类: 'Categories',
   导出商品: 'Export Product',
-  添加商品: 'Adding Goods',
+  添加商品: 'Add Goods',
+  编辑商品: 'Edit Goods',
   拉取库存: 'Pull Inventory',
   拉取BBD: 'Pull BBD',
   可售库存: 'Available Inventory',
@@ -261,6 +262,7 @@ export default {
 
   分类: 'Category',
   添加称重商品: 'Add Weighing Product',
+  编辑称重商品: 'Edit Weighing Product',
   库存记录: 'Inventory Records',
   操作前库存: 'Pre Operation Inventory',
   当前库存: 'Current Inventory',
@@ -287,5 +289,7 @@ export default {
   普通: 'Ordinary',
   烟类: 'Smoke',
   酒类: 'Liquor',
-  申请金额: 'Application Amount'
+  申请金额: 'Application Amount',
+  分类图片: 'Category Picture',
+  请选择店铺: 'Please select a store'
 }

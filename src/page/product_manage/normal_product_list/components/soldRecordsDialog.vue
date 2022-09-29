@@ -1,6 +1,11 @@
 <template>
   <el-dialog
-    :title="$t('已售记录')"
+    :title="
+      '(' +
+        (this.keyValue === 'goods_spec_id' ? this.row.code : this.shopName) +
+        ')' +
+        $t('已售记录')
+    "
     :visible="soldRecords"
     width="900px"
     :before-close="handleClose"
@@ -24,16 +29,23 @@
     >
       <el-table-column width="50" label="#">
         <template slot-scope="scope">
-          <span class="table_index">{{scope.$index + 1}}</span>
+          <span class="table_index">{{ scope.$index + 1 }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="order.code" :label="$t('订单号')" width="180"></el-table-column>
+      <el-table-column
+        prop="order.code"
+        :label="$t('订单号')"
+        width="180"
+      ></el-table-column>
       <el-table-column prop="num" :label="$t('已售数量')"> </el-table-column>
       <el-table-column prop="order.staff.name" :label="$t('操作人')"> </el-table-column>
-      <el-table-column prop="created_at" :label="$t('创建时间')" width="180"> </el-table-column>
+      <el-table-column prop="created_at" :label="$t('创建时间')" width="180">
+      </el-table-column>
       <el-table-column :label="$t('操作')">
         <template slot-scope="scope">
-          <el-button type="text" @click="showDetail(scope.row.order.id)">{{ $t('查看详情') }}</el-button>
+          <el-button type="text" @click="showDetail(scope.row.order.id)">{{
+            $t('查看详情')
+          }}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -67,6 +79,9 @@ export default {
     },
     row: {
       type: Object
+    },
+    shopName: {
+      type: String
     }
   },
   computed: {
@@ -87,11 +102,13 @@ export default {
   },
   mounted() {
     this.getList()
+    console.log(this.row.goods_id)
   },
   methods: {
     // 已售记录列表
     getList() {
-      this.$http.get(`api/shop/goods/order/item`, {
+      this.$http
+        .get(`api/shop/goods/order/item`, {
           params: {
             page: this.page_params.page,
             size: this.page_params.size,
@@ -99,9 +116,10 @@ export default {
             created_at_end: this.time ? this.time[1] : '',
             goods_id: this.keyValue === 'goods_id' ? this.recordsId : this.row.goods_id,
             goods_spec_id: this.keyValue === 'goods_spec_id' ? this.row.id : undefined,
-            goods_type: 'goods_spec_type'
+            goods_type: 'goods_spec_type' // 普通商品
           }
-        }).then(res => {
+        })
+        .then(res => {
           this.recordsData = res.data.data
           this.page_params.total = res.data.total
         })

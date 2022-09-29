@@ -122,7 +122,7 @@ export default {
         banner: ''
       },
       time: '',
-      shopId: localStorage.getItem('shopId')
+      shopId: localStorage.getItem('shopId') || 'all'
     }
   },
   computed: {

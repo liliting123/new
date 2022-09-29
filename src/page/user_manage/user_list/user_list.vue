@@ -45,7 +45,7 @@
         <el-table-column prop="email" :label="$t('员工邮箱')"> </el-table-column>
         <el-table-column :label="$t('员工组')">
           <template slot-scope="scope">
-            {{ scope.row.group.name }}
+            {{ scope.row.group && scope.row.group.name }}
           </template>
         </el-table-column>
         <el-table-column prop="updated_at" :label="$t('创建时间')"> </el-table-column>
@@ -148,6 +148,7 @@ export default {
     searchList,
     PaginationAndButtons
   },
+  name: 'userList',
   data() {
     return {
       selectOption: 1,
@@ -172,13 +173,14 @@ export default {
         email: [{ required: true }],
         name: [{ required: true, message: '请输入员工名称' }],
         password: [{ required: true, message: '请输入密码' }],
-        password_confirmation: [{ required: true, message: '请输入确认密码' }]
+        password_confirmation: [{ required: true, message: '请输入确认密码' }],
+        staff_group_id: [{ required: true }]
       },
       userIds: '',
       is_lock: 1
     }
   },
-  mounted() {
+  created() {
     this.getList()
     this.getGroupList()
   },
