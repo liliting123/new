@@ -108,7 +108,10 @@ export default {
       categoryId: ''
     }
   },
-  created() {
+  activated() {
+    if (this.$store.state.search_flag === true) {
+      this.searchValue = ''
+    }
     this.getList()
   },
   methods: {
@@ -173,7 +176,7 @@ export default {
               this.$notify({
                 title: this.$t('成功'),
                 type: 'success',
-                message: this.$t('删除成功')
+                message: res.msg
               })
               this.getList()
             }

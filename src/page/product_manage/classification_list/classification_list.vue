@@ -54,7 +54,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <PaginationAndButtons :pageParams="page_params" />
+
     <!-- 编辑 -->
     <el-dialog
       :title="$t(title)"
@@ -107,14 +107,13 @@
 import Sortable from 'sortablejs'
 import searchList from '@/components/searchList.vue'
 import TabsLanguage from '@/components/tabs-language.vue'
-import PaginationAndButtons from '@/components/pagination_and_buttons.vue'
+
 import pagination from '@/mixin/pagination'
 export default {
   components: {
     searchList,
     Sortable,
-    TabsLanguage,
-    PaginationAndButtons
+    TabsLanguage
   },
   mixins: [pagination],
   name: 'classificationList',
@@ -153,10 +152,13 @@ export default {
   },
   mounted() {
     this.dragSort()
+  },
+  activated() {
+    if (this.$store.state.search_flag === true) {
+      this.searchValue = ''
+    }
     this.getList()
   },
-  updated() {},
-
   methods: {
     // 编辑分类
     editClassifly(row) {
@@ -189,7 +191,7 @@ export default {
               this.$notify({
                 title: this.$t('成功'),
                 type: 'success',
-                message: this.$t('添加成功')
+                message: res.msg
               })
               this.dialogFormVisible = false
               this.form.cover = ''
@@ -208,14 +210,11 @@ export default {
       this.page_params.keyword = this.searchValue
       const res = await this.$http.get(`api/shop/category`, {
         params: {
-          page: this.page_params.page,
-          size: this.page_params.size,
           keyword: this.page_params.keyword
         }
       })
       if (res.ret) {
-        this.page_params.total = res.data.total
-        this.tableData = res.data.data
+        this.tableData = res.data
       }
     },
     // 删除分类
@@ -259,7 +258,6 @@ export default {
         onEnd: async e => {
           // e.oldIndex为拖动一行原来的位置，e.newIndex为拖动后新的位置
           const targetRow = this.tableData.splice(e.oldIndex, 1)[0] // 拖拽后的行
-          console.log(targetRow)
           this.tableData.splice(e.newIndex, 0, targetRow) // 得到拖拽后的数组
           let sortData = this.tableData.map((item, index) => {
             item.index_sort = index

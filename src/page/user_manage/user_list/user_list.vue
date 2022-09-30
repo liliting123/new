@@ -184,6 +184,13 @@ export default {
     this.getList()
     this.getGroupList()
   },
+  activated() {
+    if (this.$store.state.search_flag === true) {
+      this.selectOption = 1
+      this.searchValue = ''
+    }
+    this.getList()
+  },
   methods: {
     getList() {
       this.tableLoading = true

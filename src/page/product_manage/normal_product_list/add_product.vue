@@ -438,7 +438,7 @@ export default {
         }
       })
       if (res.ret) {
-        this.categoryList = res.data.data
+        this.categoryList = res.data
       }
     },
     // 获取供应商下拉列表

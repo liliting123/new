@@ -167,10 +167,10 @@ export default {
   name: 'userGroupList',
   data() {
     return {
-      selectOption: '1',
+      selectOption: 1,
       selectList: [
-        { value: '1', label: this.$t('员工组名称') },
-        { value: '2', label: this.$t('备注') }
+        { value: 1, label: this.$t('员工组名称') },
+        { value: 2, label: this.$t('备注') }
       ],
       searchValue: '',
       dialogFormVisible: false,
@@ -290,12 +290,13 @@ export default {
       group_permission: []
     }
   },
-  created() {
-    console.log('111111111111creat')
-    // this.getList()
-  },
+
   activated() {
-    console.log('aaaaaaaaaaaaaaaaaaaaaaaaaa')
+    if (this.$store.state.search_flag === true) {
+      this.selectOption = 1
+      this.searchValue = ''
+    }
+    this.getList()
   },
   methods: {
     getList() {

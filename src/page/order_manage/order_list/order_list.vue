@@ -67,7 +67,7 @@
               :value="item.value"
             ></el-option>
           </el-select>
-          <el-button slot="append" @click="getOrderList()">{{ $t('搜索') }}</el-button>
+          <el-button slot="append" @click="getList()">{{ $t('搜索') }}</el-button>
         </el-input>
       </div>
     </search-list>
@@ -245,15 +245,18 @@ export default {
     }
   },
   created() {
-    this.getOrderList()
     this.paymentList()
   },
   activated() {
     if (this.$store.state.search_flag === true) {
-      Object.assign(this.$data, this.$options.data.call(this))
-      this.paymentList()
+      this.orderNoValue = 1
+      this.inputValue = ''
+      this.slectTime = ''
+      this.customerValue = ''
+      this.orderValue = ''
+      this.paymentValue = ''
     }
-    this.getOrderList()
+    this.getList()
   },
   methods: {
     // 跳转订单详情
@@ -269,7 +272,7 @@ export default {
       this.visibleOrderRefund = true
       this.orderId = id
     },
-    getOrderList() {
+    getList() {
       this.tableLoading = true
       this.$http
         .get('api/shop/order', {

@@ -278,6 +278,16 @@ export default {
   mounted() {
     this.getList()
   },
+  activated() {
+    if (this.$store.state.search_flag === true) {
+      this.orderNoValue = 1
+      this.inputValue = ''
+      this.slectTime = ''
+      this.refundValue = ''
+      this.IsRefundedValu = ''
+    }
+    this.getList()
+  },
   methods: {
     // del(id) {
     //   this.$confirm(this.$t('确认要删除吗?'), this.$t('提示'), {

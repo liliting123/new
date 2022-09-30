@@ -45,7 +45,7 @@
               :value="item.id"
             ></el-option>
           </el-select>
-          <el-button slot="append" @click="getProductList">{{ $t('搜索') }}</el-button>
+          <el-button slot="append" @click="getList">{{ $t('搜索') }}</el-button>
         </el-input>
       </div>
     </search-list>
@@ -158,19 +158,16 @@ export default {
     }
   },
   created() {
-    this.getProductList()
     this.getClassList()
     this.getSupplierList()
   },
   activated() {
     if (this.$store.state.search_flag === true) {
-      Object.assign(this.$data, this.$options.data.call(this))
       this.categoryValue = ''
       this.supplierValue = ''
-      this.getSupplierList()
-      this.getClassList()
+      this.searchValue = 1
     }
-    this.getProductList()
+    this.getList()
   },
   methods: {
     // 删除称重商品
@@ -205,7 +202,7 @@ export default {
       })
     },
     // 获取称重商品列表
-    getProductList() {
+    getList() {
       this.$http
         .get('api/shop/weigh_goods', {
           params: {
@@ -213,7 +210,7 @@ export default {
             size: this.page_params.size,
             keyword: this.inputValue,
             type_id: this.searchValue,
-            label: this.categoryValue, // 分类标签
+            category_id: this.categoryValue, // 分类标签
             supplier_id: this.supplierValue // 供应商
           }
         })
@@ -255,7 +252,7 @@ export default {
         }
       })
       if (res.ret) {
-        this.categoryList = res.data.data
+        this.categoryList = res.data
       }
     }
   }

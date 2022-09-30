@@ -274,7 +274,7 @@ export default {
         }
       })
       if (res.ret) {
-        this.categoryList = res.data.data
+        this.categoryList = res.data
       }
     },
     // 图片上传成功时触发的钩子

@@ -63,7 +63,7 @@
               :value="item.id"
             ></el-option>
           </el-select>
-          <el-button slot="append" @click="getProductList">{{ $t('搜索') }}</el-button>
+          <el-button slot="append" @click="getList">{{ $t('搜索') }}</el-button>
         </el-input>
       </div>
     </search-list>
@@ -71,7 +71,7 @@
     <div class="table_list" style="padding-top: 10px">
       <div class="top_btn">
         <button @click="pullWmsStock">{{ $t('拉取库存') }}</button>
-        <button>{{ $t('拉取BBD') }}</button>
+        <button @click="pullBBD">{{ $t('拉取BBD') }}</button>
       </div>
       <el-table
         ref="tableInfo"
@@ -194,7 +194,7 @@
     </div>
     <PaginationAndButtons :pageParams="page_params" />
     <!--  拉取后台商品弹窗-->
-    <pullGoodsDialog :visible.sync="dialogPullGoods" />
+    <pullGoodsDialog v-if="dialogPullGoods" :visible.sync="dialogPullGoods" />
     <!--  结算密码弹窗-->
     <setPasswordDialog :visible.sync="dialogPassword" />
     <soldRecordsDialog
@@ -258,19 +258,18 @@ export default {
     }
   },
   created() {
-    this.getProductList()
     this.getSupplierList()
     this.getClassList()
   },
   activated() {
-    if (this.$store.state.isPermissionFilter) {
-      if (this.$store.state.search_flag === true) {
-        Object.assign(this.$data, this.$options.data.call(this))
-        this.getSupplierList()
-        this.getClassList()
-      }
+    if (this.$store.state.search_flag === true) {
+      this.categoryValue = ''
+      this.classificationLabel = ''
+      this.supplierValue = ''
+      this.inputValue = ''
+      this.searchValue = 1
     }
-    this.getProductList()
+    this.getList()
   },
   methods: {
     // 拉取库存
@@ -282,6 +281,17 @@ export default {
         })
         .then(res => {
           console.log(res, '22')
+        })
+    },
+    // 拉取bbd
+    pullBBD() {
+      this.$http
+        .post('api/shop/goods/sync_wms_bbd', {
+          is_all: this.isCheckAll ? 1 : 0,
+          code: this.isCheckAll ? undefined : this.selections
+        })
+        .then(res => {
+          console.log(res, 'BBD')
         })
     },
     handleSubCheckChange(subInfo) {
@@ -362,7 +372,7 @@ export default {
     //   }
     // },
     // 获取商品列表
-    getProductList() {
+    getList() {
       this.tableLoading = true
       // this.isCheckAll = true
       this.selections = []
@@ -373,7 +383,7 @@ export default {
             size: this.page_params.size,
             keyword: this.inputValue,
             category_id: this.categoryValue, // 商品分类
-            label: this.classificationLabel, // 分类标签
+            label: this.classificationLabel, // 分类标签：普通
             supplier_id: this.supplierValue, // 供应商
             type_id: this.searchValue
           }
@@ -415,7 +425,7 @@ export default {
             message: res.msg,
             type: 'success'
           })
-          this.getProductList()
+          this.getList()
         }
       })
     },
@@ -453,7 +463,7 @@ export default {
         }
       })
       if (res.ret) {
-        this.categoryList = res.data.data
+        this.categoryList = res.data
       }
     }
   }
