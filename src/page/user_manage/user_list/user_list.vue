@@ -99,11 +99,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('员工组')" prop="staff_group_id">
-              <el-select
-                v-model="form.staff_group_id"
-                :placeholder="$t('请选择用户组')"
-                style="width:100%"
-              >
+              <el-select v-model="form.staff_group_id" placeholder="" style="width:100%">
                 <el-option
                   v-for="item in userGroupSelect"
                   :key="item.value"

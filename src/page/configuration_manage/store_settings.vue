@@ -50,10 +50,10 @@
             <el-time-picker
               is-range
               v-model="time"
-              range-separator="至"
-              start-placeholder="开始时间"
-              end-placeholder="结束时间"
-              placeholder="选择时间范围"
+              range-separator="-"
+              :start-placeholder="$t('起始时间')"
+              :end-placeholder="$t('结束时间')"
+              :placeholder="$t('选择时间范围')"
               value-format="HH:mm:ss"
             >
             </el-time-picker>
@@ -93,7 +93,7 @@
               <el-button size="small">{{ $t('点击上传') }}</el-button>
               <span>{{ `（${$t('建议尺寸')} 750*250px）` }}</span>
             </el-upload>
-            <img style="width: 100px;height: 100px" :src="form.banner" />
+            <img style="width: 300px;height: 100px" :src="form.banner" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -166,7 +166,7 @@ export default {
               this.$notify({
                 title: this.$t('成功'),
                 type: 'success',
-                message: this.$t('保存成功')
+                message: res.msg
               })
               this.getShopInfo()
               location.reload()

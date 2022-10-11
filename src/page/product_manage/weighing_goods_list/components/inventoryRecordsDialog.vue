@@ -13,10 +13,10 @@
         :start-placeholder="$t('开始日期')"
         :end-placeholder="$t('结束日期')"
         value-format="yyyy-MM-dd"
-        @change="getRecordList()"
+        @change="getList()"
       >
       </el-date-picker>
-      <el-select v-model="type_id" :placeholder="$t('全部')" @change="getRecordList()">
+      <el-select v-model="type_id" :placeholder="$t('全部')" @change="getList()">
         <el-option
           v-for="item in options"
           :key="item.value"
@@ -38,7 +38,7 @@
       </el-table-column>
       <el-table-column :label="$t('类型')">
         <template slot-scope="scope">
-          {{ scope.row.type_id === 1 ? '已售库存' : '编辑库存' }}
+          {{ scope.row.type_id === 1 ? $t('已售库存') : $t('编辑库存') }}
         </template>
       </el-table-column>
       <el-table-column :label="$t('操作前库存')">
@@ -99,15 +99,15 @@ export default {
       options: [
         {
           value: '',
-          label: '全部'
+          label: this.$t('全部')
         },
         {
           value: 1,
-          label: '已售库存'
+          label: this.$t('已售库存')
         },
         {
           value: 2,
-          label: '编辑库存'
+          label: this.$t('编辑库存')
         }
       ],
       type_id: '',
@@ -116,7 +116,7 @@ export default {
     }
   },
   mounted() {
-    this.getRecordList()
+    this.getList()
   },
   methods: {
     recordSymbol(before, after, news) {
@@ -131,7 +131,7 @@ export default {
       this.inventoryRecords = false
     },
     // 获取库存记录
-    getRecordList() {
+    getList() {
       this.$http
         .get(`api/shop/weigh_goods_record?weigh_goods_id=${this.records.id}`, {
           params: {
@@ -144,6 +144,7 @@ export default {
         })
         .then(res => {
           if (res.ret) {
+            this.page_params.total = res.data.total
             this.recordsData = res.data.data
           }
         })

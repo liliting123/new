@@ -93,7 +93,7 @@ export default {
       ? JSON.parse(localStorage.getItem('tagInfo2'))
       : {
           active: '/my_home/home',
-          tabList: [{ name: this.$t('首页'), path: '/my_home/home' }]
+          tabList: [{ name: '首页', path: '/my_home/home' }]
         }
     this.active = tagInfo2.active
     this.tabList = tagInfo2.tabList
@@ -168,7 +168,8 @@ export default {
       let index = this.tabList.findIndex(tag => tag.name === this.$route.name)
       if (index === -1) {
         this.tabList.push({
-          name: this.$t(this.$route.name),
+          // name: this.$t(this.$route.name),
+          name: this.$route.name,
           path: this.$route.path
         })
       } else {

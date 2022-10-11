@@ -37,10 +37,10 @@
           <div class="nav">
             <TabsLanguage :marginLeft="20" @update="modifyLanguage" />
           </div>
-          <el-form-item :label="$t('支付名称')">
+          <el-form-item :label="`${$t('支付名称')}：`">
             <el-input v-model="form.name[currentLanguage]"></el-input>
           </el-form-item>
-          <el-form-item :label="`${$t('支付图标')}:`" prop="logo">
+          <el-form-item :label="`${$t('支付图标')}：`" prop="logo">
             <el-upload
               class="upload-demo"
               :action="$baseUrl.BASE_API_URL + '/api/shop/upload/image'"
@@ -53,7 +53,7 @@
             </el-upload>
             <img :src="form.icon" width="100px" height="100px" />
           </el-form-item>
-          <el-form-item :label="`*${$t('是否启动')}`">
+          <el-form-item :label="`*${$t('是否启动')}：`">
             <el-switch
               v-model="form.switch"
               :active-text="$t('是')"

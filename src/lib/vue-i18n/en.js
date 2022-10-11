@@ -149,6 +149,8 @@ export default {
   可售库存: 'Available Inventory',
   锁定库存: 'Locked Inventory',
   已售库存: 'Sold Inventory',
+  编辑库存: 'Edit Inventory',
+  全部: 'All',
   供应商: 'Supplier',
   税率: 'Tax Rate',
   BBD: 'Best Before Date',
@@ -243,7 +245,6 @@ export default {
 
   是否已退款: 'Is Refund',
   申请时间: 'Apply Time',
-  重推: 'Push Again',
   确认已退款: 'Confirm Refunded',
 
   分类标签: 'Product Type',
@@ -291,5 +292,6 @@ export default {
   酒类: 'Liquor',
   申请金额: 'Application Amount',
   分类图片: 'Category Picture',
-  请选择店铺: 'Please select a store'
+  请选择店铺: 'Please select a store',
+  后台: 'Backstage'
 }

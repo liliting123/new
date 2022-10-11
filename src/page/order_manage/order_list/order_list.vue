@@ -53,8 +53,8 @@
         </el-select>
       </div>
       <div slot="right">
-        <el-input v-model="inputValue" class="input-with-select">
-          <el-select
+        <el-input v-model="inputValue">
+          <!-- <el-select
             v-model="orderNoValue"
             slot="prepend"
             :placeholder="$t('订单编号')"
@@ -66,7 +66,7 @@
               :label="item.label"
               :value="item.value"
             ></el-option>
-          </el-select>
+          </el-select> -->
           <el-button slot="append" @click="getList()">{{ $t('搜索') }}</el-button>
         </el-input>
       </div>
@@ -262,7 +262,7 @@ export default {
     // 跳转订单详情
     showOrderDetail(id) {
       this.$router.push({
-        name: this.$t('订单详情'),
+        name: '订单详情',
         params: { id: id }
       })
     },
@@ -279,11 +279,11 @@ export default {
           params: {
             page: this.page_params.page,
             size: this.page_params.size,
-            type_id: this.orderNoValue,
+            // type_id: this.orderNoValue,
             keyword: this.inputValue,
             created_at_start: this.slectTime ? this.slectTime[0] : '',
             created_at_end: this.slectTime ? this.slectTime[1] : '',
-            source: this.customerValue,
+            vip_source: this.customerValue,
             status_id: this.orderValue,
             payment_id: this.paymentValue
           }
@@ -308,9 +308,6 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.input-with-select {
-  width: 400px;
-}
 .order-table {
   border-radius: 8px;
 }

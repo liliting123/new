@@ -132,6 +132,7 @@
                   :rules="rulesSpec.supplier_id"
                 >
                   <el-select
+                    size="small"
                     v-model="scope.row.supplier_id"
                     :placeholder="$t('请选择供应商')"
                   >
@@ -182,7 +183,7 @@
             </el-table-column>
             <el-table-column prop="tax_rate" :label="`*${$t('税率')}`" width="180">
               <template slot-scope="scope">
-                <el-form-item
+                <!-- <el-form-item
                   :prop="'spec.' + scope.$index + '.tax_rate'"
                   :rules="rulesSpec.tax_rate"
                 >
@@ -191,6 +192,19 @@
                     <el-option label="9%" :value="2"></el-option>
                     <el-option label="21%" :value="3"></el-option>
                   </el-select>
+                </el-form-item> -->
+                <el-form-item
+                  :prop="'spec.' + scope.$index + '.tax_rate'"
+                  :rules="rulesSpec.tax_rate"
+                >
+                  <el-input
+                    size="small"
+                    v-model="scope.row.tax_rate"
+                    type="number"
+                    :min="0"
+                  >
+                    <span slot="suffix" style="font-size: 16px">%</span>
+                  </el-input>
                 </el-form-item>
               </template>
             </el-table-column>
@@ -305,7 +319,7 @@ export default {
         name: [{ required: true, message: '请输入规格', trigger: 'blur' }],
         price: [{ required: true, message: '请输入价格', trigger: 'blur' }],
         vip_price: [{ required: true, message: '请输入vip价格', trigger: 'blur' }],
-        tax_rate: [{ required: true, message: '请选择税率', trigger: 'change' }],
+        tax_rate: [{ required: true, message: '请输入税率', trigger: 'change' }],
         ean: [{ required: true, message: '请输入EAN', trigger: 'blur' }]
       },
       currentLanguage: '',
@@ -381,7 +395,7 @@ export default {
         this.spec[i].code = shopInfo.relevance_code
         this.spec[i].name = shopInfo.spec_name
         this.spec[i].price = shopInfo.spec_price
-        this.spec[i].tax_rate = shopInfo.tax_rate
+        // this.spec[i].tax_rate = shopInfo.tax_rate
       }
       this.form.spec = this.spec
       this.form.cover = shopInfo.product.major_photo

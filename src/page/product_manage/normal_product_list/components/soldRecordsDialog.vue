@@ -14,7 +14,7 @@
       <el-date-picker
         v-model="time"
         type="daterange"
-        :range-separator="$t('至')"
+        range-separator="-"
         :start-placeholder="$t('开始日期')"
         :end-placeholder="$t('结束日期')"
         value-format="yyyy-MM-dd"
@@ -50,10 +50,6 @@
       </el-table-column>
     </el-table>
     <PaginationAndButtons :pageParams="page_params" />
-    <span slot="footer" class="dialog-footer">
-      <el-button @click="soldRecords = false">{{ $t('取消') }}</el-button>
-      <el-button type="primary" @click="soldRecords = false">{{ $t('确定') }}</el-button>
-    </span>
   </el-dialog>
 </template>
 

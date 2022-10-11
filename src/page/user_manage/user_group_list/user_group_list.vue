@@ -207,11 +207,11 @@ export default {
               children: [
                 {
                   id: 2,
-                  label: this.$t('用户列表')
+                  label: this.$t('员工列表')
                 },
                 {
                   id: 3,
-                  label: this.$t('用户组列表')
+                  label: this.$t('员工组列表')
                 }
               ]
             },
@@ -251,7 +251,7 @@ export default {
             },
 
             {
-              label: this.$t('配置设置'),
+              label: this.$t('配置管理'),
               children: [
                 {
                   id: 10,

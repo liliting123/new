@@ -78,8 +78,9 @@ export default {
         })
         .then(res => {
           if (res.ret) {
+            this.dialogPullGoods = false
             this.$router.push({
-              name: this.$t('添加商品'),
+              name: '添加商品',
               params: { id: res.data.relevance_code, shops: res.data }
             })
           }

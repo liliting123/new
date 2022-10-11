@@ -55,14 +55,14 @@
       </div>
       <div slot="right">
         <el-input v-model="inputValue">
-          <el-select v-model="searchValue" slot="prepend" :placeholder="$t('商品名称')">
+          <!-- <el-select v-model="searchValue" slot="prepend" :placeholder="$t('商品名称')">
             <el-option
               v-for="item in searchLists"
               :key="item.id"
               :label="item.label"
               :value="item.id"
             ></el-option>
-          </el-select>
+          </el-select> -->
           <el-button slot="append" @click="getList">{{ $t('搜索') }}</el-button>
         </el-input>
       </div>
@@ -121,15 +121,7 @@
                 <template slot-scope="scope"> €{{ scope.row.vip_price }} </template>
               </el-table-column>
               <el-table-column :label="$t('税率')">
-                <template slot-scope="scope">
-                  {{
-                    scope.row.tax_rate === 1
-                      ? '0%'
-                      : scope.row.tax_rate === 2
-                      ? '9%'
-                      : '21%'
-                  }}
-                </template>
+                <template slot-scope="scope"> {{ scope.row.tax_rate }}% </template>
               </el-table-column>
               <el-table-column prop="bbd" :label="$t('BBD')"> </el-table-column>
               <el-table-column prop="num" :label="$t('可售库存')"> </el-table-column>
@@ -434,7 +426,7 @@ export default {
       console.log(id)
       this.$router.push({
         // path: 'normal_product_list/edit_product',
-        name: this.$t('编辑商品'),
+        name: '编辑商品',
         params: { id: id }
       })
     },

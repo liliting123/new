@@ -61,13 +61,11 @@
                 <el-input v-model="form.num"></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="8" :offset="6">
+            <el-col :span="6" :offset="6">
               <el-form-item :label="`${$t('税率')}:`" prop="tax_rate">
-                <el-select v-model="form.tax_rate">
-                  <el-option label="0%" :value="1"></el-option>
-                  <el-option label="9%" :value="2"></el-option>
-                  <el-option label="21%" :value="3"></el-option>
-                </el-select>
+                <el-input size="small" v-model="form.tax_rate" type="number" :min="0">
+                  <span slot="suffix" style="font-size: 16px">%</span>
+                </el-input>
               </el-form-item>
             </el-col>
           </el-row>

@@ -38,8 +38,8 @@
         </el-select>
       </div>
       <div slot="right">
-        <el-input v-model="inputValue" class="input-with-select">
-          <el-select v-model="orderNoValue" slot="prepend" :placeholder="$t('订单编号')">
+        <el-input v-model="inputValue">
+          <!-- <el-select v-model="orderNoValue" slot="prepend" :placeholder="$t('订单编号')">
             <el-option
               v-for="item in orderNoSelect"
               :key="item.value"
@@ -47,7 +47,7 @@
               :value="item.value"
             >
             </el-option>
-          </el-select>
+          </el-select> -->
           <el-button slot="append" @click="getList()">{{ $t('搜索') }}</el-button>
         </el-input>
       </div>
@@ -132,7 +132,6 @@
         </el-table-column>
         <el-table-column prop="address" :label="$t('操作')" width="200">
           <template slot-scope="scope">
-            <el-button type="text" size="small">{{ $t('重推') }}</el-button>
             <el-button
               type="text"
               size="small"
@@ -370,9 +369,6 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.input-with-select {
-  width: 400px;
-}
 .order-table {
   border-radius: 8px;
 }
