@@ -181,7 +181,7 @@ export default {
                 type: 'success',
                 message: this.$t('删除成功')
               })
-              this.getWeighList()
+              this.getList()
             }
           })
         })

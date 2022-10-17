@@ -35,10 +35,11 @@
           style="margin:0 10px 0 10px;"
           v-model="supplierValue"
           :placeholder="$t('供应商')"
+          filterable
           clearable
         >
           <el-option
-            v-for="item in supplierList"
+            v-for="item in sortlist"
             :key="item.id"
             :label="item.name"
             :value="item.id"
@@ -70,8 +71,24 @@
     <!--    table列表-->
     <div class="table_list" style="padding-top: 10px">
       <div class="top_btn">
-        <button @click="pullWmsStock">{{ $t('拉取库存') }}</button>
-        <button @click="pullBBD">{{ $t('拉取BBD') }}</button>
+        <el-button-group>
+          <el-button size="small" @click="pullWmsStock(1)">{{
+            $t('拉取所有库存')
+          }}</el-button>
+          <el-button
+            size="small"
+            @click="pullWmsStock(0)"
+            :disabled="!this.selections.length"
+            >{{ $t('拉取选中库存') }}</el-button
+          >
+          <el-button size="small" @click="pullBBD(1)">{{ $t('拉取所有BBD') }}</el-button>
+          <el-button
+            size="small"
+            @click="pullBBD(0)"
+            :disabled="!this.selections.length"
+            >{{ $t('拉取选中BBD') }}</el-button
+          >
+        </el-button-group>
       </div>
       <el-table
         ref="tableInfo"
@@ -249,6 +266,13 @@ export default {
       isCheckAll: false // 是否全选标识
     }
   },
+
+  computed: {
+    // 供应商数据a-z排序
+    sortlist() {
+      return this.sort()
+    }
+  },
   created() {
     this.getSupplierList()
     this.getClassList()
@@ -264,26 +288,43 @@ export default {
     this.getList()
   },
   methods: {
+    sort() {
+      return this.supplierList.sort((a, b) => {
+        return a['name'].localeCompare(b['name']) // index是list你需要索引的字段名称
+      })
+    },
     // 拉取库存
-    pullWmsStock() {
+    pullWmsStock(all) {
       this.$http
         .post('api/shop/goods/sync_stock', {
-          is_all: this.isCheckAll ? 1 : 0,
-          code: this.isCheckAll ? undefined : this.selections
+          is_all: all === 1 ? 1 : 0,
+          code: all === 1 ? undefined : this.selections
         })
         .then(res => {
-          console.log(res, '22')
+          if (res.ret) {
+            this.$message({
+              message: res.msg,
+              type: 'success'
+            })
+            this.getList()
+          }
         })
     },
     // 拉取bbd
-    pullBBD() {
+    pullBBD(all) {
       this.$http
         .post('api/shop/goods/sync_wms_bbd', {
-          is_all: this.isCheckAll ? 1 : 0,
-          code: this.isCheckAll ? undefined : this.selections
+          is_all: all === 1 ? 1 : 0,
+          code: all === 1 ? undefined : this.selections
         })
         .then(res => {
-          console.log(res, 'BBD')
+          if (res.ret) {
+            this.$message({
+              message: res.msg,
+              type: 'success'
+            })
+            this.getList()
+          }
         })
     },
     handleSubCheckChange(subInfo) {
@@ -464,22 +505,29 @@ export default {
 
 <style lang="scss" scoped>
 .top_btn {
-  padding: 10px 0 10px 0;
-  button {
-    background: white;
-    border: 1px solid rgba(128, 128, 128, 0.49);
-    height: 30px;
-    width: 100px;
-    color: gray;
-  }
-  button:first-child {
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-  }
-  button:last-child {
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-    margin-left: -5px;
+  padding: 10px 0 20px 0;
+  .el-button {
+    border-radius: 0;
+    color: #636f7a;
+    border-color: #bfbfbf;
+    padding: 8px 13px;
+    font-size: 14px;
+    text-align: center;
+    &:hover {
+      background-color: #d4d4d4;
+      border: 1px solid #c4c4c4;
+    }
+    &:focus {
+      border-color: #bfbfbf;
+    }
+    &:first-child {
+      border-top-left-radius: 5px;
+      border-bottom-left-radius: 5px;
+    }
+    &:last-child {
+      border-top-right-radius: 5px;
+      border-bottom-right-radius: 5px;
+    }
   }
 }
 /deep/ .el-input-group__prepend {

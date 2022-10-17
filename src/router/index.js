@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Interception from './interception.js'
-
+import navData from '../page/navData'
+console.log(navData, '/navData.js')
 Vue.use(Router)
 
 const loadOnDemand = function(file) {

@@ -77,7 +77,7 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 @import '../style/communalVariate.scss';
 .layout-side {
   width: 100%;

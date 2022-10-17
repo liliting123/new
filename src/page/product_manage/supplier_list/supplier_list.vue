@@ -134,7 +134,7 @@ export default {
               this.$notify({
                 title: this.$t('成功'),
                 type: 'success',
-                message: this.$t('添加成功')
+                message: res.msg
               })
               this.dialogFormVisible = false
               this.form = {}

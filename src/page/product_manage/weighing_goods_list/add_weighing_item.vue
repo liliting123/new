@@ -201,7 +201,7 @@ export default {
         cover: [{ required: true, validator: validataImg, trigger: 'change' }],
         code: [{ required: true, message: '请输入商品编号', trigger: 'blur' }],
         num: [{ required: true, message: '请输入可售库存', trigger: 'blur' }],
-        tax_rate: [{ required: true, message: '请选择税率', trigger: 'blur' }],
+        tax_rate: [{ required: true, message: '请输入税率', trigger: 'blur' }],
         vip_special: [{ required: true, message: '请选择', trigger: 'blur' }],
         price: [{ required: true, message: '请输入价格', trigger: 'blur' }],
         vip_price: [{ required: true, message: '请输入会员价格', trigger: 'blur' }],
@@ -210,14 +210,16 @@ export default {
     }
   },
   created() {
-    if (this.weighProductId) {
-      this.getWeighProduct()
-    }
     this.getClassList()
     this.getSupplierList()
   },
+  activated() {
+    if (this.weighProductId) {
+      this.getList()
+    }
+  },
   methods: {
-    getWeighProduct() {
+    getList() {
       this.$http.get(`api/shop/weigh_goods/${this.weighProductId}`).then(res => {
         if (res.ret) {
           this.form = res.data
@@ -240,6 +242,8 @@ export default {
               }))
           api.then(res => {
             if (res.ret) {
+              this.$refs[weighForm].resetFields()
+              this.form.name = {}
               this.$notify({
                 title: res.msg,
                 message: res.msg,

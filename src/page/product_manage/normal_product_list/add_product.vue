@@ -289,15 +289,15 @@ export default {
         vip_special: false, // 是否vip价格
         wms_category_id: '', // wms分类id
         spec: [
-          // {
-          //   supplier_id: '', // 供应商id
-          //   code: '', // 商品编号
-          //   name: '', // 规格名称
-          //   price: '', // 价格
-          //   vip_price: 0, // vip价格
-          //   tax_rate: '', // 汇率
-          //   ean: '' // EAN
-          // }
+          {
+            supplier_id: '', // 供应商id
+            code: '', // 商品编号
+            name: '', // 规格名称
+            price: '', // 价格
+            vip_price: 0, // vip价格
+            tax_rate: '', // 汇率
+            ean: '' // EAN
+          }
         ] // 商品规格数组
       },
       spec: [
@@ -376,39 +376,37 @@ export default {
     }
   },
   created() {
-    this.form.spec = this.spec
+    // this.form.spec = this.spec
     this.getClassList()
     this.getSupplierList()
     this.getWMSCategoryList()
-    console.log(this.$route)
+  },
+  activated() {
     if (this.productId && this.$route.params && !this.$route.params.shops) {
-      this.getList()
+      this.getShopInfo()
     }
     if (this.$route.params && this.$route.params.shops) {
-      console.log('5555', this.form.name)
-
       let shopInfo = this.$route.params && this.$route.params.shops
       this.form.name.cn = shopInfo.product.cn_name || ''
       this.form.name.en = shopInfo.product.en_name || ''
       this.form.name.nl = shopInfo.product.nl_name || ''
       for (let i = 0; i < this.spec.length; i++) {
-        this.spec[i].code = shopInfo.relevance_code
-        this.spec[i].name = shopInfo.spec_name
-        this.spec[i].price = shopInfo.spec_price
+        this.form.spec[i].code = shopInfo.relevance_code
+        this.form.spec[i].name = shopInfo.spec_name
+        this.form.spec[i].price = shopInfo.spec_price
         // this.spec[i].tax_rate = shopInfo.tax_rate
       }
-      this.form.spec = this.spec
+      // this.form.spec = this.spec
       this.form.cover = shopInfo.product.major_photo
-      console.log(shopInfo, '999999')
     }
   },
 
   methods: {
     // 编辑回显
-    getList() {
+    getShopInfo() {
       this.$http.get(`api/shop/goods/${this.productId}`).then(res => {
         if (res.ret) {
-          this.form.spec = this.spec
+          // this.form.spec = this.spec
           this.form = res.data
         }
         console.log(this.form)
@@ -426,11 +424,16 @@ export default {
             ? (api = this.$http.put(`api/shop/goods/${this.productId}`, {
                 ...this.form
               }))
-            : this.$http.post('api/shop/goods', {
+            : (api = this.$http.post('api/shop/goods', {
                 ...this.form
-              })
+              }))
+          console.log(this.form, '...this.form')
           api.then(res => {
             if (res.ret) {
+              this.$refs[form].resetFields()
+              this.$refs[formSpec].resetFields()
+              this.form.name = {}
+              this.wmsList = [] // wms分类
               this.$notify({
                 title: res.msg,
                 message: res.msg,
@@ -441,7 +444,7 @@ export default {
           })
         })
       } catch (error) {
-        return '1'
+        return ''
       }
     },
     // 获取分类下拉列表

@@ -169,7 +169,7 @@ export default {
                 message: res.msg
               })
               this.getShopInfo()
-              location.reload()
+              // location.reload()
             }
           })
         } else {
@@ -203,9 +203,6 @@ export default {
     // 图片上传成功时触发的钩子
     uploadSuccess1(response, file, fileList) {
       this.form.banner = response.data.path
-    },
-    handleExceed1(files, fileList) {
-      this.$message.warning(`当前限制上传 1 张图片`)
     }
   }
 }
@@ -213,7 +210,7 @@ export default {
 <style lang="scss" scoped>
 .store_settings {
   margin: 10px;
-  background-color: #fff;
+  background-color: #fff !important;
   .store_settings_top {
     border-bottom: 1px solid #d7d7d7;
     padding: 10px 15px;

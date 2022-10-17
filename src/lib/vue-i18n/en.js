@@ -144,8 +144,10 @@ export default {
   导出商品: 'Export Product',
   添加商品: 'Add Goods',
   编辑商品: 'Edit Goods',
-  拉取库存: 'Pull Inventory',
-  拉取BBD: 'Pull BBD',
+  拉取所有库存: 'Pull All Inventories',
+  拉取选中库存: 'Pull the Selected Inventory',
+  拉取所有BBD: 'Pull All BBD',
+  拉取选中BBD: 'Pull Selected BBD',
   可售库存: 'Available Inventory',
   锁定库存: 'Locked Inventory',
   已售库存: 'Sold Inventory',
@@ -293,5 +295,10 @@ export default {
   申请金额: 'Application Amount',
   分类图片: 'Category Picture',
   请选择店铺: 'Please select a store',
-  后台: 'Backstage'
+  后台: 'Backstage',
+  神说这个页面不存在: 'GodSaysThisPageDoesntExist',
+  版权所有: 'copyright',
+  点击以下按钮返回主页: 'clickTheFollowingButtonToReturnToTheHomePage',
+  请检查您输入的网址是否正确: 'PleaseCheckWhetherTheURLYouEnteredIsCorrect',
+  返回首页: 'BackToHomePage'
 }

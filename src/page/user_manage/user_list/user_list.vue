@@ -48,7 +48,7 @@
             {{ scope.row.group && scope.row.group.name }}
           </template>
         </el-table-column>
-        <el-table-column prop="updated_at" :label="$t('创建时间')"> </el-table-column>
+        <el-table-column prop="created_at" :label="$t('创建时间')"> </el-table-column>
         <el-table-column prop="remark" :label="$t('备注')"> </el-table-column>
         <el-table-column :label="$t('操作')" width="200">
           <template slot-scope="scope">
@@ -176,16 +176,14 @@ export default {
       is_lock: 1
     }
   },
-  created() {
-    this.getList()
-    this.getGroupList()
-  },
+
   activated() {
     if (this.$store.state.search_flag === true) {
       this.selectOption = 1
       this.searchValue = ''
     }
     this.getList()
+    this.getGroupList()
   },
   methods: {
     getList() {
