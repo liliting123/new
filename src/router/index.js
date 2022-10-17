@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Interception from './interception.js'
 import navData from '../page/navData'
+import i18n from '../lib/vue-i18n/i18n'
 console.log(navData, '/navData.js')
 Vue.use(Router)
 
@@ -192,5 +193,10 @@ const router = new Router({
 })
 
 router.beforeEach(Interception(router))
-
+router.beforeEach((to, from, next) => {
+  const langs = localStorage.getItem('myLanguage') || 'cn'
+  const title = i18n.messages[langs][to.name] || to.name
+  document.title = title || ''
+  next()
+})
 export default router

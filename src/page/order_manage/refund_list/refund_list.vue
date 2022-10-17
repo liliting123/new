@@ -200,10 +200,6 @@ export default {
       slectTime: '',
       refundSelect: [
         {
-          value: '',
-          label: this.$t('退款状态')
-        },
-        {
           value: 0,
           label: this.$t('未退款')
         },
@@ -217,10 +213,6 @@ export default {
         }
       ],
       IsRefundedSelect: [
-        {
-          value: '',
-          label: this.$t('退款状态')
-        },
         {
           value: 1,
           label: this.$t('是')

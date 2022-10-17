@@ -185,10 +185,6 @@ export default {
       slectTime: '',
       customerSelect: [
         {
-          value: '',
-          label: this.$t('客户来源')
-        },
-        {
           value: 1,
           label: this.$t('散客')
         },
@@ -198,10 +194,6 @@ export default {
         }
       ],
       orderSelect: [
-        {
-          value: '',
-          label: this.$t('订单状态')
-        },
         {
           value: 0,
           label: this.$t('未付款')
