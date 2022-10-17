@@ -2,6 +2,7 @@
 import store from '@/store'
 import { constantRouterMap } from './index'
 import { clone } from './util'
+import i18n from '../lib/vue-i18n/i18n'
 
 // 动态添加路由表
 const addRouterMap = function(router, next, to) {
@@ -16,6 +17,9 @@ const whiteList = ['Login', 'NotFound'] // 不重定向白名单
 
 export default router => {
   return (to, from, next) => {
+    const langs = localStorage.getItem('myLanguage') || 'cn'
+    const title = i18n.messages[langs][to.name] || to.name
+    document.title = title || ''
     if (store.state.token.token) {
       // 判断是否有token
       if (to.path.toLowerCase() === '/login') {
