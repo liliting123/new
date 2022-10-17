@@ -43,9 +43,13 @@
             </el-col>
             <el-col :span="8" :offset="6">
               <el-form-item :label="`${$t('供应商')}:`" prop="supplier_id">
-                <el-select v-model="form.supplier_id" :placeholder="$t('请选择供应商')">
+                <el-select
+                  v-model="form.supplier_id"
+                  filterable
+                  :placeholder="$t('请选择供应商')"
+                >
                   <el-option
-                    v-for="item in supplierList"
+                    v-for="item in sortlist"
                     :key="item.id"
                     :label="item.name"
                     :value="item.id"
@@ -207,6 +211,11 @@ export default {
         vip_price: [{ required: true, message: '请输入会员价格', trigger: 'blur' }],
         bbd: [{ required: true, message: '请输入BBD', trigger: 'blur' }]
       }
+    },
+
+    // 供应商数据a-z排序
+    sortlist() {
+      return this.sort()
     }
   },
   created() {
@@ -219,6 +228,11 @@ export default {
     }
   },
   methods: {
+    sort() {
+      return this.supplierList.sort((a, b) => {
+        return a['name'].localeCompare(b['name']) // index是list你需要索引的字段名称
+      })
+    },
     getList() {
       this.$http.get(`api/shop/weigh_goods/${this.weighProductId}`).then(res => {
         if (res.ret) {

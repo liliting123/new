@@ -21,10 +21,11 @@
           style="margin:0 10px 0 10px;"
           v-model="supplierValue"
           :placeholder="$t('供应商')"
+          filterable
           clearable
         >
           <el-option
-            v-for="item in supplierList"
+            v-for="item in sortlist"
             :key="item.id"
             :label="item.name"
             :value="item.id"
@@ -153,6 +154,12 @@ export default {
       supplierValue: ''
     }
   },
+  computed: {
+    // 供应商数据a-z排序
+    sortlist() {
+      return this.sort()
+    }
+  },
   created() {
     this.getClassList()
     this.getSupplierList()
@@ -166,6 +173,11 @@ export default {
     this.getList()
   },
   methods: {
+    sort() {
+      return this.supplierList.sort((a, b) => {
+        return a['name'].localeCompare(b['name']) // index是list你需要索引的字段名称
+      })
+    },
     // 删除称重商品
     delWeighProduct(id) {
       this.$confirm(this.$t('确认要删除吗?'), this.$t('提示'), {

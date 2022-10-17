@@ -8,7 +8,7 @@
     <div style="padding: 0 40px 0 40px">
       <el-form :model="form" label-position="top">
         <el-form-item :label="`${$t('店铺名称')}:`">
-          <el-select v-model="form.relevance_code">
+          <el-select v-model="form.shop_id">
             <el-option
               v-for="item in MesShopList"
               :key="item.shop_id"
@@ -19,7 +19,7 @@
           </el-select>
         </el-form-item>
         <el-form-item :label="`${$t('商品编号')}:`">
-          <el-input v-model="form.shop_id"></el-input>
+          <el-input v-model="form.relevance_code"></el-input>
         </el-form-item>
       </el-form>
     </div>

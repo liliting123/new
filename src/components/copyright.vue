@@ -1,11 +1,17 @@
 <template>
   <div class="copyright">
     <p>
-      <span :class="{ active: active === 'en' }" @click="languageCut('en')">English</span>
+      <span
+        :class="{ active: active === 'en' }"
+        @click="languageCut('en'), windowReload()"
+        >English</span
+      >
       |
-      <span :class="{ active: active === 'cn' }" @click="languageCut('cn')">{{
-        $t('cn')
-      }}</span>
+      <span
+        :class="{ active: active === 'cn' }"
+        @click="languageCut('cn'), windowReload()"
+        >{{ $t('cn') }}</span
+      >
     </p>
 
     <p>Copyrihgt © {{ year }} MyEUShop B.V. All Rights Reserved.</p>
@@ -29,7 +35,6 @@ export default {
     }
   },
   created() {
-    // console.log(localStorage)
     this.active = localStorage.getItem('myLanguage') || 'cn'
     this.languageCut(this.active)
   },
@@ -39,6 +44,9 @@ export default {
       this.$i18n.locale = locale
       localStorage.setItem('myLanguage', locale)
       this.$store.commit('switchLang', { lang: locale })
+    },
+    windowReload() {
+      location.reload()
     }
   }
 }
