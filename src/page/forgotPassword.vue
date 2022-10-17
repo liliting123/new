@@ -333,7 +333,7 @@ export default {
 .login_btn {
   height: 42px;
   width: 100%;
-  background-color: #7f7f7f;
+  background-color: #43495f;
   color: #fff;
   border-radius: 5px;
   border: none;
