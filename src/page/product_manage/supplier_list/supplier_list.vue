@@ -102,7 +102,7 @@ export default {
       },
       title: '',
       rules: {
-        name: [{ required: true, message: '此项为必填', trigger: 'blur' }],
+        name: [{ required: true }],
         switch: [{ required: true }]
       },
       categoryId: ''

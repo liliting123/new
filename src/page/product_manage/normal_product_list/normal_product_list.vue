@@ -134,7 +134,7 @@
               <el-table-column :label="$t('价格')">
                 <template slot-scope="scope"> €{{ scope.row.price }} </template>
               </el-table-column>
-              <el-table-column :label="$t('会员价')">
+              <el-table-column :label="$t('会员价')" v-if="scope.row.vip_special !== 0">
                 <template slot-scope="scope"> €{{ scope.row.vip_price }} </template>
               </el-table-column>
               <el-table-column :label="$t('税率')">

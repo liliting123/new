@@ -167,9 +167,9 @@ export default {
       userGroupSelect: [],
       rules: {
         email: [{ required: true }],
-        name: [{ required: true, message: '请输入员工名称' }],
-        password: [{ required: true, message: '请输入密码' }],
-        password_confirmation: [{ required: true, message: '请输入确认密码' }],
+        name: [{ required: true, message: this.$t('请输入员工名称') }],
+        password: [{ required: true, message: this.$t('请输入密码') }],
+        password_confirmation: [{ required: true, message: this.$t('请输入确认密码') }],
         staff_group_id: [{ required: true }]
       },
       userIds: '',

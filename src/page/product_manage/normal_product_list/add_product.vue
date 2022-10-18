@@ -315,13 +315,17 @@ export default {
       fileList: [],
       dialogENATable: false, // EAN弹窗
       rulesSpec: {
-        code: [{ required: true, message: '请输入商品编码', trigger: 'blur' }],
-        supplier_id: [{ required: true, message: '请选择供应商', trigger: 'change' }],
-        name: [{ required: true, message: '请输入规格', trigger: 'blur' }],
-        price: [{ required: true, message: '请输入价格', trigger: 'blur' }],
-        vip_price: [{ required: true, message: '请输入vip价格', trigger: 'blur' }],
-        tax_rate: [{ required: true, message: '请输入税率', trigger: 'change' }],
-        ean: [{ required: true, message: '请输入EAN', trigger: 'blur' }]
+        code: [{ required: true, message: this.$t('请输入商品编码'), trigger: 'blur' }],
+        supplier_id: [
+          { required: true, message: this.$t('请选择供应商'), trigger: 'change' }
+        ],
+        name: [{ required: true, message: this.$t('请输入规格'), trigger: 'blur' }],
+        price: [{ required: true, message: this.$t('请输入价格'), trigger: 'blur' }],
+        vip_price: [
+          { required: true, message: this.$t('请输入会员价格'), trigger: 'blur' }
+        ],
+        tax_rate: [{ required: true, message: this.$t('请输入税率'), trigger: 'change' }],
+        ean: [{ required: true, message: this.$t('请输入EAN'), trigger: 'blur' }]
       },
       currentLanguage: '',
       categoryList: [], // 分类下拉
@@ -337,7 +341,7 @@ export default {
       // 商品图片自定义校验
       const validataImg = (rule, value, callback) => {
         if (!this.form.cover) {
-          callback(new Error('请上传商品图片'))
+          callback(new Error(this.$t('请上传商品图片')))
         } else {
           callback()
         }
@@ -345,7 +349,7 @@ export default {
       // 商品分类自定义校验
       const validataCategory = (rule, value, callback) => {
         if (!this.form.category_id) {
-          callback(new Error('请选择商品分类'))
+          callback(new Error(this.$t('请选择商品分类')))
         } else {
           callback()
         }
@@ -353,7 +357,7 @@ export default {
       // 分类标签自定义校验
       const validataLabel = (rule, value, callback) => {
         if (!this.form.label) {
-          callback(new Error('请选择分类标签'))
+          callback(new Error(this.$t('请选择分类标签')))
         } else {
           callback()
         }
@@ -370,7 +374,9 @@ export default {
       return {
         name: [{ required: true, validator: validateLanguage, trigger: 'blur' }],
         category_id: [{ required: true, validator: validataCategory, trigger: 'change' }],
-        vip_special: [{ required: true, message: '请选择是否有会员价', trigger: 'blur' }],
+        vip_special: [
+          { required: true, message: this.$t('请选择是否有会员价'), trigger: 'blur' }
+        ],
         label: [{ required: true, validator: validataLabel, trigger: 'change' }],
         cover: [{ required: true, validator: validataImg, trigger: 'change' }]
       }

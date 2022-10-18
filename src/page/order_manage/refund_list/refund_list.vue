@@ -260,8 +260,10 @@ export default {
       },
       dialogRefund: false,
       formRules: {
-        remark: [{ required: true, message: '请输入备注', trigger: 'blur' }],
-        refund_fee: [{ required: true, message: '请输入退款金额', trigger: 'blur' }]
+        remark: [{ required: true, message: this.$t('请输入备注'), trigger: 'blur' }],
+        refund_fee: [
+          { required: true, message: this.$t('请输入退款金额'), trigger: 'blur' }
+        ]
       },
       thisRefund: ''
     }
@@ -336,8 +338,11 @@ export default {
     },
     // 退款审核
     refundReview() {
-      if (Number(this.form.refund_fee) > Number(this.thisRefund.apply_fee)) {
-        this.$message.error('退款金额不能大于申请金额')
+      if (
+        this.form.status_id === 1 &&
+        Number(this.form.refund_fee) > Number(this.thisRefund.apply_fee)
+      ) {
+        this.$message.error(this.$t('退款金额不能大于申请金额'))
         return
       }
       this.$http

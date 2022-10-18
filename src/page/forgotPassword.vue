@@ -102,7 +102,7 @@ export default {
       const TIME_COUNT = 60
       if (this.email === '') {
         this.$notify({
-          title: '操作失败',
+          title: this.$t('操作失败'),
           message: this.$t('EMAIL不能为空'),
           type: 'warning'
         })

@@ -128,17 +128,17 @@ export default {
   computed: {
     rules() {
       return {
-        name: [{ required: true, message: '此项为必填', trigger: 'blur' }],
-        phone: [{ required: true, message: '此项为必填', trigger: 'blur' }],
-        email: [{ required: true, message: '此项为必填', trigger: 'blur' }],
-        postcode: [{ required: true, message: '此项为必填', trigger: 'blur' }],
-        door_no: [{ required: true, message: '此项为必填', trigger: 'blur' }],
-        city: [{ required: true, message: '此项为必填', trigger: 'blur' }],
-        street: [{ required: true, message: '此项为必填', trigger: 'blur' }],
-        start_time: [{ required: true, message: '此项为必填', trigger: 'blur' }],
-        end_time: [{ required: true, message: '此项为必填', trigger: 'blur' }],
-        logo: [{ required: true, message: '此项为必填', trigger: 'blur' }],
-        banner: [{ required: true, message: '此项为必填', trigger: 'blur' }]
+        name: [{ required: true, message: this.$t('请输入店铺名称'), trigger: 'blur' }],
+        phone: [{ required: true, message: this.$t('请输入联系电话'), trigger: 'blur' }],
+        email: [{ required: true, message: this.$t('请输入邮箱'), trigger: 'blur' }],
+        postcode: [{ required: true, message: this.$t('请输入邮编'), trigger: 'blur' }],
+        door_no: [{ required: true, message: this.$t('请输入门牌号'), trigger: 'blur' }],
+        city: [{ required: true, message: this.$t('请输入城市'), trigger: 'blur' }],
+        street: [{ required: true, message: this.$t('请输入街道'), trigger: 'blur' }],
+        start_time: [{ required: true, message: this.$t('请选择时间'), trigger: 'blur' }],
+        end_time: [{ required: true, message: '请选择时间', trigger: 'blur' }],
+        logo: [{ required: true, message: this.$t('请上传图片'), trigger: 'blur' }],
+        banner: [{ required: true, message: this.$t('请上传图片'), trigger: 'blur' }]
       }
     }
   },

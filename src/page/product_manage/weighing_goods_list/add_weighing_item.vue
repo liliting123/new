@@ -85,7 +85,7 @@
                   v-model="form.bbd"
                   type="date"
                   value-format="yyyy-MM-dd"
-                  placeholder="请选择保质期"
+                  :placeholder="$t('请选择保质期')"
                 >
                 </el-date-picker>
               </el-form-item>
@@ -126,7 +126,7 @@
           </el-row>
           <el-row :gutter="20" v-if="form.vip_special">
             <el-col :span="6">
-              <el-form-item :label="`${$t('会员价格/KG')}:`" prop="vip_price">
+              <el-form-item :label="`${$t('会员价/KG')}:`" prop="vip_price">
                 <el-input v-model="form.vip_price"></el-input>
               </el-form-item>
             </el-col>
@@ -171,7 +171,7 @@ export default {
       categoryList: [], // 分类下拉
       supplierList: [], // 供应商下拉
       rules: {
-        name: [{ required: true, message: '请填写商品名称', trigger: 'change' }]
+        name: [{ required: true, message: this.$t('请填写商品名称'), trigger: 'change' }]
       },
       currentLanguage: '',
       weighProductId: this.$route.params.id // 称重商品id
@@ -182,9 +182,8 @@ export default {
     rulesInfo() {
       // 商品图片自定义校验
       const validataImg = (rule, value, callback) => {
-        console.log(this.form.cover, 'this.form.cover')
         if (!this.form.cover) {
-          callback(new Error('请上传商品图片'))
+          callback(new Error(this.$t('请上传商品图片')))
         } else {
           callback()
         }
@@ -200,16 +199,22 @@ export default {
       }
       return {
         name: [{ required: true, validator: validateLanguage, trigger: 'blur' }],
-        category_id: [{ required: true, message: '请选择分类', trigger: 'blur' }],
-        supplier_id: [{ required: true, message: '请选择供应商', trigger: 'blur' }],
+        category_id: [
+          { required: true, message: this.$t('请选择分类'), trigger: 'blur' }
+        ],
+        supplier_id: [
+          { required: true, message: this.$t('请选择供应商'), trigger: 'blur' }
+        ],
         cover: [{ required: true, validator: validataImg, trigger: 'change' }],
-        code: [{ required: true, message: '请输入商品编号', trigger: 'blur' }],
-        num: [{ required: true, message: '请输入可售库存', trigger: 'blur' }],
-        tax_rate: [{ required: true, message: '请输入税率', trigger: 'blur' }],
-        vip_special: [{ required: true, message: '请选择', trigger: 'blur' }],
-        price: [{ required: true, message: '请输入价格', trigger: 'blur' }],
-        vip_price: [{ required: true, message: '请输入会员价格', trigger: 'blur' }],
-        bbd: [{ required: true, message: '请输入BBD', trigger: 'blur' }]
+        code: [{ required: true, message: this.$t('请输入商品编号'), trigger: 'blur' }],
+        num: [{ required: true, message: this.$t('请输入可售库存'), trigger: 'blur' }],
+        tax_rate: [{ required: true, message: this.$t('请输入税率'), trigger: 'blur' }],
+        vip_special: [{ required: true, message: this.$t('请选择'), trigger: 'blur' }],
+        price: [{ required: true, message: this.$t('请输入价格'), trigger: 'blur' }],
+        vip_price: [
+          { required: true, message: this.$t('请输入会员价格'), trigger: 'blur' }
+        ],
+        bbd: [{ required: true, message: this.$t('请输入BBD'), trigger: 'blur' }]
       }
     },
 
