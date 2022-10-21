@@ -175,7 +175,7 @@ export default {
       } else {
         this.tabList[index].path = this.$route.path
       }
-      console.log(this.tabList[index])
+
       // 当前选择页
       this.active = this.$route.path
     },

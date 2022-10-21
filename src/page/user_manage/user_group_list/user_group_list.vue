@@ -93,30 +93,7 @@
         <el-button type="primary" @click="onSave()">{{ $t('确定') }}</el-button>
       </div>
     </el-dialog>
-    <el-dialog :title="$t('查看人员')" :visible.sync="dialogTableVisible" width="40%">
-      <el-table :data="peopleData">
-        <el-table-column width="80" align="center">
-          <template slot-scope="scope">
-            <span class="table_index">{{ scope.$index + 1 }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="name" :label="$t('员工名称')"></el-table-column>
-        <el-table-column prop="email" :label="$t('邮箱')"></el-table-column>
-        <el-table-column width="100" :label="$t('操作')">
-          <template slot-scope="scope">
-            <el-button type="text" @click="delectPeople(scope.row.id)">{{
-              $t('删除')
-            }}</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogTableVisible = false">{{ $t('取消') }}</el-button>
-        <el-button type="primary" @click="dialogTableVisible = false">{{
-          $t('确定')
-        }}</el-button>
-      </div>
-    </el-dialog>
+
     <el-dialog :title="$t('权限')" :visible.sync="dialogAuthorityVisible" width="40%">
       <el-row>
         <el-col :span="12"
@@ -152,16 +129,25 @@
         <el-button type="primary" @click="getCheckedKeys()">{{ $t('确定') }}</el-button>
       </div>
     </el-dialog>
+    <!--    查看人员弹窗-->
+    <viewPeopleDialog
+      v-if="dialogViewPeople"
+      :visible.sync="dialogViewPeople"
+      :theUserGroupId="theUserGroupId"
+      @fatherGetList="getList"
+    />
   </div>
 </template>
 <script>
 import searchList from '@/components/searchList.vue'
 import PaginationAndButtons from '@/components/pagination_and_buttons.vue'
 import pagination from '@/mixin/pagination'
+import viewPeopleDialog from './components/viewPeopleDialog.vue'
 export default {
   components: {
     searchList,
-    PaginationAndButtons
+    PaginationAndButtons,
+    viewPeopleDialog
   },
   mixins: [pagination],
   name: 'userGroupList',
@@ -287,7 +273,9 @@ export default {
         children: 'children',
         label: 'label'
       },
-      group_permission: []
+      group_permission: [],
+      dialogViewPeople: false,
+      theUserGroupId: ''
     }
   },
 
@@ -375,37 +363,11 @@ export default {
         }
       })
     },
-    async viewPeople(id) {
-      this.dialogTableVisible = true
-      const res = await this.$http.get(`api/shop/staff_group/${id}/staff`, {
-        params: {
-          page: this.page_params.page,
-          size: this.page_params.size,
-          keyword: ''
-        }
-      })
-      if (res.ret) {
-        this.peopleData = res.data.data
-      }
+    viewPeople(id) {
+      this.theUserGroupId = id
+      this.dialogViewPeople = true
     },
-    delectPeople(id) {
-      this.$confirm(this.$t('确认要删除吗?'), this.$t('提示'), {
-        confirmButtonText: this.$t('确定'),
-        cancelButtonText: this.$t('取消'),
-        type: 'warning'
-      }).then(async () => {
-        const res = await this.$http.delete(`api/shop/staff/${id}`)
-        if (res.ret === 1) {
-          this.$notify({
-            title: this.$t('success'),
-            message: res.msg,
-            type: 'success'
-          })
-          this.viewPeople(id)
-          this.getList()
-        }
-      })
-    },
+
     openPower(id) {
       this.powerIds = id
       this.dialogAuthorityVisible = true
@@ -417,13 +379,19 @@ export default {
         .filter(res => {
           return res !== undefined
         })
+      if (!arrs.includes(1)) {
+        arrs.push(1)
+      }
+      if (!arrs.includes(12)) {
+        arrs.push(12)
+      }
+
       this.$json
         .post(`api/shop/staff_group/${this.userGroupIds}/permission`, {
           permission_ids: arrs
         })
         .then(res => {
           if (res.ret === 1) {
-            console.log(this.dialogAuthorityVisible)
             this.dialogAuthorityVisible = false
             this.$notify({
               title: this.$t('success'),

@@ -43,7 +43,7 @@
             size="small"
             v-model="scope.row.num"
             onkeyup="this.value=this.value.replace(/\D|^0/g,'')"
-            @change="selectShops()"
+            @input="selectShops()"
           />
         </template>
       </el-table-column>
@@ -127,12 +127,12 @@ export default {
     selectShops() {
       this.selectList = this.$refs.shopDatas.selection // 选中的退款商品
       console.log(this.selectList)
+
       this.refundMoney = this.selectList.reduce(
-        (sum3, obj) => (sum3 += Number(obj.price * obj.num)),
+        (sum3, obj) => (sum3 += Number((obj.payment_fee / obj.shopNum) * obj.num)),
         0
       ) // 计算选中的退款商品总价
     },
-
     // 退款
     async orderRefund() {
       this.itemShop = []
@@ -141,7 +141,7 @@ export default {
           order_item_id: item.id,
           num: item.num,
           shopNum: item.shopNum,
-          refund_fee: item.payment_fee
+          refund_fee: Number((item.payment_fee / item.shopNum) * item.num)
         })
       })
       for (let i = 0; i < this.itemShop.length; i++) {

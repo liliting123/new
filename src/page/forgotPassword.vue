@@ -38,7 +38,7 @@
                   @click="getCode()"
                   >{{ $t('发送') }}</span
                 >
-                <span v-if="countdown" class="verification sendOutTime border-radius"
+                <span v-if="countdown" class="verification sendOut border-radius"
                   >{{ count }}s</span
                 >
                 <div>
@@ -126,8 +126,9 @@ export default {
               }
             })
             .then(res => {
-              console.log(res)
-              this.emailCode = res.data
+              if (res.ret) {
+                this.emailCode = res.data
+              }
             })
         }
       }

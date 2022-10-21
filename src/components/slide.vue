@@ -65,10 +65,8 @@ export default {
     let permission = store.state.permission.permission
     if (permission.indexOf('web') === -1) {
       permission = permission.concat('web') // 添加首页
-      console.log(permission)
     }
     this.routers(this.structure, permission)
-    console.log(this.structure)
   },
   methods: {
     toggle(name) {
@@ -95,6 +93,7 @@ export default {
               if (router[i].subRoutes.length === 0) {
                 router.splice(i, 1)
               }
+              i--
             }
           }
         }

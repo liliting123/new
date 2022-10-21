@@ -12,23 +12,48 @@
           :start-placeholder="$t('开始日期')"
           :end-placeholder="$t('结束日期')"
           :picker-options="pickerOptions"
+          @change="getShopHome"
         />
       </div>
       <div class="data_box border-radius">
         <p>{{ $t('整体情况') }}</p>
         <el-descriptions style="padding:16px" :column="6" direction="vertical">
-          <el-descriptions-item :label="$t('销售金额')">€0.00</el-descriptions-item>
-          <el-descriptions-item :label="$t('下单数量')">0</el-descriptions-item>
-          <el-descriptions-item :label="$t('客单价')">€0.00</el-descriptions-item>
-          <el-descriptions-item :label="$t('会员人数')">0</el-descriptions-item>
-          <el-descriptions-item :label="$t('散客人数')">0</el-descriptions-item>
-          <el-descriptions-item :label="$t('总人数')"> 0</el-descriptions-item><br />
-          <el-descriptions-item :label="$t('余额支付金额')">€0.00</el-descriptions-item>
-          <el-descriptions-item :label="$t('余额支付单量')">0</el-descriptions-item>
-          <el-descriptions-item :label="$t('余额占比率')">0.00%</el-descriptions-item>
-          <el-descriptions-item :label="$t('退款金额')">€0.00</el-descriptions-item>
-          <el-descriptions-item :label="$t('退款单数')">0</el-descriptions-item>
-          <el-descriptions-item :label="$t('退款率')">0.00%</el-descriptions-item>
+          <el-descriptions-item :label="$t('销售金额')"
+            >€{{ overallSituation.total_order_fee }}</el-descriptions-item
+          >
+          <el-descriptions-item :label="$t('下单数量')">{{
+            overallSituation.total_order_num
+          }}</el-descriptions-item>
+          <el-descriptions-item :label="$t('客单价')"
+            >€{{ overallSituation.average_fee }}</el-descriptions-item
+          >
+          <el-descriptions-item :label="$t('会员人数')">{{
+            overallSituation.vip_count
+          }}</el-descriptions-item>
+          <el-descriptions-item :label="$t('散客人数')">{{
+            overallSituation.customer_count
+          }}</el-descriptions-item>
+          <el-descriptions-item :label="$t('总人数')">
+            {{ overallSituation.user_count }}</el-descriptions-item
+          ><br />
+          <el-descriptions-item :label="$t('余额支付金额')"
+            >€{{ overallSituation.total_balance_fee }}</el-descriptions-item
+          >
+          <el-descriptions-item :label="$t('余额支付单量')">{{
+            overallSituation.total_balance_num
+          }}</el-descriptions-item>
+          <el-descriptions-item :label="$t('余额占比率')"
+            >{{ overallSituation.balance_rate }}%</el-descriptions-item
+          >
+          <el-descriptions-item :label="$t('退款金额')"
+            >€{{ overallSituation.refund_fee }}</el-descriptions-item
+          >
+          <el-descriptions-item :label="$t('退款单数')">{{
+            overallSituation.refund_num
+          }}</el-descriptions-item>
+          <el-descriptions-item :label="$t('退款率')"
+            >{{ overallSituation.refund_rate }}%</el-descriptions-item
+          >
         </el-descriptions>
       </div>
 
@@ -67,8 +92,7 @@ export default {
   data() {
     return {
       vip_msg: {},
-      order_msg: {},
-      goods_msg: {},
+      overallSituation: {},
       myCharts: {},
       time: '',
       pickerOptions: {
@@ -95,24 +119,58 @@ export default {
             }
           }
         ]
-      }
+      },
+      vipIdArr: [],
+      vipPaymentFeeArr: [],
+      goodSaleName: [],
+      goodSaleSoldNum: [],
+      scorData: []
     }
   },
 
   mounted() {
+    this.getShopHome()
     setTimeout(() => {
       // this.initCharts()
       this.setCharts()
-    }, 100)
+    }, 1000)
     // 切换界面时有概率echarts图表会变得很小,强行等待100毫秒让dom生成
   },
 
-  activated() {
-    this.getVIPMsg()
-    this.getOrderMsg()
-    this.getGoodsMsg()
-  },
   methods: {
+    async getShopHome() {
+      const res = await this.$http.get(`api/shop/home`, {
+        params: {
+          created_at_start: this.time[0],
+          created_at_end: this.time[1]
+        }
+      })
+      if (res.ret) {
+        this.overallSituation = res.data
+        this.vipIdArr = this.overallSituation.vip_ranking.map(item => item.vip_id)
+        this.vipPaymentFeeArr = this.overallSituation.vip_ranking.map(
+          item => item.payment_fee
+        )
+        this.goodSaleName = this.overallSituation.goods_sale
+          .map(item => item.name)
+          .splice(0, 10)
+        this.goodSaleSoldNum = this.overallSituation.goods_sale
+          .map(item => item.sold_num)
+          .splice(0, 10)
+        var toolObj = {
+          price: '',
+          value: ''
+        }
+        toolObj.price = this.goodSaleSoldNum.value = this.overallSituation.goods_sale
+          .map(item => item.price)
+          .splice(0, 10)
+        toolObj.value = this.goodSaleSoldNum.value = this.overallSituation.goods_sale
+          .map(item => item.sold_num)
+          .splice(0, 10)
+        this.scorData.push(toolObj)
+        console.log(this.scorData, 'scorData')
+      }
+    },
     setCharts(data) {
       const _this = this
       // 基于准备好的dom，初始化echarts实例
@@ -123,11 +181,7 @@ export default {
         myChartUser.resize()
       }
       // 指定图表的配置项和数据
-      var obj = {
-        name: '苹果',
-        price: 10,
-        num: 900
-      }
+
       var shopOption = {
         color: ['#7f7f7f'], // 柱子颜色
         tooltip: {
@@ -145,18 +199,19 @@ export default {
             fontSize: 13 // 字体大小
           },
           formatter: function(data) {
+            console.log(data)
             var val =
               _this.$t('商品名称') +
               '：' +
-              obj.name +
+              data.name +
               '<br>' +
               _this.$t('商品价格') +
               '：€' +
-              obj.price +
+              data.price +
               '<br>' +
               _this.$t('商品销量') +
               '：' +
-              obj.num
+              data.sold_num
             return val
           }
         },
@@ -186,34 +241,13 @@ export default {
           },
 
           type: 'category',
-          data: [
-            'Brazil',
-            'Indonesia',
-            'USA',
-            'India',
-            'China',
-            'World',
-            'India',
-            'China',
-            'World',
-            'India'
-          ]
+          data: this.goodSaleName
         },
         series: [
           {
+            name: '',
             type: 'bar',
-            data: [
-              18203,
-              23489,
-              29034,
-              104970,
-              131744,
-              630230,
-              104970,
-              131744,
-              630230,
-              430230
-            ]
+            data: this.scorData
           }
         ]
       }
@@ -237,19 +271,15 @@ export default {
             var val =
               _this.$t('昵称') +
               '：' +
-              obj.name +
-              '<br>' +
-              _this.$t('邮箱') +
-              '：' +
-              obj.price +
+              data.name +
               '<br>' +
               _this.$t('下单次数') +
               '：' +
-              obj.num +
+              data.count +
               '<br>' +
               _this.$t('消费金额') +
               '：€' +
-              obj.num
+              data.payment_fee
             return val
           }
         },
@@ -279,34 +309,12 @@ export default {
           },
 
           type: 'category',
-          data: [
-            'Brazil',
-            'Indonesia',
-            'USA',
-            'India',
-            'China',
-            'World',
-            'India',
-            'China',
-            'World',
-            'India'
-          ]
+          data: this.vipIdArr
         },
         series: [
           {
             type: 'bar',
-            data: [
-              18203,
-              23489,
-              29034,
-              104970,
-              131744,
-              630230,
-              104970,
-              131744,
-              630230,
-              430230
-            ]
+            data: this.vipPaymentFeeArr
           }
         ]
       }
@@ -383,7 +391,7 @@ export default {
       //     }
       //   ]
       // })
-    },
+    }
     // async handleChange() {
     //   console.log(this.time)
     //   if (this.time == null) {
@@ -392,27 +400,6 @@ export default {
     //     this.getEcharsData(this.time[0], this.time[1])
     //   }
     // },
-    // 用户信息
-    async getVIPMsg() {
-      const res = await this.$http.get(`api/home/user`)
-      if (res.ret) {
-        this.vip_msg = res.data
-      }
-    },
-    // 订单信息
-    async getOrderMsg() {
-      const res = await this.$http.get(`api/home/order`)
-      if (res.ret) {
-        this.order_msg = res.data
-      }
-    },
-    // 商品信息
-    async getGoodsMsg() {
-      const res = await this.$http.get(`api/home/goods`)
-      if (res.ret) {
-        this.goods_msg = res.data
-      }
-    }
   }
 }
 </script>

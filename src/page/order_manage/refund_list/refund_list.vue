@@ -135,7 +135,7 @@
             <el-button
               type="text"
               size="small"
-              v-if="scope.row.refund_return !== 1"
+              v-if="scope.row.order.payment_id === 1"
               @click="confirmRefund(scope.row.id)"
               >{{ $t('确认已退款') }}</el-button
             >
@@ -153,7 +153,12 @@
     </div>
     <PaginationAndButtons :pageParams="page_params" />
     <!--    退款审核弹窗-->
-    <el-dialog :title="$t('退款审核')" :visible.sync="dialogRefund" width="400px">
+    <el-dialog
+      :title="$t('退款审核')"
+      v-if="dialogRefund"
+      :visible.sync="dialogRefund"
+      width="400px"
+    >
       <div style="padding: 0 40px 0 40px">
         <el-form :model="form" label-position="top" :rules="formRules">
           <el-form-item :label="`${$t('审核状态')}:`">
@@ -260,7 +265,6 @@ export default {
       },
       dialogRefund: false,
       formRules: {
-        remark: [{ required: true, message: this.$t('请输入备注'), trigger: 'blur' }],
         refund_fee: [
           { required: true, message: this.$t('请输入退款金额'), trigger: 'blur' }
         ]
@@ -333,6 +337,7 @@ export default {
     },
     refundDialog(info) {
       this.dialogRefund = true
+      this.form.status_id = 1
       this.thisRefund = info
       this.form.refund_fee = info.apply_fee
     },

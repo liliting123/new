@@ -34,7 +34,11 @@
           <el-row :gutter="20">
             <el-col :span="6">
               <el-form-item :label="`${$t('商品分类')}:`" prop="category_id">
-                <el-select v-model="form.category_id" :placeholder="$t('请选择商品分类')">
+                <el-select
+                  style="width:100%"
+                  v-model="form.category_id"
+                  :placeholder="$t('请选择商品分类')"
+                >
                   <el-option
                     v-for="item in categoryList"
                     :key="item.id"
@@ -70,7 +74,11 @@
           <el-row :gutter="20">
             <el-col :span="6">
               <el-form-item :label="`${$t('分类标签')}:`" prop="label">
-                <el-select v-model="form.label" :placeholder="$t('请选择分类标签')">
+                <el-select
+                  v-model="form.label"
+                  :placeholder="$t('请选择分类标签')"
+                  style="width:100%"
+                >
                   <el-option
                     v-for="item in labelList"
                     :key="item.id"

@@ -109,7 +109,7 @@
               :header-cell-style="{ background: '#F7F7F7' }"
               :data="scope.row.spec"
               border
-              style="width: 80%;margin-left: 48px"
+              style="width: 95%;margin-left: 48px"
             >
               <el-table-column width="50">
                 <template slot-scope="scope">

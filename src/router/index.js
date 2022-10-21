@@ -1,8 +1,13 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Interception from './interception.js'
-import navData from '../page/navData'
-console.log(navData, '/navData.js')
+
+const originalPush = Router.prototype.push
+Router.prototype.push = function push(location, onResolve, onReject) {
+  if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
+  return originalPush.call(this, location).catch(err => err)
+}
+
 Vue.use(Router)
 
 const loadOnDemand = function(file) {
@@ -71,10 +76,19 @@ export const constantRouterMap = [
       {
         path: '/my_home/home',
         name: '首页',
+        subname: 'web',
         component: Home
       }
     ]
   },
+
+  {
+    path: '*',
+    name: 'NotFound',
+    component: NotFound
+  }
+]
+export const otherRouter = [
   // 用户管理
   {
     path: '/user_manage',
@@ -83,11 +97,13 @@ export const constantRouterMap = [
       {
         path: 'user_list',
         name: '员工列表',
+        subname: 'staff',
         component: UserList
       },
       {
         path: 'user_group_list',
         name: '员工组列表',
+        subname: 'staff_group',
         component: UserGroupList
       }
     ]
@@ -99,17 +115,20 @@ export const constantRouterMap = [
       {
         path: 'order_list',
         name: '订单列表',
+        subname: 'order',
         component: OrderList,
         meta: { keepAlive: false }
       },
       {
         path: 'order_list/orderDetail/:id',
         name: '订单详情',
+        subname: 'order',
         component: OrderDetail
       },
       {
         path: 'refund_list',
         name: '退款列表',
+        subname: 'order_refund',
         component: RefundList
       }
     ]
@@ -121,45 +140,53 @@ export const constantRouterMap = [
       {
         path: 'normal_product_list',
         name: '普通商品列表',
+        subname: 'goods',
         component: NormalProductList,
         meta: { keepAlive: false }
       },
       {
         path: 'normal_product_list/add_product',
         name: '添加商品',
+        subname: 'goods',
         component: AddProduct,
         meta: { keepAlive: true }
       },
       {
         path: 'normal_product_list/edit_product/:id',
         name: '编辑商品',
+        subname: 'goods',
         component: AddProduct,
         meta: { keepAlive: false }
       },
       {
         path: 'weighing_goods_list',
         name: '称重商品列表',
+        subname: 'weigh_goods',
         component: WeighingGoods
       },
       {
         path: 'weighing_goods_list/add_weighing_item',
         name: '添加称重商品',
+        subname: 'weigh_goods',
         component: AddWeighingItem,
         meta: { keepAlive: true }
       },
       {
         path: 'weighing_goods_list/edit_weighing_item/:id',
         name: '编辑称重商品',
+        subname: 'weigh_goods',
         component: AddWeighingItem
       },
       {
         path: 'classification_list',
         name: '分类列表',
+        subname: 'category',
         component: ClassificationList
       },
       {
         path: 'supplier_list',
         name: '供应商列表',
+        subname: 'supplier',
         component: SupplierList
       }
     ]
@@ -171,19 +198,16 @@ export const constantRouterMap = [
       {
         path: 'store_settings',
         name: '店铺设置',
+        subname: 'shop',
         component: StoreSettings
       },
       {
         path: 'payment_settings',
         name: '支付设置',
+        subname: 'payment',
         component: PaymentSettings
       }
     ]
-  },
-  {
-    path: '*',
-    name: 'NotFound',
-    component: NotFound
   }
 ]
 

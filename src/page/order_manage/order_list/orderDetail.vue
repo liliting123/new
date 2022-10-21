@@ -73,7 +73,7 @@
           </el-table-column>
           <el-table-column prop="name" :label="$t('商品名称')" width="180">
           </el-table-column>
-          <el-table-column prop="goods_id" :label="$t('商品编号')"> </el-table-column>
+          <el-table-column prop="code" :label="$t('商品编号')"> </el-table-column>
           <el-table-column prop="ean" :label="$t('EAN')" width="180"> </el-table-column>
           <el-table-column prop="spec_name" :label="$t('规格')" width="180">
           </el-table-column>
@@ -123,16 +123,14 @@
           </el-table-column>
           <el-table-column prop="item.name" :label="$t('商品名称')" width="180">
           </el-table-column>
-          <el-table-column prop="item.goods_id" :label="$t('商品编号')">
-          </el-table-column>
+          <el-table-column prop="item.code" :label="$t('商品编号')"> </el-table-column>
           <el-table-column prop="item.ean" :label="$t('EAN')" width="180">
           </el-table-column>
           <el-table-column prop="item.spec_name" :label="$t('规格')" width="180">
           </el-table-column>
           <el-table-column prop="item.price" :label="$t('单价')"> </el-table-column>
-          <el-table-column prop="item.num" :label="$t('数量')" width="180">
-          </el-table-column>
-          <el-table-column prop="item.payment_fee" :label="$t('退款金额')" width="180">
+          <el-table-column prop="num" :label="$t('数量')" width="180"> </el-table-column>
+          <el-table-column prop="refund_fee" :label="$t('退款金额')" width="180">
           </el-table-column>
         </el-table>
       </div>

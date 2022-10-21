@@ -28,14 +28,14 @@ switch (baseUrl) {
   //     SHOP_ADMIN: 'http://adminshop.euonline.nl'
   //   }
   //   break
-  // case 'test-adminshop.eutechne.nl':
-  //   baseApi = {
-  //     BASE_API_URL: 'https://test-myeushop.eutechne.com/admin',
-  //     IMAGE_URL: 'https://test-myeushop.eutechne.com',
-  //     EUSHOP_ADDRESS: 'http://test-wxshop.eutechne.cn',
-  //     SHOP_ADMIN: 'https://test-myeushop.eutechne.com'
-  //   }
-  //   break
+  case 'test-kassaadmin.eutechne.com':
+    baseApi = {
+      BASE_API_URL: 'test-kassaapi.eutechne.com',
+      IMAGE_URL: 'https://test-myeushop.eutechne.com',
+      EUSHOP_ADDRESS: 'http://test-wxshop.eutechne.cn',
+      SHOP_ADMIN: 'https://test-myeushop.eutechne.com'
+    }
+    break
   // 测试服
   // default:
   //   baseApi = {

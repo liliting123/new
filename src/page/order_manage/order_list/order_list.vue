@@ -133,7 +133,7 @@
           </template>
         </el-table-column>
         <el-table-column :label="$t('订单金额')">
-          <template slot-scope="scope"> €{{ scope.row.total_fee }} </template>
+          <template slot-scope="scope"> €{{ scope.row.payment_fee }} </template>
         </el-table-column>
         <el-table-column :label="$t('客户来源')">
           <template slot-scope="scope">

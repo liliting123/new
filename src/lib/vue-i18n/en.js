@@ -322,10 +322,12 @@ export default {
   请输入会员价格: 'Please enter the member price',
   请输入税率: 'Please enter tax rate',
   请输入EAN: 'Please enter EAN',
-  请输入BBD: 'Please enter BBD',
+  请选择BBD: 'Please select the BBD',
   请输入可售库存: 'Please enter the available inventory',
   请输入联系电话: 'Please enter the telephone number',
   请输入城市: 'Please enter the city',
   请选择时间: 'Please select a time',
-  请上传图片: 'Please upload the picture'
+  请上传图片: 'Please upload the picture',
+  '开启后，用户自助收银购买烟酒类商品时，结算前将需要工作人员输入密码核对用户身份后，才可继续结算':
+    "After opening, when the user self-service cashier purchases tobacco and alcohol products, the staff will be required to enter the password to check the user's identity before settlement."
 }

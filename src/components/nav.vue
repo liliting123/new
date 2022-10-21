@@ -103,8 +103,9 @@ export default {
         type: 'warning'
       }).then(() => {
         this.$notify({
-          type: 'success',
-          message: this.$t('success')
+          title: this.$t('success'),
+          message: this.$t('退出登录'),
+          type: 'success'
         })
         this.$store.commit('token/removeToken')
         this.$store.commit('permission/removePermission')

@@ -21,9 +21,13 @@
                 <el-input v-model="form.name[currentLanguage]"></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="8" :offset="6">
+            <el-col :span="6" :offset="6">
               <el-form-item :label="`${$t('商品分类')}:`" prop="category_id">
-                <el-select v-model="form.category_id" :placeholder="$t('请选择分类')">
+                <el-select
+                  v-model="form.category_id"
+                  :placeholder="$t('请选择分类')"
+                  style="width:100%"
+                >
                   <el-option
                     v-for="item in categoryList"
                     :key="item.id"
@@ -41,12 +45,13 @@
                 <el-input v-model="form.code"></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="8" :offset="6">
+            <el-col :span="6" :offset="6">
               <el-form-item :label="`${$t('供应商')}:`" prop="supplier_id">
                 <el-select
                   v-model="form.supplier_id"
                   filterable
                   :placeholder="$t('请选择供应商')"
+                  style="width:100%"
                 >
                   <el-option
                     v-for="item in sortlist"
@@ -79,13 +84,14 @@
                 <el-input v-model="form.price"></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="8" :offset="6">
+            <el-col :span="6" :offset="6">
               <el-form-item :label="`${$t('BBD')}:`" prop="bbd">
                 <el-date-picker
                   v-model="form.bbd"
                   type="date"
                   value-format="yyyy-MM-dd"
                   :placeholder="$t('请选择保质期')"
+                  style="width:100%"
                 >
                 </el-date-picker>
               </el-form-item>
@@ -102,7 +108,7 @@
                 </el-switch>
               </el-form-item>
             </el-col>
-            <el-col :span="8" :offset="6">
+            <el-col :span="6" :offset="6">
               <el-form-item :label="`${$t('商品图片')}:`" prop="cover">
                 <el-upload
                   class="upload-demo"
@@ -214,7 +220,7 @@ export default {
         vip_price: [
           { required: true, message: this.$t('请输入会员价格'), trigger: 'blur' }
         ],
-        bbd: [{ required: true, message: this.$t('请输入BBD'), trigger: 'blur' }]
+        bbd: [{ required: true, message: this.$t('请选择BBD'), trigger: 'blur' }]
       }
     },
 
