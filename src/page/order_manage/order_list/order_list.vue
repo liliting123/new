@@ -109,7 +109,9 @@
               </el-table-column>
               <el-table-column prop="num" :label="$t('数量')"> </el-table-column>
               <el-table-column :label="$t('实付')">
-                <template slot-scope="scope"> €{{ scope.row.payment_fee }} </template>
+                <template slot-scope="scope">
+                  €{{ (scope.row.cash && scope.row.cash.received_fee) || '' }}
+                </template>
               </el-table-column>
             </el-table>
           </template>

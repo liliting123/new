@@ -9,7 +9,7 @@
       <span>{{
         `${$t('已选')} ${selectList.length} ${$t('件商品')},${$t(
           '将退款'
-        )} €${refundMoney}`
+        )} €${refundMoney.toFixed(2)}`
       }}</span>
       <el-input v-model="inputValue" style="width: 270px">
         <el-button slot="append" @click="getList()">{{ $t('搜索') }}</el-button>

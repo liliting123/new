@@ -97,7 +97,7 @@ export default {
       time: '',
       pickerOptions: {
         disabledDate(time) {
-          return time.getTime() > Date.now()
+          return time.getTime() > +new Date() + 24 * 60 * 60 * 1000
         },
         shortcuts: [
           {
@@ -122,9 +122,10 @@ export default {
       },
       vipIdArr: [],
       vipPaymentFeeArr: [],
-      goodSaleName: [],
+      goodSaleCode: [],
       goodSaleSoldNum: [],
-      scorData: []
+      goodData: [],
+      vipData: []
     }
   },
 
@@ -133,7 +134,7 @@ export default {
     setTimeout(() => {
       // this.initCharts()
       this.setCharts()
-    }, 1000)
+    }, 500)
     // 切换界面时有概率echarts图表会变得很小,强行等待100毫秒让dom生成
   },
 
@@ -151,24 +152,34 @@ export default {
         this.vipPaymentFeeArr = this.overallSituation.vip_ranking.map(
           item => item.payment_fee
         )
-        this.goodSaleName = this.overallSituation.goods_sale
-          .map(item => item.name)
+        this.goodSaleCode = this.overallSituation.goods_sale
+          .map(item => item.code)
           .splice(0, 10)
         this.goodSaleSoldNum = this.overallSituation.goods_sale
           .map(item => item.sold_num)
           .splice(0, 10)
-        var toolObj = {
-          price: '',
-          value: ''
+        for (let res in this.overallSituation.goods_sale) {
+          var toolObj = {
+            price: '',
+            value: '',
+            name: ''
+          }
+          toolObj.price = this.overallSituation.goods_sale[res].price
+          toolObj.value = this.overallSituation.goods_sale[res].sold_num
+          toolObj.name = this.overallSituation.goods_sale[res].name
+          this.goodData.push(toolObj)
         }
-        toolObj.price = this.goodSaleSoldNum.value = this.overallSituation.goods_sale
-          .map(item => item.price)
-          .splice(0, 10)
-        toolObj.value = this.goodSaleSoldNum.value = this.overallSituation.goods_sale
-          .map(item => item.sold_num)
-          .splice(0, 10)
-        this.scorData.push(toolObj)
-        console.log(this.scorData, 'scorData')
+        for (let i in this.overallSituation.vip_ranking) {
+          var vipToolObj = {
+            vip_id: '',
+            value: '',
+            count: ''
+          }
+          vipToolObj.vip_id = this.overallSituation.vip_ranking[i].vip_id
+          vipToolObj.value = this.overallSituation.vip_ranking[i].payment_fee
+          vipToolObj.count = this.overallSituation.vip_ranking[i].count
+          this.vipData.push(vipToolObj)
+        }
       }
     },
     setCharts(data) {
@@ -183,7 +194,7 @@ export default {
       // 指定图表的配置项和数据
 
       var shopOption = {
-        color: ['#7f7f7f'], // 柱子颜色
+        color: ['#409EFF'], // 柱子颜色
         tooltip: {
           trigger: 'axis',
           axisPointer: {
@@ -199,19 +210,18 @@ export default {
             fontSize: 13 // 字体大小
           },
           formatter: function(data) {
-            console.log(data)
             var val =
               _this.$t('商品名称') +
               '：' +
-              data.name +
+              data[0]['data'].name +
               '<br>' +
               _this.$t('商品价格') +
               '：€' +
-              data.price +
+              data[0]['data'].price +
               '<br>' +
               _this.$t('商品销量') +
               '：' +
-              data.sold_num
+              data[0]['data'].value
             return val
           }
         },
@@ -241,18 +251,18 @@ export default {
           },
 
           type: 'category',
-          data: this.goodSaleName
+          data: this.goodSaleCode
         },
         series: [
           {
             name: '',
             type: 'bar',
-            data: this.scorData
+            data: this.goodData
           }
         ]
       }
       var consumptionOption = {
-        color: ['#7f7f7f'], // 柱子颜色
+        color: ['#409EFF'], // 柱子颜色
         tooltip: {
           trigger: 'axis',
           axisPointer: {
@@ -269,17 +279,17 @@ export default {
           },
           formatter: function(data) {
             var val =
-              _this.$t('昵称') +
+              _this.$t('会员编号') +
               '：' +
-              data.name +
+              data[0]['data'].vip_id +
               '<br>' +
               _this.$t('下单次数') +
               '：' +
-              data.count +
+              data[0]['data'].count +
               '<br>' +
               _this.$t('消费金额') +
               '：€' +
-              data.payment_fee
+              data[0]['data'].value
             return val
           }
         },
@@ -314,7 +324,7 @@ export default {
         series: [
           {
             type: 'bar',
-            data: this.vipPaymentFeeArr
+            data: this.vipData
           }
         ]
       }

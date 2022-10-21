@@ -4,6 +4,7 @@
     :visible="dialogPassword"
     :before-close="handleClose"
     width="500px"
+    @open="setState"
   >
     <div style="padding: 0 40px 0 40px">
       <el-form :model="form" :rules="rulesPwd" ref="ruleFormPwd" label-position="top">
@@ -67,7 +68,7 @@ export default {
       form: {
         pwd: '',
         surePwd: '',
-        isOpen: false
+        isOpen: 0
       },
       rulesPwd: {
         pwd: [{ required: true, message: this.$t('请输入结算密码'), trigger: 'blur' }],
@@ -75,9 +76,11 @@ export default {
           { required: true, message: this.$t('请再一次输入结算密码'), trigger: 'blur' }
         ],
         isOpen: [{ required: true, message: this.$t('请选择'), trigger: 'blur' }]
-      }
+      },
+      shopId: localStorage.getItem('shopId')
     }
   },
+
   methods: {
     // 设置结算密码
     setPwd(form) {
@@ -85,7 +88,7 @@ export default {
         if (valid) {
           if (this.form.pwd === this.form.surePwd) {
             this.$http
-              .post(`api/shop/goods/staff_payment_password/22`, {
+              .post(`api/shop/goods/staff_payment_password/${this.shopId}`, {
                 payment_password: this.form.pwd,
                 password_confirmation: this.form.surePwd,
                 is_payment_password: this.form.isOpen
@@ -97,8 +100,9 @@ export default {
                     type: 'success',
                     message: res.msg
                   })
+                  localStorage.setItem('is_payment_password', this.form.isOpen)
                   this.dialogPassword = false
-                  this.form = {}
+                  this.form = { isOpen: 0 }
                 }
               })
           } else {
@@ -109,9 +113,13 @@ export default {
         }
       })
     },
+    setState() {
+      this.form.isOpen = +localStorage.getItem('is_payment_password')
+    },
+
     handleClose() {
       this.dialogPassword = false
-      this.form = {}
+      this.form = { isOpen: 0 }
     }
   }
 }

@@ -397,11 +397,14 @@ export default {
 
   created() {
     // this.form.spec = this.spec
+    // this.getClassList()
+    // this.getSupplierList()
+    // this.getWMSCategoryList()
+  },
+  activated() {
     this.getClassList()
     this.getSupplierList()
     this.getWMSCategoryList()
-  },
-  activated() {
     if (this.productId && this.$route.params && !this.$route.params.shops) {
       this.getShopInfo()
     }

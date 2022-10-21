@@ -33,16 +33,16 @@
         </el-option>
       </el-select>
 
-      <el-popover placement="bottom" width="500" trigger="click">
+      <!-- <el-popover placement="bottom" width="500" trigger="click">
         <el-table :data="downloads" border stripe>
-          <el-table-column prop="name" :label="$t('Name')"></el-table-column>
-          <el-table-column prop="updated_at" :label="$t('time')"></el-table-column>
-          <el-table-column :label="$t('state')" width="90">
+          <el-table-column prop="name" :label="$t('名称')"></el-table-column>
+          <el-table-column prop="updated_at" :label="$t('时间')"></el-table-column>
+          <el-table-column :label="$t('状态')" width="90">
             <template slot-scope="scope">
               {{ scope.row.status ? $t('complete') : $t('inComplete') }}
             </template>
           </el-table-column>
-          <el-table-column :label="$t('operate')">
+          <el-table-column :label="$t('操作人')">
             <template slot-scope="scope">
               <el-button @click="onDownload(scope.row.file_url, scope.row.status)">
                 {{ $t('Download') }}
@@ -53,7 +53,7 @@
         <el-button slot="reference" plain @click="getDownloads()">
           {{ $t('下载管理') }}
         </el-button>
-      </el-popover>
+      </el-popover> -->
     </span>
   </div>
 </template>
@@ -74,7 +74,17 @@ export default {
   methods: {
     selectShop() {
       localStorage.setItem('shopId', this.shopValue)
-      console.log(localStorage.getItem('shopId'))
+      console.log(this.shopValue)
+      for (var i = 0; i < this.shopList.length; i++) {
+        console.log(this.shopList[i].id, localStorage.getItem('shopId'))
+        if (this.shopList[i].id === Number(localStorage.getItem('shopId'))) {
+          console.log('888888')
+          localStorage.setItem(
+            'is_payment_password',
+            this.shopList[i].is_payment_password
+          )
+        }
+      }
       location.reload()
     },
     getShop() {

@@ -135,7 +135,7 @@
             <el-button
               type="text"
               size="small"
-              v-if="scope.row.order.payment_id === 1"
+              v-if="scope.row.order.payment_id === 1 && scope.row.status_id !== 2"
               @click="confirmRefund(scope.row.id)"
               >{{ $t('确认已退款') }}</el-button
             >

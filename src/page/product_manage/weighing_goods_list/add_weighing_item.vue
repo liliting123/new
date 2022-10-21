@@ -229,11 +229,10 @@ export default {
       return this.sort()
     }
   },
-  created() {
+  created() {},
+  activated() {
     this.getClassList()
     this.getSupplierList()
-  },
-  activated() {
     if (this.weighProductId) {
       this.getList()
     }

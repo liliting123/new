@@ -35,7 +35,7 @@
       <div class="content">
         <div class="conten-item">
           <span>{{ $t('订单金额') }}:</span>
-          <el-input v-model="basic_Info.total_fee" :disabled="true">
+          <el-input v-model="basic_Info.payment_fee" :disabled="true">
             <i slot="prefix" style="line-height: 40px;margin-left:10px">€</i>
           </el-input>
         </div>
@@ -90,7 +90,7 @@
         <span>{{ $t('总计') }}:€{{ basic_Info.payment_fee }}</span>
         <span
           >{{ $t('改价') }}:€{{
-            (basic_Info.cash && basic_Info.cash.payment_fee) || '0.00'
+            (basic_Info.cash && basic_Info.cash.payment_fee) || 0 - basic_Info.payment_fee
           }}</span
         >
         <span

@@ -329,5 +329,9 @@ export default {
   请选择时间: 'Please select a time',
   请上传图片: 'Please upload the picture',
   '开启后，用户自助收银购买烟酒类商品时，结算前将需要工作人员输入密码核对用户身份后，才可继续结算':
-    "After opening, when the user self-service cashier purchases tobacco and alcohol products, the staff will be required to enter the password to check the user's identity before settlement."
+    "After opening, when the user self-service cashier purchases tobacco and alcohol products, the staff will be required to enter the password to check the user's identity before settlement.",
+  会员编号: 'Member No',
+  名称: 'Name',
+  时间: 'Time',
+  状态: 'State'
 }
