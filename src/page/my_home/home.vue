@@ -19,7 +19,9 @@
         <p>{{ $t('整体情况') }}</p>
         <el-descriptions style="padding:16px" :column="6" direction="vertical">
           <el-descriptions-item :label="$t('销售金额')"
-            >€{{ overallSituation.total_order_fee }}</el-descriptions-item
+            >€{{
+              Number(overallSituation.total_order_fee).toFixed(2)
+            }}</el-descriptions-item
           >
           <el-descriptions-item :label="$t('下单数量')">{{
             overallSituation.total_order_num
@@ -37,7 +39,9 @@
             {{ overallSituation.user_count }}</el-descriptions-item
           ><br />
           <el-descriptions-item :label="$t('余额支付金额')"
-            >€{{ overallSituation.total_balance_fee }}</el-descriptions-item
+            >€{{
+              Number(overallSituation.total_balance_fee).toFixed(2)
+            }}</el-descriptions-item
           >
           <el-descriptions-item :label="$t('余额支付单量')">{{
             overallSituation.total_balance_num
@@ -46,7 +50,7 @@
             >{{ Number(overallSituation.balance_rate).toFixed(2) }}%</el-descriptions-item
           >
           <el-descriptions-item :label="$t('退款金额')"
-            >€{{ overallSituation.refund_fee }}</el-descriptions-item
+            >€{{ Number(overallSituation.refund_fee).toFixed(2) }}</el-descriptions-item
           >
           <el-descriptions-item :label="$t('退款单数')">{{
             overallSituation.refund_num
@@ -67,6 +71,12 @@
                 ref="shopSales"
                 style="width: 100%; height: 100%;text-align:center;top: 0;"
               ></div>
+              <img
+                ref="shopSalesNoDaTaImg"
+                style="display:none;margin: auto;"
+                src="../../assets/images/noData.png"
+                alt=""
+              />
             </div>
           </el-col>
           <el-col :md="12" :sm="12">
@@ -78,6 +88,12 @@
                 style="width: 100%; height: 100%;text-align:center;top: 0;
             "
               ></div>
+              <img
+                ref="vipUserNoDaTaImg"
+                style="display:none;margin: auto;"
+                src="../../assets/images/noData.png"
+                alt=""
+              />
             </div>
           </el-col>
         </el-row>
@@ -187,13 +203,17 @@ export default {
     },
     setCharts(data) {
       const _this = this
-      // 基于准备好的dom，初始化echarts实例
       var myChartShop = echarts.init(document.getElementById('echartShop'))
       var myChartUser = echarts.init(document.getElementById('echartUser'))
-      window.onresize = function() {
-        myChartShop.resize()
-        myChartUser.resize()
-      }
+      // 基于准备好的dom，初始化echarts实例
+      _this.$nextTick(() => {
+        window.onresize = function() {
+          var myChartShop = echarts.init(document.getElementById('echartShop'))
+          var myChartUser = echarts.init(document.getElementById('echartUser'))
+          myChartShop.resize()
+          myChartUser.resize()
+        }
+      })
       // 指定图表的配置项和数据
 
       var shopOption
@@ -212,14 +232,16 @@ export default {
         }
         this.$nextTick(() => {
           var domShopSales = this.$refs.shopSales
-          domShopSales.innerHTML = '暂无数据'
-          domShopSales.style.top = '50%'
-          domShopSales.removeAttribute('_echarts_instance_')
+          domShopSales.style.display = 'none'
+          var isShopSalesNoDaTaImg = this.$refs.shopSalesNoDaTaImg
+          isShopSalesNoDaTaImg.style.display = 'block'
         })
       } else {
         this.$nextTick(() => {
           var domShopSales = this.$refs.shopSales
-          domShopSales.style.top = 0
+          domShopSales.style.display = 'block'
+          var isShopSalesNoDaTaImg = this.$refs.shopSalesNoDaTaImg
+          isShopSalesNoDaTaImg.style.display = 'none'
         })
         shopOption = {
           color: ['#409EFF'], // 柱子颜色
@@ -306,14 +328,16 @@ export default {
         }
         this.$nextTick(() => {
           var domvipuser = this.$refs.vipuser
-          domvipuser.style.top = '50%'
-          domvipuser.innerHTML = '暂无数据'
-          domvipuser.removeAttribute('_echarts_instance_')
+          domvipuser.style.display = 'none'
+          var isVipUserNoDaTaImg = this.$refs.vipUserNoDaTaImg
+          isVipUserNoDaTaImg.style.display = 'block'
         })
       } else {
         this.$nextTick(() => {
           var domvipuser = this.$refs.vipuser
-          domvipuser.style.top = 0
+          domvipuser.style.display = 'block'
+          var isVipUserNoDaTaImg = this.$refs.vipUserNoDaTaImg
+          isVipUserNoDaTaImg.style.display = 'none'
         })
         consumptionOption = {
           title: {

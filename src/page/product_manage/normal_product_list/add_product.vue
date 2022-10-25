@@ -410,7 +410,7 @@ export default {
     }
     if (this.$route.params && this.$route.params.shops) {
       let shopInfo = this.$route.params && this.$route.params.shops
-      console.log(shopInfo.product.cn_name)
+
       this.form.name = shopInfo.product.cn_name
 
       // this.form.name.nl = shopInfo.product.nl_name || ''
@@ -438,7 +438,6 @@ export default {
           // this.form.spec = this.spec
           this.form = res.data
         }
-        console.log(this.form)
       })
     },
     // 保存商品
@@ -449,14 +448,14 @@ export default {
           this.$refs[formSpec].validate()
         ]).then(() => {
           let api
-          this.productId
+          this.productId && !this.$route.params.shops
             ? (api = this.$http.put(`api/shop/goods/${this.productId}`, {
                 ...this.form
               }))
             : (api = this.$http.post('api/shop/goods', {
                 ...this.form
               }))
-          console.log(this.form, '...this.form')
+
           api.then(res => {
             if (res.ret) {
               this.$refs[form].resetFields()
