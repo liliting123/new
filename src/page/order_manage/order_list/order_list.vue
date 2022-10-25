@@ -109,9 +109,7 @@
               </el-table-column>
               <el-table-column prop="num" :label="$t('数量')"> </el-table-column>
               <el-table-column :label="$t('实付')">
-                <template slot-scope="scope">
-                  €{{ (scope.row.cash && scope.row.cash.received_fee) || '' }}
-                </template>
+                <template slot-scope="scope"> €{{ scope.row.payment_fee }} </template>
               </el-table-column>
             </el-table>
           </template>
@@ -242,14 +240,14 @@ export default {
     this.paymentList()
   },
   activated() {
-    if (this.$store.state.search_flag === true) {
-      this.orderNoValue = 1
-      this.inputValue = ''
-      this.slectTime = ''
-      this.customerValue = ''
-      this.orderValue = ''
-      this.paymentValue = ''
-    }
+    // if (this.$store.state.search_flag === true) {
+    //   this.orderNoValue = 1
+    //   this.inputValue = ''
+    //   this.slectTime = ''
+    //   this.customerValue = ''
+    //   this.orderValue = ''
+    //   this.paymentValue = ''
+    // }
     this.getList()
   },
   methods: {

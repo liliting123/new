@@ -9,10 +9,20 @@
     <div style="padding: 0 40px 0 40px">
       <el-form :model="form" :rules="rulesPwd" ref="ruleFormPwd" label-position="top">
         <el-form-item :label="`${$t('设置结算密码')}:`" prop="pwd">
-          <el-input v-model="form.pwd" show-password></el-input>
+          <el-input
+            v-model="form.pwd"
+            :maxlength="6"
+            :minlength="6"
+            show-password
+          ></el-input>
         </el-form-item>
         <el-form-item :label="`${$t('确认结算密码')}:`" prop="surePwd">
-          <el-input v-model="form.surePwd" show-password></el-input>
+          <el-input
+            v-model="form.surePwd"
+            :maxlength="6"
+            :minlength="6"
+            show-password
+          ></el-input>
         </el-form-item>
         <el-form-item :label="`${$t('是否开启')}:`" prop="isOpen">
           <el-switch
@@ -71,10 +81,8 @@ export default {
         isOpen: 0
       },
       rulesPwd: {
-        pwd: [{ required: true, message: this.$t('请输入结算密码'), trigger: 'blur' }],
-        surePwd: [
-          { required: true, message: this.$t('请再一次输入结算密码'), trigger: 'blur' }
-        ],
+        pwd: [{ min: 6, max: 6, message: this.$t('长度需6个字符'), trigger: 'blur' }],
+        surePwd: [{ min: 6, max: 6, message: this.$t('长度需6个字符'), trigger: 'blur' }],
         isOpen: [{ required: true, message: this.$t('请选择'), trigger: 'blur' }]
       },
       shopId: localStorage.getItem('shopId')

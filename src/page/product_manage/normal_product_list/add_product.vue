@@ -410,9 +410,10 @@ export default {
     }
     if (this.$route.params && this.$route.params.shops) {
       let shopInfo = this.$route.params && this.$route.params.shops
-      this.form.name.cn = shopInfo.product.cn_name || ''
-      this.form.name.en = shopInfo.product.en_name || ''
-      this.form.name.nl = shopInfo.product.nl_name || ''
+      console.log(shopInfo.product.cn_name)
+      this.form.name = shopInfo.product.cn_name
+
+      // this.form.name.nl = shopInfo.product.nl_name || ''
       for (let i = 0; i < this.spec.length; i++) {
         this.form.spec[i].code = shopInfo.relevance_code
         this.form.spec[i].name = shopInfo.spec_name

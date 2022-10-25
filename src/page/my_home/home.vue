@@ -43,7 +43,7 @@
             overallSituation.total_balance_num
           }}</el-descriptions-item>
           <el-descriptions-item :label="$t('余额占比率')"
-            >{{ overallSituation.balance_rate }}%</el-descriptions-item
+            >{{ Number(overallSituation.balance_rate).toFixed(2) }}%</el-descriptions-item
           >
           <el-descriptions-item :label="$t('退款金额')"
             >€{{ overallSituation.refund_fee }}</el-descriptions-item
@@ -52,7 +52,7 @@
             overallSituation.refund_num
           }}</el-descriptions-item>
           <el-descriptions-item :label="$t('退款率')"
-            >{{ overallSituation.refund_rate }}%</el-descriptions-item
+            >{{ Number(overallSituation.refund_rate).toFixed(2) }}%</el-descriptions-item
           >
         </el-descriptions>
       </div>
@@ -62,13 +62,22 @@
           <el-col :md="12" :sm="12">
             <div class="leftEcharts data_box border-radius" style="background:#fff">
               <p>{{ $t('商品销量前十') }}</p>
-              <div id="echartShop" style="width: 100%; height: 100%"></div>
+              <div
+                id="echartShop"
+                ref="shopSales"
+                style="width: 100%; height: 100%;text-align:center;top: 0;"
+              ></div>
             </div>
           </el-col>
           <el-col :md="12" :sm="12">
             <div class="leftEcharts data_box border-radius" style="background:#fff">
               <p>{{ $t('会员消费前十') }}</p>
-              <div id="echartUser" style="width: 100%; height: 100%"></div>
+              <div
+                id="echartUser"
+                ref="vipuser"
+                style="width: 100%; height: 100%;text-align:center;top: 0;
+            "
+              ></div>
             </div>
           </el-col>
         </el-row>
@@ -88,6 +97,7 @@ function onClick(picker, time) {
 }
 
 export default {
+  name: 'homeList',
   components: { MyTitle },
   data() {
     return {
@@ -120,21 +130,18 @@ export default {
           }
         ]
       },
-      vipIdArr: [],
-      vipPaymentFeeArr: [],
-      goodSaleCode: [],
-      goodSaleSoldNum: [],
       goodData: [],
       vipData: []
     }
   },
 
-  mounted() {
+  activated() {
     this.getShopHome()
-    setTimeout(() => {
-      // this.initCharts()
-      this.setCharts()
-    }, 500)
+    // setTimeout(() => {
+    //   // this.initCharts()
+    //   this.setCharts()
+    //   console.log('mouited')
+    // }, 500)
     // 切换界面时有概率echarts图表会变得很小,强行等待100毫秒让dom生成
   },
 
@@ -142,22 +149,14 @@ export default {
     async getShopHome() {
       const res = await this.$http.get(`api/shop/home`, {
         params: {
-          created_at_start: this.time[0],
-          created_at_end: this.time[1]
+          created_at_start: this.time ? this.time[0] : '',
+          created_at_end: this.time ? this.time[1] : ''
         }
       })
       if (res.ret) {
         this.overallSituation = res.data
-        this.vipIdArr = this.overallSituation.vip_ranking.map(item => item.vip_id)
-        this.vipPaymentFeeArr = this.overallSituation.vip_ranking.map(
-          item => item.payment_fee
-        )
-        this.goodSaleCode = this.overallSituation.goods_sale
-          .map(item => item.code)
-          .splice(0, 10)
-        this.goodSaleSoldNum = this.overallSituation.goods_sale
-          .map(item => item.sold_num)
-          .splice(0, 10)
+
+        this.goodData = []
         for (let res in this.overallSituation.goods_sale) {
           var toolObj = {
             price: '',
@@ -169,6 +168,7 @@ export default {
           toolObj.name = this.overallSituation.goods_sale[res].name
           this.goodData.push(toolObj)
         }
+        this.vipData = []
         for (let i in this.overallSituation.vip_ranking) {
           var vipToolObj = {
             vip_id: '',
@@ -180,6 +180,9 @@ export default {
           vipToolObj.count = this.overallSituation.vip_ranking[i].count
           this.vipData.push(vipToolObj)
         }
+        setTimeout(() => {
+          this.setCharts(this.overallSituation)
+        }, 500)
       }
     },
     setCharts(data) {
@@ -193,223 +196,201 @@ export default {
       }
       // 指定图表的配置项和数据
 
-      var shopOption = {
-        color: ['#409EFF'], // 柱子颜色
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'shadow',
-            shadowStyle: {
-              color: 'rgba(220, 220, 220, 0.5)' // 鼠标移入的阴影颜色
+      var shopOption
+      if (data.goods_sale.length === 0) {
+        shopOption = {
+          // title: {
+          //   text: '暂无数据',
+          //   x: 'center',
+          //   y: 'center',
+          //   textStyle: {
+          //     color: '#000',
+          //     fontWeight: 'normal',
+          //     fontSize: 16
+          //   }
+          // }
+        }
+        this.$nextTick(() => {
+          var domShopSales = this.$refs.shopSales
+          domShopSales.innerHTML = '暂无数据'
+          domShopSales.style.top = '50%'
+          domShopSales.removeAttribute('_echarts_instance_')
+        })
+      } else {
+        this.$nextTick(() => {
+          var domShopSales = this.$refs.shopSales
+          domShopSales.style.top = 0
+        })
+        shopOption = {
+          color: ['#409EFF'], // 柱子颜色
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+              type: 'shadow',
+              shadowStyle: {
+                color: 'rgba(220, 220, 220, 0.5)' // 鼠标移入的阴影颜色
+              }
+            },
+            backgroundColor: '#f2f2f2', // 背景颜色
+            borderColor: '#f2f2f2',
+            textStyle: {
+              color: '#000000', // 字体颜色
+              fontSize: 13 // 字体大小
+            },
+            extraCssText: 'text-align: left;',
+            formatter: function(data) {
+              var val =
+                _this.$t('商品名称') +
+                '：' +
+                data[0]['data'].name +
+                '<br>' +
+                _this.$t('商品价格') +
+                '：€' +
+                data[0]['data'].price +
+                '<br>' +
+                _this.$t('商品销量') +
+                '：' +
+                data[0]['data'].value
+              return val
             }
           },
-          backgroundColor: '#f2f2f2', // 背景颜色
-          borderColor: '#f2f2f2',
-          textStyle: {
-            color: '#000000', // 字体颜色
-            fontSize: 13 // 字体大小
-          },
-          formatter: function(data) {
-            var val =
-              _this.$t('商品名称') +
-              '：' +
-              data[0]['data'].name +
-              '<br>' +
-              _this.$t('商品价格') +
-              '：€' +
-              data[0]['data'].price +
-              '<br>' +
-              _this.$t('商品销量') +
-              '：' +
-              data[0]['data'].value
-            return val
-          }
-        },
 
-        grid: {
-          top: '5%',
-          left: '3%',
-          right: '4%',
-          bottom: '8%',
-          containLabel: true
-        },
-
-        xAxis: {
-          axisLine: {
-            show: true // 显示坐标轴线
-          },
-          splitLine: {
-            // 网格线
-            show: false
-          },
-          type: 'value',
-          boundaryGap: [0, 0.01]
-        },
-        yAxis: {
-          axisTick: {
-            show: false // 不显示坐标轴刻度线
+          grid: {
+            top: '5%',
+            left: '3%',
+            right: '4%',
+            bottom: '8%',
+            containLabel: true
           },
 
-          type: 'category',
-          data: this.goodSaleCode
-        },
-        series: [
-          {
-            name: '',
-            type: 'bar',
-            data: this.goodData
-          }
-        ]
+          xAxis: {
+            axisLine: {
+              show: true // 显示坐标轴线
+            },
+            splitLine: {
+              // 网格线
+              show: false
+            },
+            type: 'value',
+            boundaryGap: [0, 0.01]
+          },
+          yAxis: {
+            axisTick: {
+              show: false // 不显示坐标轴刻度线
+            },
+
+            type: 'category',
+            data: data.goods_sale.map(item => item.code).splice(0, 10)
+          },
+          series: [
+            {
+              name: '',
+              type: 'bar',
+              data: this.goodData
+            }
+          ]
+        }
       }
-      var consumptionOption = {
-        color: ['#409EFF'], // 柱子颜色
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'shadow',
-            shadowStyle: {
-              color: 'rgba(220, 220, 220, 0.5)' // 鼠标移入的阴影颜色
+      var consumptionOption
+      if (data.vip_ranking.length === 0) {
+        consumptionOption = {
+          // title: {
+          //   text: '暂无数据',
+          //   x: 'center',
+          //   y: 'center',
+          //   textStyle: {
+          //     fontSize: 14,
+          //     fontWeight: 'normal'
+          //   }
+          // }
+        }
+        this.$nextTick(() => {
+          var domvipuser = this.$refs.vipuser
+          domvipuser.style.top = '50%'
+          domvipuser.innerHTML = '暂无数据'
+          domvipuser.removeAttribute('_echarts_instance_')
+        })
+      } else {
+        this.$nextTick(() => {
+          var domvipuser = this.$refs.vipuser
+          domvipuser.style.top = 0
+        })
+        consumptionOption = {
+          title: {
+            text: ''
+          },
+          color: ['#409EFF'], // 柱子颜色
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+              type: 'shadow',
+              shadowStyle: {
+                color: 'rgba(220, 220, 220, 0.5)' // 鼠标移入的阴影颜色
+              }
+            },
+            backgroundColor: '#f2f2f2', // 背景颜色
+            borderColor: '#f2f2f2',
+            textStyle: {
+              color: '#000000', // 字体颜色
+              fontSize: 13 // 字体大小
+            },
+            extraCssText: 'text-align: left;',
+            formatter: function(data) {
+              var val =
+                _this.$t('会员编号') +
+                '：' +
+                data[0]['data'].vip_id +
+                '<br>' +
+                _this.$t('下单次数') +
+                '：' +
+                data[0]['data'].count +
+                '<br>' +
+                _this.$t('消费金额') +
+                '：€' +
+                data[0]['data'].value
+              return val
             }
           },
-          backgroundColor: '#f2f2f2', // 背景颜色
-          borderColor: '#f2f2f2',
-          textStyle: {
-            color: '#000000', // 字体颜色
-            fontSize: 13 // 字体大小
-          },
-          formatter: function(data) {
-            var val =
-              _this.$t('会员编号') +
-              '：' +
-              data[0]['data'].vip_id +
-              '<br>' +
-              _this.$t('下单次数') +
-              '：' +
-              data[0]['data'].count +
-              '<br>' +
-              _this.$t('消费金额') +
-              '：€' +
-              data[0]['data'].value
-            return val
-          }
-        },
 
-        grid: {
-          top: '5%',
-          left: '3%',
-          right: '4%',
-          bottom: '8%',
-          containLabel: true
-        },
-
-        xAxis: {
-          axisLine: {
-            show: true // 显示坐标轴线
-          },
-          splitLine: {
-            // 网格线
-            show: false
-          },
-          type: 'value',
-          boundaryGap: [0, 0.01]
-        },
-        yAxis: {
-          axisTick: {
-            show: false // 不显示坐标轴刻度线
+          grid: {
+            top: '5%',
+            left: '3%',
+            right: '4%',
+            bottom: '8%',
+            containLabel: true
           },
 
-          type: 'category',
-          data: this.vipIdArr
-        },
-        series: [
-          {
-            type: 'bar',
-            data: this.vipData
-          }
-        ]
+          xAxis: {
+            axisLine: {
+              show: true // 显示坐标轴线
+            },
+            splitLine: {
+              // 网格线
+              show: false
+            },
+            type: 'value',
+            boundaryGap: [0, 0.01]
+          },
+          yAxis: {
+            axisTick: {
+              show: false // 不显示坐标轴刻度线
+            },
+
+            type: 'category',
+            data: data.vip_ranking.map(item => item.vip_id).splice(0, 10)
+          },
+          series: [
+            {
+              type: 'bar',
+              data: this.vipData
+            }
+          ]
+        }
       }
       // 使用刚指定的配置项和数据显示图表。
       myChartShop.setOption(shopOption)
       myChartUser.setOption(consumptionOption)
-      // this.myCharts.setOption({
-      //   tooltip: {
-      //     trigger: 'axis',
-      //     axisPointer: {
-      //       type: 'cross',
-      //       crossStyle: {
-      //         color: '#999'
-      //       }
-      //     }
-      //   },
-      //   toolbox: {
-      //     right: '20',
-      //     feature: {
-      //       dataView: { show: true, readOnly: false },
-      //       magicType: { show: true, type: ['line', 'bar'] },
-      //       restore: { show: true },
-      //       saveAsImage: { show: true }
-      //     }
-      //   },
-      //   grid: {
-      //     top: '80'
-      //   },
-      //   legend: {
-      //     data: [this.$t('order'), this.$t('registerUser')]
-      //   },
-      //   xAxis: [
-      //     {
-      //       type: 'category',
-      //       data: data.data.map(item => item.time),
-      //       axisPointer: {
-      //         type: 'shadow'
-      //       }
-      //     }
-      //   ],
-      //   yAxis: [
-      //     {
-      //       type: 'value',
-      //       name: this.$t('order'),
-      //       min: 0,
-      //       max: data.maxOrderCount,
-      //       interval: 50,
-      //       axisLabel: {
-      //         formatter: '{value}'
-      //       }
-      //     },
-      //     {
-      //       type: 'value',
-      //       name: this.$t('registerUser'),
-      //       min: 0,
-      //       max: data.maxRegisterCount,
-      //       interval: 50,
-      //       axisLabel: {
-      //         formatter: '{value}'
-      //       }
-      //     }
-      //   ],
-      //   series: [
-      //     {
-      //       name: this.$t('order'),
-      //       type: 'bar',
-      //       data: data.data.map(item => item.orderCount)
-      //     },
-      //     {
-      //       name: this.$t('registerUser'),
-      //       type: 'line',
-      //       yAxisIndex: 1,
-      //       data: data.data.map(item => item.registerCount)
-      //     }
-      //   ]
-      // })
     }
-    // async handleChange() {
-    //   console.log(this.time)
-    //   if (this.time == null) {
-    //     this.getEcharsData()
-    //   } else {
-    //     this.getEcharsData(this.time[0], this.time[1])
-    //   }
-    // },
   }
 }
 </script>

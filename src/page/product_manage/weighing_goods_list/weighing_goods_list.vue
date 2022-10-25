@@ -167,11 +167,11 @@ export default {
     this.getSupplierList()
   },
   activated() {
-    if (this.$store.state.search_flag === true) {
-      this.categoryValue = ''
-      this.supplierValue = ''
-      this.searchValue = 1
-    }
+    // if (this.$store.state.search_flag === true) {
+    //   this.categoryValue = ''
+    //   this.supplierValue = ''
+    //   this.searchValue = 1
+    // }
     this.getList()
   },
   methods: {

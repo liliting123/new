@@ -154,9 +154,9 @@ export default {
     this.dragSort()
   },
   activated() {
-    if (this.$store.state.search_flag === true) {
-      this.searchValue = ''
-    }
+    // if (this.$store.state.search_flag === true) {
+    //   this.searchValue = ''
+    // }
     this.getList()
   },
   methods: {

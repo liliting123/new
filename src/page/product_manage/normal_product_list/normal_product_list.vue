@@ -278,13 +278,13 @@ export default {
     this.getClassList()
   },
   activated() {
-    if (this.$store.state.search_flag === true) {
-      this.categoryValue = ''
-      this.classificationLabel = ''
-      this.supplierValue = ''
-      this.inputValue = ''
-      this.searchValue = 1
-    }
+    // if (this.$store.state.search_flag === true) {
+    //   this.categoryValue = ''
+    //   this.classificationLabel = ''
+    //   this.supplierValue = ''
+    //   this.inputValue = ''
+    //   this.searchValue = 1
+    // }
     this.getList()
   },
   methods: {

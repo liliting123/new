@@ -178,10 +178,10 @@ export default {
   },
 
   activated() {
-    if (this.$store.state.search_flag === true) {
-      this.selectOption = 1
-      this.searchValue = ''
-    }
+    // if (this.$store.state.search_flag === true) {
+    //   this.selectOption = 1
+    //   this.searchValue = ''
+    // }
     this.getList()
     this.getGroupList()
   },

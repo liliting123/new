@@ -135,14 +135,18 @@
             <el-button
               type="text"
               size="small"
-              v-if="scope.row.order.payment_id === 1 && scope.row.status_id !== 2"
+              v-if="
+                scope.row.order.payment_id === 1 &&
+                  scope.row.status_id === 1 &&
+                  scope.row.refund_return === 0
+              "
               @click="confirmRefund(scope.row.id)"
               >{{ $t('确认已退款') }}</el-button
             >
             <el-button
               type="text"
               size="small"
-              v-if="scope.row.status_id !== 1"
+              v-if="scope.row.status_id === 0"
               @click="refundDialog(scope.row)"
               >{{ $t('退款审核') }}</el-button
             >
@@ -276,13 +280,13 @@ export default {
     this.getList()
   },
   activated() {
-    if (this.$store.state.search_flag === true) {
-      this.orderNoValue = 1
-      this.inputValue = ''
-      this.slectTime = ''
-      this.refundValue = ''
-      this.IsRefundedValu = ''
-    }
+    // if (this.$store.state.search_flag === true) {
+    //   this.orderNoValue = 1
+    //   this.inputValue = ''
+    //   this.slectTime = ''
+    //   this.refundValue = ''
+    //   this.IsRefundedValu = ''
+    // }
     this.getList()
   },
   methods: {
@@ -304,6 +308,7 @@ export default {
     //   })
     // },
     getList() {
+      console.log('getList')
       this.$http
         .get('api/shop/order_refund', {
           params: {

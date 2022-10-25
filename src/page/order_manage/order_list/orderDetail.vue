@@ -86,12 +86,10 @@
           </el-table-column>
         </el-table>
       </div>
-      <div class="bottom-text">
+      <div class="bottom-text" v-if="basic_Info.payment_id === 1">
         <span>{{ $t('总计') }}:€{{ basic_Info.payment_fee }}</span>
         <span
-          >{{ $t('改价') }}:€{{
-            (basic_Info.cash && basic_Info.cash.payment_fee) || 0 - basic_Info.payment_fee
-          }}</span
+          >{{ $t('改价') }}:€{{ basic_Info.cash && basic_Info.cash.payment_fee }}</span
         >
         <span
           >{{ $t('找零') }}:€{{
