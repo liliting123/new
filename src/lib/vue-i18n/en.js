@@ -334,5 +334,6 @@ export default {
   名称: 'Name',
   时间: 'Time',
   状态: 'State',
-  长度需6个字符: '6 characters in length'
+  长度需6个字符: '6 characters in length',
+  没有数据: 'No Data'
 }

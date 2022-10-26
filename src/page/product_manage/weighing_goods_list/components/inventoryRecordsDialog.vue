@@ -48,15 +48,7 @@
         <template slot-scope="scope"> {{ scope.row.new_num }}KG </template>
       </el-table-column>
       <el-table-column :label="$t('操作库存')">
-        <template slot-scope="scope">
-          {{
-            recordSymbol(
-              Number(scope.row.old_num),
-              Number(scope.row.num),
-              Number(scope.row.new_num)
-            ) + scope.row.num
-          }}KG
-        </template>
+        <template slot-scope="scope"> {{ scope.row.num }}KG </template>
       </el-table-column>
       <el-table-column prop="staff.name" :label="$t('操作人')"> </el-table-column>
       <el-table-column prop="updated_at" :label="$t('操作时间')"> </el-table-column>
@@ -119,13 +111,13 @@ export default {
     this.getList()
   },
   methods: {
-    recordSymbol(before, after, news) {
-      if (news === before - after) {
-        return '-'
-      } else {
-        return '+'
-      }
-    },
+    // recordSymbol(before, after, news) {
+    //   if (news === before - after) {
+    //     return '-'
+    //   } else {
+    //     return '+'
+    //   }
+    // },
     // 关闭弹窗
     handleClose() {
       this.inventoryRecords = false

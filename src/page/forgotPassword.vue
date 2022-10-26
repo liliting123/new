@@ -127,7 +127,11 @@ export default {
             })
             .then(res => {
               if (res.ret) {
-                this.emailCode = res.data
+                this.$notify({
+                  title: this.$t('成功'),
+                  message: res.msg,
+                  type: 'success'
+                })
               }
             })
         }

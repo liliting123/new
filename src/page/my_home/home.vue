@@ -65,35 +65,31 @@
         <el-row :gutter="10">
           <el-col :md="12" :sm="12">
             <div class="leftEcharts data_box border-radius" style="background:#fff">
-              <p>{{ $t('商品销量前十') }}</p>
+              <p class="title">{{ $t('商品销量前十') }}</p>
               <div
                 id="echartShop"
                 ref="shopSales"
                 style="width: 100%; height: 100%;text-align:center;top: 0;"
               ></div>
-              <img
-                ref="shopSalesNoDaTaImg"
-                style="display:none;margin: auto;"
-                src="../../assets/images/noData.png"
-                alt=""
-              />
+              <div ref="shopSalesNoDaTaImg" class="noDataShow">
+                <img src="../../assets/images/noData.png" alt="" />
+                <p style="margin-top:10px;color:#666">{{ $t('没有数据') }}</p>
+              </div>
             </div>
           </el-col>
           <el-col :md="12" :sm="12">
             <div class="leftEcharts data_box border-radius" style="background:#fff">
-              <p>{{ $t('会员消费前十') }}</p>
+              <p class="title">{{ $t('会员消费前十') }}</p>
               <div
                 id="echartUser"
                 ref="vipuser"
                 style="width: 100%; height: 100%;text-align:center;top: 0;
             "
               ></div>
-              <img
-                ref="vipUserNoDaTaImg"
-                style="display:none;margin: auto;"
-                src="../../assets/images/noData.png"
-                alt=""
-              />
+              <div ref="vipUserNoDaTaImg" class="noDataShow">
+                <img src="../../assets/images/noData.png" alt="" />
+                <p style="margin-top:10px;color:#666">{{ $t('没有数据') }}</p>
+              </div>
             </div>
           </el-col>
         </el-row>
@@ -493,7 +489,7 @@ export default {
     // height: 470px;
     padding: 15px 10px;
     background-color: $white;
-    p {
+    .title {
       border-bottom: 1px solid #ccc;
       padding-bottom: 10px;
       font-size: 18px;
@@ -514,6 +510,12 @@ export default {
     .leftEcharts {
       height: 450px;
       min-height: 40vh;
+    }
+    .noDataShow {
+      text-align: center;
+      position: relative;
+      top: 50%;
+      transform: translateY(-50%);
     }
   }
 }

@@ -117,10 +117,10 @@ export default {
           message: this.$t('退出登录'),
           type: 'success'
         })
+        this.$router.push('/login')
         this.$store.commit('token/removeToken')
         this.$store.commit('permission/removePermission')
         this.$store.commit('switchPermissionMapFilterStatus', { status: false }) // 重新筛选路由
-        this.$router.push('/login')
 
         localStorage.removeItem('tagInfo2')
         localStorage.removeItem('shopId')
