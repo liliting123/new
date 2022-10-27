@@ -128,15 +128,28 @@
             {{ scope.row.refund_return === 0 ? $t('否') : $t('是') }}
           </template>
         </el-table-column>
+        <el-table-column :label="$t('支付方式')" width="150">
+          <template slot-scope="scope">
+            {{
+              scope.row.order.payment_id === 1
+                ? $t('现金支付')
+                : scope.row.order.payment_id === 2
+                ? $t('余额支付')
+                : scope.row.order.payment_id === 3
+                ? $t('银行卡支付')
+                : ''
+            }}
+          </template>
+        </el-table-column>
         <el-table-column prop="staff.name" :label="$t('操作人')" width="100">
         </el-table-column>
-        <el-table-column prop="address" :label="$t('操作')" width="200">
+        <el-table-column :label="$t('操作')" width="200">
           <template slot-scope="scope">
             <el-button
               type="text"
               size="small"
               v-if="
-                scope.row.order.payment_id === 1 &&
+                (scope.row.order.payment_id === 1 || scope.row.order.payment_id === 3) &&
                   scope.row.status_id === 1 &&
                   scope.row.refund_return === 0
               "
@@ -271,7 +284,8 @@ export default {
       formRules: {
         refund_fee: [
           { required: true, message: this.$t('请输入退款金额'), trigger: 'blur' }
-        ]
+        ],
+        remark: [{ required: true, message: this.$t('请输入退款备注'), trigger: 'blur' }]
       },
       thisRefund: ''
     }

@@ -335,5 +335,10 @@ export default {
   时间: 'Time',
   状态: 'State',
   长度需6个字符: '6 characters in length',
-  没有数据: 'No Data'
+  没有数据: 'No Data',
+  请输入退款金额: 'Please enter the refund amount',
+  请输入退款备注: 'Please enter the refund comment',
+  现金支付: 'cash payment',
+  余额支付: 'Balance payment',
+  银行卡支付: 'Bank card payment'
 }
