@@ -108,10 +108,10 @@
           <template slot-scope="scope">
             {{
               scope.row.status_id === 0
-                ? $t('未退款')
+                ? $t('待审核')
                 : scope.row.status_id === 1
-                ? $t('已退款')
-                : $t('退款拒绝')
+                ? $t('退款成功')
+                : $t('退款失败')
             }}
           </template>
         </el-table-column>
@@ -223,15 +223,15 @@ export default {
       refundSelect: [
         {
           value: 0,
-          label: this.$t('未退款')
+          label: this.$t('待审核')
         },
         {
           value: 1,
-          label: this.$t('已退款')
+          label: this.$t('退款成功')
         },
         {
           value: 2,
-          label: this.$t('退款拒绝')
+          label: this.$t('退款失败')
         }
       ],
       IsRefundedSelect: [

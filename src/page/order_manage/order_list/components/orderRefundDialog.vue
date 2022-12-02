@@ -39,12 +39,13 @@
           <el-input
             type="number"
             :max="scope.row.shopNum"
-            min="1"
+            :min="0"
             size="small"
             v-model="scope.row.num"
             onkeyup="this.value=this.value.replace(/\D|^0/g,'')"
             @input="selectShops()"
           />
+          <!-- onkeyup="this.value=this.value.replace(/[^0-9\]/g,'')" -->
         </template>
       </el-table-column>
       <el-table-column prop="payment_fee" :label="$t('实付')"> </el-table-column>
@@ -145,8 +146,12 @@ export default {
         })
       })
       for (let i = 0; i < this.itemShop.length; i++) {
+        if (Number(this.itemShop[i].num) === 0) {
+          this.$message.error(this.$t('退款商品数量不能为0'))
+          return
+        }
         if (Number(this.itemShop[i].num) > this.itemShop[i].shopNum) {
-          this.$message.error('退款商品数量不能大于下单数量')
+          this.$message.error(this.$t('退款商品数量不能大于下单数量'))
           return
         }
         // 删除shopNum属性
@@ -171,7 +176,7 @@ export default {
           this.visibleRefund = true
         }
       } else {
-        this.$message.error('请选择退款商品')
+        this.$message.error(this.$t('请选择退款商品'))
       }
     }
   }

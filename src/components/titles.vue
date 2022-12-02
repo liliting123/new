@@ -138,10 +138,10 @@ export default {
             }
           })
         }
-        this.active = activePath
-        if (!this.$route.path.includes(activePath)) {
-          this.$router.push(activePath)
-        }
+        // this.active = activePath
+        // if (!this.$route.path.includes(activePath)) {
+        this.$router.push(activePath)
+        // }
 
         this.tabList = tabs.filter(tab => tab.path !== targetPath)
       }

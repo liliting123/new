@@ -109,7 +109,6 @@ export default {
   会员: 'Member',
   散客: 'Casual Visitor',
   已支付: 'Paid',
-  退款成功: 'Refund Successfully',
   现金: 'Cash',
   余额: 'balance',
   银行卡: 'Bank Card',
@@ -131,8 +130,6 @@ export default {
   退款记录: 'Refund Record',
   退款列表: 'Refund List',
   退款状态: 'Refund Status',
-  待审核: 'Pending Review',
-  退款失败: 'Refund Failed',
   退款备注: 'Refund Notes',
   退款审核: 'Refund Review',
   审核状态: 'Approval Status',
@@ -338,7 +335,14 @@ export default {
   没有数据: 'No Data',
   请输入退款金额: 'Please enter the refund amount',
   请输入退款备注: 'Please enter the refund comment',
-  现金支付: 'cash payment',
-  余额支付: 'Balance payment',
-  银行卡支付: 'Bank card payment'
+  现金支付: 'Cash Payment',
+  余额支付: 'Balance Payment',
+  银行卡支付: 'Bank Card Payment',
+  待审核: 'To be Reviewed',
+  退款成功: 'Refund Succeeded',
+  退款失败: 'Refund Unsucceeded',
+  退款商品数量不能大于下单数量:
+    'The quantity of refunded goods cannot be greater than the order quantity',
+  退款商品数量不能为0: 'The quantity of refunded goods cannot be 0',
+  请选择退款商品: 'Please select a refund product'
 }
