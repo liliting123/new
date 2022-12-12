@@ -53,7 +53,6 @@
               range-separator="-"
               :start-placeholder="$t('起始时间')"
               :end-placeholder="$t('结束时间')"
-              :placeholder="$t('选择时间范围')"
               value-format="HH:mm:ss"
             >
             </el-time-picker>
@@ -62,6 +61,31 @@
         <el-col :span="12">
           <el-form-item :label="`${$t('街道')}:`" prop="street">
             <el-input v-model="form.street" :disabled="form.street != ''" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item :label="`${$t('仓库密钥')}:`" prop="wms_app_key">
+            <el-input v-model="form.wms_app_key" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item :label="`${$t('店铺banner')}:`" prop="banner">
+            <el-upload
+              class="upload-demo"
+              :action="$baseUrl.BASE_API_URL + '/api/shop/upload/image'"
+              name="image"
+              :on-success="uploadSuccess1"
+              :show-file-list="false"
+            >
+              <el-button size="small">{{ $t('点击上传') }}</el-button>
+              <span>{{ `（${$t('建议尺寸')} 750*250px）` }}</span>
+            </el-upload>
+            <img
+              style="width: 300px;height: 100px;position: absolute;"
+              :src="form.banner"
+            />
           </el-form-item>
         </el-col>
       </el-row>
@@ -79,21 +103,6 @@
               <span>{{ `（${$t('建议尺寸')} 180*180px）` }}</span>
             </el-upload>
             <img style="width: 100px;height: 100px" :src="form.logo" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item :label="`${$t('店铺banner')}:`" prop="banner">
-            <el-upload
-              class="upload-demo"
-              :action="$baseUrl.BASE_API_URL + '/api/shop/upload/image'"
-              name="image"
-              :on-success="uploadSuccess1"
-              :show-file-list="false"
-            >
-              <el-button size="small">{{ $t('点击上传') }}</el-button>
-              <span>{{ `（${$t('建议尺寸')} 750*250px）` }}</span>
-            </el-upload>
-            <img style="width: 300px;height: 100px" :src="form.banner" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -119,7 +128,8 @@ export default {
         start_time: '',
         end_time: '',
         logo: '',
-        banner: ''
+        banner: '',
+        wms_app_key: '' // 仓库密钥
       },
       time: '',
       shopId: localStorage.getItem('shopId') || 'all'
@@ -138,7 +148,10 @@ export default {
         start_time: [{ required: true, message: this.$t('请选择时间'), trigger: 'blur' }],
         end_time: [{ required: true, message: '请选择时间', trigger: 'blur' }],
         logo: [{ required: true, message: this.$t('请上传图片'), trigger: 'blur' }],
-        banner: [{ required: true, message: this.$t('请上传图片'), trigger: 'blur' }]
+        banner: [{ required: true, message: this.$t('请上传图片'), trigger: 'blur' }],
+        wms_app_key: [
+          { required: true, message: this.$t('请输入仓库密钥'), trigger: 'blur' }
+        ]
       }
     }
   },
@@ -197,9 +210,7 @@ export default {
     uploadSuccess(response, file, fileList) {
       this.form.logo = response.data.path
     },
-    handleExceed(files, fileList) {
-      this.$message.warning(`当前限制上传 1 张图片`)
-    },
+
     // 图片上传成功时触发的钩子
     uploadSuccess1(response, file, fileList) {
       this.form.banner = response.data.path

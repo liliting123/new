@@ -344,5 +344,7 @@ export default {
   退款商品数量不能大于下单数量:
     'The quantity of refunded goods cannot be greater than the order quantity',
   退款商品数量不能为0: 'The quantity of refunded goods cannot be 0',
-  请选择退款商品: 'Please select a refund product'
+  请选择退款商品: 'Please select a refund product',
+  仓库密钥: 'WMS Appkey',
+  请输入仓库密钥: 'Please enter the WMS Appkey'
 }

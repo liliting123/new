@@ -20,17 +20,17 @@ switch (baseUrl) {
   //   }
   //   break
   // // 比利时商城
-  // case 'adminshop.euonline.nl':
-  //   baseApi = {
-  //     BASE_API_URL: 'https://www.euonline.nl/admin',
-  //     IMAGE_URL: 'https://nl-mes-api.eutechne.com',
-  //     EUSHOP_ADDRESS: 'http://wx.myeushop.cn',
-  //     SHOP_ADMIN: 'http://adminshop.euonline.nl'
-  //   }
-  //   break
-  case 'test-kassaadmin.eutechne.com':
+  case '46.244.121.14':
     baseApi = {
-      BASE_API_URL: 'test-kassaapi.eutechne.com',
+      BASE_API_URL: 'http://46.244.121.14:6101',
+      IMAGE_URL: 'https://test-myeushop.eutechne.com',
+      EUSHOP_ADDRESS: 'http://test-wxshop.eutechne.cn',
+      SHOP_ADMIN: 'https://test-myeushop.eutechne.com'
+    }
+    break
+  case '46.244.121.14:6101':
+    baseApi = {
+      BASE_API_URL: 'http://46.244.121.14:6101',
       IMAGE_URL: 'https://test-myeushop.eutechne.com',
       EUSHOP_ADDRESS: 'http://test-wxshop.eutechne.cn',
       SHOP_ADMIN: 'https://test-myeushop.eutechne.com'
