@@ -50,12 +50,13 @@ export default router => {
     if (store.state.token.token) {
       // 判断是否有token
       if (to.path.toLowerCase() === '/login') {
+        console.log(store.state.isPermissionFilter, '11')
         next({ path: '/' })
       } else {
         if (!store.state.isPermissionFilter) {
           addRouterMap(router, next, to)
-
-          next()
+          console.log(store.state.isPermissionFilter)
+          // next()
         } else if (
           (to.path.indexOf(from.path) === 0 || from.path.indexOf(to.path) === 0) &&
           from.path !== '/'

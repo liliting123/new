@@ -111,25 +111,26 @@ export default {
         confirmButtonText: this.$t('确定'),
         cancelButtonText: this.$t('取消'),
         type: 'warning'
-      }).then(() => {
-        this.$notify({
-          title: this.$t('success'),
-          message: this.$t('退出登录'),
-          type: 'success'
-        })
-        this.$router.push('/login')
-        this.$store.commit('token/removeToken')
-        this.$store.commit('permission/removePermission')
-        this.$store.commit('switchPermissionMapFilterStatus', { status: false }) // 重新筛选路由
-
-        localStorage.removeItem('tagInfo2')
-        localStorage.removeItem('shopId')
-        // console.log(localStorage.getItem('tagInfo2'), "localStorage.getItem('tagInfo2')")
-        if (localStorage.getItem('tagInfo2') === null) {
-          // console.log('reload')
-          location.reload()
-        }
       })
+        .then(() => {
+          // this.$router.push('/login')
+          this.$notify({
+            title: this.$t('success'),
+            message: this.$t('退出登录'),
+            type: 'success'
+          })
+        })
+        .then(() => {
+          this.$store.commit('token/removeToken')
+          this.$store.commit('permission/removePermission')
+          this.$store.commit('switchPermissionMapFilterStatus', { status: false }) // 重新筛选路由
+          localStorage.removeItem('tagInfo2')
+          localStorage.removeItem('shopId')
+          this.$router.push('/login')
+          // if (localStorage.getItem('tagInfo2') === null) {
+          //   location.reload()
+          // }
+        })
     },
 
     // 获取下载列表

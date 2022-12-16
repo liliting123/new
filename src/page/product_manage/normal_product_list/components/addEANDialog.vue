@@ -23,7 +23,7 @@
       </el-table-column>
       <el-table-column prop="created_at" :label="$t('添加时间')" width="250">
         <template slot-scope="scope">
-          {{ scope.row.created_at ? scope.row.created_at : dateStrFormat(new Date()) }}
+          {{ scope.row.created_at ? scope.row.created_at : getNowFormatDate() }}
         </template>
       </el-table-column>
       <el-table-column :label="$t('操作')">
@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import moment from 'moment'
+// import moment from 'moment'
 export default {
   name: 'addEANDialog',
   props: {
@@ -100,13 +100,46 @@ export default {
           }
         })
     },
-    // 时间格式化
-    dateStrFormat(strTime) {
-      if (strTime === undefined) {
-        return ''
+
+    getNowFormatDate() {
+      var date = new Date()
+
+      var year = date.getFullYear()
+      var month = date.getMonth() + 1
+      var d = date.getDate()
+      var hour = date.getHours()
+      var minute = date.getMinutes()
+      var second = date.getSeconds()
+
+      if (month < 10) {
+        month = '0' + month
       }
-      return moment(strTime).format('YYYY-MM-DD HH:mm:ss')
+
+      if (d < 10) {
+        d = '0' + d
+      }
+
+      if (hour < 10) {
+        hour = '0' + hour
+      }
+
+      if (minute < 10) {
+        minute = '0' + hour
+      }
+
+      if (second < 10) {
+        second = '0' + second
+      }
+
+      return year + '-' + month + '-' + d + ' ' + hour + ':' + minute + ':' + second
     },
+    // 时间格式化
+    // dateStrFormat(strTime) {
+    //   if (strTime === undefined) {
+    //     return ''
+    //   }
+    //   return moment(strTime).format('YYYY-MM-DD HH:mm:ss')
+    // },
     // 添加EAN
     addEAN() {
       this.eanData.push({

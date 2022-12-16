@@ -175,103 +175,12 @@ export default {
       userGroupIds: '',
       powerIds: '',
       // 权限
-      permissionData: [
-        {
-          id: 1,
-          label: this.$t('后台'),
-          children: [
-            // {
-            //   label: '我的面板',
-            //   children: [
-            //     {
-            //       label: '首页'
-            //     }
-            //   ]
-            // },
-            {
-              label: this.$t('用户管理'),
-              children: [
-                {
-                  id: 2,
-                  label: this.$t('员工列表')
-                },
-                {
-                  id: 3,
-                  label: this.$t('员工组列表')
-                }
-              ]
-            },
-            {
-              label: this.$t('订单管理'),
-              children: [
-                {
-                  id: 4,
-                  label: this.$t('订单列表')
-                },
-                {
-                  id: 5,
-                  label: this.$t('退款列表')
-                }
-              ]
-            },
-            {
-              label: this.$t('商品管理'),
-              children: [
-                {
-                  id: 6,
-                  label: this.$t('普通商品列表')
-                },
-                {
-                  id: 7,
-                  label: this.$t('称重商品列表')
-                },
-                {
-                  id: 8,
-                  label: this.$t('分类列表')
-                },
-                {
-                  id: 9,
-                  label: this.$t('供应商列表')
-                }
-              ]
-            },
-
-            {
-              label: this.$t('配置管理'),
-              children: [
-                {
-                  id: 10,
-                  label: this.$t('店铺设置')
-                },
-                {
-                  id: 11,
-                  label: this.$t('支付设置')
-                }
-              ]
-            }
-          ]
-        }
-      ],
+      permissionData: [],
       // 桌面端权限
-      desktopPermissionData: [
-        {
-          id: 12,
-          label: this.$t('桌面端'),
-          children: [
-            {
-              label: this.$t('收银'),
-              id: 13
-            },
-            {
-              label: this.$t('称重'),
-              id: 14
-            }
-          ]
-        }
-      ],
+      desktopPermissionData: [],
       defaultProps: {
         children: 'children',
-        label: 'label'
+        label: 'name'
       },
       group_permission: [],
       dialogViewPeople: false,
@@ -340,6 +249,9 @@ export default {
           this.dialogFormVisible = true
         } else {
           this.$nextTick(() => {
+            this.permissionData = [res.data.permission_tree[0]]
+            this.desktopPermissionData = [res.data.permission_tree[1]]
+            console.log(this.permissionData)
             this.setCheckedKeys(this.group_permission)
           })
           this.dialogAuthorityVisible = true
@@ -379,13 +291,6 @@ export default {
         .filter(res => {
           return res !== undefined
         })
-      if (!arrs.includes(1)) {
-        arrs.push(1)
-      }
-      if (!arrs.includes(12)) {
-        arrs.push(12)
-      }
-
       this.$json
         .post(`api/shop/staff_group/${this.userGroupIds}/permission`, {
           permission_ids: arrs
