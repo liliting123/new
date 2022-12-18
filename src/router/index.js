@@ -2,11 +2,11 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Interception from './interception.js'
 
-const originalPush = Router.prototype.push
-Router.prototype.push = function push(location, onResolve, onReject) {
-  if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
-  return originalPush.call(this, location).catch(err => err)
-}
+// const originalPush = Router.prototype.push
+// Router.prototype.push = function push(location, onResolve, onReject) {
+//   if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
+//   return originalPush.call(this, location).catch(err => err)
+// }
 
 Vue.use(Router)
 
@@ -56,6 +56,18 @@ const ClassificationList = loadOnDemand(
 )
 // 供应商列表
 const SupplierList = loadOnDemand('product_manage/supplier_list/supplier_list')
+// 折扣促销
+const DiscountPromotion = loadOnDemand('marketing_manage/discount_promotion/index')
+// 折扣促销 - 添加折扣促销
+const AddDiscount = loadOnDemand('marketing_manage/discount_promotion/addDiscount')
+// N件N折
+const NpieceNfold = loadOnDemand('marketing_manage/pieceN_foldN/index')
+// N件N折 - 添加N件N折
+const addPieceN = loadOnDemand('marketing_manage/pieceN_foldN/addPieceN')
+// 组合促销
+const CombinationPromotion = loadOnDemand('marketing_manage/combination_promotion/index')
+// 组合促销 - 添加组合促销
+const addCombination = loadOnDemand('marketing_manage/combination_promotion/addCombination')
 
 export const constantRouterMap = [
   {
@@ -81,7 +93,67 @@ export const constantRouterMap = [
       }
     ]
   },
-
+  // 营销管理
+  {
+    path: '/marketing_manage',
+    component: LayoutSide,
+    children: [
+      {
+        path: 'discount_promotion',
+        name: '折扣促销',
+        subname: 'discount',
+        component: DiscountPromotion
+      },
+      {
+        path: 'discount_promotion/add_discount',
+        name: '添加折扣促销',
+        subname: 'add_discount',
+        component: AddDiscount
+      },
+      {
+        path: 'discount_promotion/edit_discount',
+        name: '编辑折扣促销',
+        subname: 'edit_discount',
+        component: AddDiscount
+      },
+      {
+        path: 'pieceN_foldN',
+        name: 'N件N折',
+        subname: 'n_piece_fold',
+        component: NpieceNfold
+      },
+      {
+        path: 'pieceN_foldN/add_pieceN',
+        name: '添加N件N折',
+        subname: 'add_pieceN',
+        component: addPieceN
+      },
+      {
+        path: 'pieceN_foldN/edit_pieceN',
+        name: '编辑N件N折',
+        subname: 'edit_pieceN',
+        component: addPieceN
+      },
+      {
+        path: 'combination_promotion',
+        name: '组合促销',
+        subname: 'combination',
+        component: CombinationPromotion
+      },
+      {
+        path: 'combination_promotion/add_combination',
+        name: '添加组合促销',
+        subname: 'add_combination',
+        component: addCombination
+      },
+      {
+        path: 'combination_promotion/edit_combination',
+        name: '编辑组合促销',
+        subname: 'edit_combination',
+        component: addCombination
+      }
+    ]
+  },
   {
     path: '*',
     name: 'NotFound',

@@ -66,7 +66,7 @@ export default {
     if (permission.indexOf('web') === -1) {
       permission = permission.concat('web') // 添加首页
     }
-    this.routers(this.structure, permission)
+    // this.routers(this.structure, permission)
   },
   methods: {
     toggle(name) {

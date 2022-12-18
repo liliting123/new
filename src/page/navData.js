@@ -81,6 +81,30 @@ export default [
     iconClassNameBottom: 'el-icon-arrow-up'
   },
   {
+    name: '营销管理',
+    subRoutes: [
+      {
+        name: '折扣促销',
+        path: '/marketing_manage/discount_promotion/index',
+        subname: 'discount'
+      },
+      {
+        name: 'N件N折',
+        path: '/marketing_manage/pieceN_foldN/index',
+        subname: 'n_piece_fold'
+      },
+      {
+        name: '组合促销',
+        path: '/marketing_manage/combination_promotion/index',
+        subname: 'combination'
+      }
+    ],
+    expanded: false,
+    iconClassName: 'el-icon-document',
+    iconClassNameTop: 'el-icon-arrow-down',
+    iconClassNameBottom: 'el-icon-arrow-up'
+  },
+  {
     name: '配置管理',
     subRoutes: [
       {

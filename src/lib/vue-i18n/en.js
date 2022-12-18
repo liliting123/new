@@ -346,5 +346,7 @@ export default {
   退款商品数量不能为0: 'The quantity of refunded goods cannot be 0',
   请选择退款商品: 'Please select a refund product',
   仓库密钥: 'WMS Appkey',
-  请输入仓库密钥: 'Please enter the WMS Appkey'
+  请输入仓库密钥: 'Please enter the WMS Appkey',
+  营销管理: 'Marketing Manage',
+  折扣促销: 'Discount Promotion'
 }
