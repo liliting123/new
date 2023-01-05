@@ -1,12 +1,12 @@
 <template>
   <div>
     <el-dialog
-      title="商品列表"
+      :title="$t('商品列表')"
       :visible="dialogPromontional"
       width="60%"
       @open="getList"
       :before-close="handleClose">
-      <el-input v-model="inputValue" class="promontional-input">
+      <el-input v-model="searchValue" class="promontional-input">
         <el-button slot="append" @click="getList">{{ $t('搜索') }}</el-button>
       </el-input>
       <el-table
@@ -79,8 +79,8 @@
       </el-table>
       <PaginationAndButtons :pageParams="page_params" />
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogPromontional = false">取 消</el-button>
-        <el-button type="primary" @click="addPromotionalProduct">确 定</el-button>
+        <el-button @click="dialogPromontional = false">{{ $t('取消') }}</el-button>
+        <el-button type="primary" @click="addPromotionalProduct">{{ $t('确定') }}</el-button>
       </span>
     </el-dialog>
   </div>
@@ -99,6 +99,9 @@ export default {
     visible: {
       type: Boolean,
       require: true
+    },
+    discountRate: {
+      type: String
     }
   },
   data() {
@@ -106,8 +109,8 @@ export default {
       tableInfo: [],
       isCheckAll: false, // 是否全选标识
       selections: [],
-      selectProductList: [],
-      inputValue: ''
+      selectProductList: [], // 选中的商品规格
+      searchValue: ''
     }
   },
   computed: {
@@ -128,12 +131,25 @@ export default {
       this.$http
         .get('api/shop/goods', {
           params: {
+            keyword: this.searchValue,
             page: this.page_params.page,
             size: this.page_params.size
           }
         })
         .then(res => {
           if (res.ret) {
+            res.data.data.forEach(item => {
+              item.spec.forEach(spec => {
+                if (item.id === spec.goods_id) {
+                  let spec_name = JSON.parse(JSON.stringify(spec.name))
+                  spec.name = item.name
+                  spec.spec_name = spec_name
+                  if (this.discountRate) {
+                    spec.rate = this.discountRate
+                  }
+                }
+              })
+            })
             this.tableInfo = res.data.data
             this.page_params.total = res.data.total
           }
@@ -142,39 +158,26 @@ export default {
     // 添加促销商品
     addPromotionalProduct() {
       this.dialogPromontional = false
-      // 将选择的商品数据传给父组件
-      console.log(this.selectProductList, 'this.selectProductList')
+      this.searchValue = ''
+      // 将选中的商品规格数据传给父组件
       this.$emit('addProductList', this.selectProductList)
+      this.selectProductList = []
     },
     handleClose() {
       this.dialogPromontional = false
+      this.searchValue = ''
     },
     handleSubCheckChange(subInfo) {
-      // 选中的促销商品数据处理
-      // 当已经有选择的商品时的数据处理
-      if (this.selectProductList.length) {
-        let selectProductListCopy = JSON.parse(JSON.stringify(this.selectProductList))
-        selectProductListCopy.forEach(item => {
-          item.spec.filter((spec, index) => {
-            if (this.selections.indexOf(spec.code) === -1) {
-              item.spec.splice(index, 1)
-            }
-          })
+      // 选中的促销商品规格数据处理
+      if (this.selectProductList.length && this.selectProductList.find(val => {
+        return val.code === subInfo.code
+      })) {
+        this.selectProductList = this.selectProductList.filter(val => {
+          return subInfo.code !== val.code
         })
-        this.selectProductList = selectProductListCopy
       } else {
-        // 第一次选择商品时
-        if (this.selections.indexOf(subInfo.code) !== -1) {
-          this.tableInfo.forEach(item => {
-            item.spec.forEach(spec => {
-              if (spec.code === subInfo.code) {
-                console.log(1111)
-              }
-            })
-          })
-        }
+        this.selectProductList.push(subInfo)
       }
-      console.log(this.selectProductList, 'this.selectProductList')
       let specArr = []
       let specIndex
       this.tableInfo.forEach((goodItem, idx) => {
@@ -194,7 +197,6 @@ export default {
       }
     },
     selectChange(selection, row) {
-      this.selectProductList = selection
       if (
         selection &&
         selection.length &&
@@ -208,6 +210,7 @@ export default {
         if (row.spec) {
           row.spec.forEach(val => {
             this.selections.push(val.code)
+            this.selectProductList.push(val)
           })
         }
       } else {
@@ -216,12 +219,14 @@ export default {
           this.selections = this.selections.filter(val => {
             return item.code !== val
           })
+          this.selectProductList = this.selectProductList.filter(spec => {
+            return item.code !== spec.code
+          })
         })
       }
     },
     // 选中所有
     selectAllChange(selection) {
-      this.selectProductList = selection
       // 如果选中的数目与请求到的数目相同就选中子节点，否则就清空选中
       if (selection && selection.length && selection.length === this.tableInfo.length) {
         selection.forEach(val => {
@@ -229,6 +234,7 @@ export default {
         })
       } else {
         this.selections = []
+        this.selectProductList = []
       }
     }
   }

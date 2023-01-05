@@ -111,7 +111,7 @@ export const constantRouterMap = [
         component: AddDiscount
       },
       {
-        path: 'discount_promotion/edit_discount',
+        path: 'discount_promotion/edit_discount/:id',
         name: '编辑折扣促销',
         subname: 'edit_discount',
         component: AddDiscount
@@ -129,7 +129,7 @@ export const constantRouterMap = [
         component: addPieceN
       },
       {
-        path: 'pieceN_foldN/edit_pieceN',
+        path: 'pieceN_foldN/edit_pieceN/:id',
         name: '编辑N件N折',
         subname: 'edit_pieceN',
         component: addPieceN
@@ -147,7 +147,7 @@ export const constantRouterMap = [
         component: addCombination
       },
       {
-        path: 'combination_promotion/edit_combination',
+        path: 'combination_promotion/edit_combination/:id',
         name: '编辑组合促销',
         subname: 'edit_combination',
         component: addCombination

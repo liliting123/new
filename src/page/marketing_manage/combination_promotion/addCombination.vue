@@ -1,21 +1,24 @@
 <template>
   <div>
     <div class="add_discount">
+      <!--      表单-->
       <el-form
         ref="form"
         :model="discountForm"
         :rules="discountRules"
         label-width="90px">
-        <el-form-item label="促销名称:" prop="name">
+        <el-form-item :label="`${$t('促销名称')}:`" prop="name">
           <el-input v-model="discountForm.name"></el-input>
         </el-form-item>
-        <el-form-item label="促销商品:" prop="product">
-          <el-button>请选择促销商品</el-button>
-          <el-button type="primary">批量上传</el-button>
+        <el-form-item :label="`${$t('促销商品')}:`" prop="item">
+          <el-button @click="addProduct">{{$t('请选择促销商品')}}</el-button>
+          <el-button type="primary" @click="batchUpload">{{$t('批量上传')}}</el-button>
         </el-form-item>
         <el-table
           :header-cell-style="{ background: '#F7F7F7' }"
           :data="tableData"
+          v-show="tableData.length"
+          default-expand-all
           border
           style="width: 85%;margin-left: 80px;margin-bottom: 20px">
           <el-table-column width="50" label="#">
@@ -23,71 +26,202 @@
               <span class="table_index">{{ scope.$index + 1 }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="code" :label="$t('商品名称')"></el-table-column>
-          <el-table-column prop="ean" :label="$t('商品编码')"></el-table-column>
-          <el-table-column prop="supplier.name" :label="$t('规格')"></el-table-column>
-          <el-table-column prop="name" :label="$t('价格')"></el-table-column>
-          <el-table-column prop="name" :label="$t('组合数量')">
+          <el-table-column prop="name" :label="$t('商品名称')"></el-table-column>
+          <el-table-column prop="code" :label="$t('商品编码')"></el-table-column>
+          <el-table-column prop="spec_name" :label="$t('规格')"> </el-table-column>
+          <el-table-column :label="$t('价格')">
+            <template slot-scope="scope"> €{{ scope.row.price }} </template>
+          </el-table-column>
+          <el-table-column prop="number" :label="$t('组合数量')">
             <template slot-scope="scope">
-              <el-input style="width: 70%"/>
+              <el-input
+                style="width: 90%"
+                type="number"
+                min="1"
+                v-model="scope.row.number">
+              </el-input>
             </template>
           </el-table-column>
-          <el-table-column prop="name" :label="$t('可售库存')"></el-table-column>
+          <el-table-column prop="num" :label="$t('可售库存')"> </el-table-column>
           <el-table-column :label="$t('操作')">
             <template slot-scope="scope">
-              <el-button type="text" size="small">{{$t('删除')}}</el-button>
+              <el-button
+                type="text"
+                size="small"
+                @click="deleteSpec(scope.$index)">{{$t('删除')}}</el-button>
             </template>
           </el-table-column>
         </el-table>
-        <el-form-item label="组合价格:" prop="name">
-          <el-input v-model="discountForm.name">
+        <el-form-item :label="`${$t('组合价格')}:`" prop="price">
+          <el-input
+            v-model="discountForm.price"
+            type="number"
+            min="0"
+          >
             <i slot="suffix" style="line-height: 40px;margin-left:10px">€</i>
           </el-input>
         </el-form-item>
-        <el-form-item label="开始时间:" prop="starTime">
+        <el-form-item :label="`${$t('开始时间')}:`" prop="start_time">
           <el-date-picker
-            v-model="discountForm.starTime"
-            type="date"
-            placeholder="选择开始时间">
+            v-model="discountForm.start_time"
+            type="datetime"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            :placeholder="$t('请选择开始时间')">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="结束时间:" prop="endTime">
+        <el-form-item :label="`${$t('结束时间')}:`" prop="over_time">
           <el-date-picker
-            v-model="discountForm.endTime"
-            type="date"
-            placeholder="选择结束时间">
+            v-model="discountForm.over_time"
+            type="datetime"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            :placeholder="$t('请选择结束时间')">
           </el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" style="margin-top: 20px">保存</el-button>
+          <el-button
+            type="primary"
+            style="margin-top: 20px"
+            @click="saveDiscountProduct">{{$t('保存')}}</el-button>
         </el-form-item>
       </el-form>
+      <!--      选择促销商品弹窗-->
+      <promotionalProductsDialog
+        :visible.sync="dialogPromontional"
+        @addProductList="addProductList"
+      />
+      <!--      批量上传弹窗-->
+      <batchUploadDialog
+        :visible.sync="dialogBatchUpload"
+      />
     </div>
   </div>
 </template>
 
 <script>
+  import promotionalProductsDialog from '../components/promotionalProductsDialog'
+  import batchUploadDialog from '../components/batchUploadDialog'
   export default {
     name: 'addCombination',
+    components: {
+      promotionalProductsDialog,
+      batchUploadDialog
+    },
     data() {
+      var validateItem = (rule, value, callback) => {
+        if (this.tableData.length === 0) {
+          callback(new Error('请选择促销商品'))
+        } else {
+          callback()
+        }
+      }
       return {
         discountForm: {
           name: '',
-          product: '',
-          starTime: '',
-          endTime: ''
+          start_time: '',
+          over_time: '',
+          price: '',
+          item: []
         },
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }],
+        tableData: [],
+        dialogPromontional: false, // 选择促销商品弹窗
+        dialogBatchUpload: false, // 批量上传弹窗
         discountRules: {
-          name: [{ required: true, message: '请输入促销名称', trigger: 'blur' }],
-          product: [{ required: true, message: '请选择促销商品', trigger: 'blur' }],
-          starTime: [{ required: true, message: '请选择开始时间', trigger: 'blur' }],
-          endTime: [{ required: true, message: '请选择结束时间', trigger: 'blur' }]
+          name: [{ required: true, message: this.$t('请输入促销名称'), trigger: 'blur' }],
+          item: [{ required: true, validator: validateItem, trigger: 'blur' }],
+          start_time: [{ required: true, message: this.$t('请选择开始时间'), trigger: 'blur' }],
+          over_time: [{ required: true, message: this.$t('请选择结束时间'), trigger: 'blur' }],
+          price: [{ required: true, message: this.$t('请输入组合价格'), trigger: 'blur' }],
         }
+      }
+    },
+    created() {
+      if (this.$route.params.id) {
+        this.getDetail()
+      }
+    },
+    methods: {
+      // 保存组合促销
+      saveDiscountProduct() {
+        this.$refs['form'].validate((valid) => {
+          if (valid) {
+            this.discountForm.item = this.tableData.map(table => {
+              return {
+                number: +table.number,
+                goods_id: this.$route.params.id ? table.goods_id : table.id
+              }
+            })
+            this.discountForm.price = +this.discountForm.price
+            let api
+            this.$route.params.id ? api = this.$http.put(`api/shop/discount_group/${this.$route.params.id}`, {
+              ...this.discountForm
+            }) : api = this.$http.post('api/shop/discount_group', {
+              ...this.discountForm
+            })
+            api.then(res => {
+              if (res.ret) {
+                this.$notify({
+                  title: this.$t('success'),
+                  message: res.msg,
+                  type: 'success'
+                })
+                this.$router.push({path: '/marketing_manage/combination_promotion'})
+              }
+            })
+          } else {
+            return false
+          }
+        })
+      },
+      // 获取活动详情
+      getDetail() {
+        this.$http.get(`api/shop/discount_group/${this.$route.params.id}`).then(res => {
+          if (res.ret) {
+            this.tableData = res.data.item
+            this.discountForm = {
+              name: res.data.name,
+              start_time: res.data.start_time,
+              over_time: res.data.over_time,
+              price: res.data.price,
+              item: []
+            }
+          }
+        })
+      },
+      // 删除促销商品
+      deleteSpec(index) {
+        this.tableData.splice(index, 1)
+      },
+      // 批量上传
+      batchUpload() {
+        this.dialogBatchUpload = true
+      },
+      // 选择促销商品
+      addProduct() {
+        this.dialogPromontional = true
+      },
+      // 接受子组件传过来的数据并赋值
+      addProductList(val) {
+        if (this.tableData.length) {
+          val.forEach(item => {
+            this.tableData.push(item)
+          })
+          this.tableData = this.filterProductId(this.tableData)
+        } else {
+          this.tableData = val
+        }
+        this.discountForm.item = []
+        this.tableData.forEach(item => {
+          val.forEach(val => {
+            if (item.id === val.id) {
+              item.goods_id = val.id
+            }
+          })
+        })
+      },
+      // 相同规格id去重
+      filterProductId(arr) {
+        const map = new Map()
+        return arr.filter((item) => !map.has(item.code) && map.set(item.code, 1))
       }
     }
   }

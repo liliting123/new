@@ -20,19 +20,17 @@
                 <el-input v-model="form.name[currentLanguage]"></el-input>
               </el-form-item>
             </el-col>
+<!--            <el-col :span="8" :offset="6">-->
+<!--              <el-form-item :label="`${$t('是否有会员价')}:`" prop="vip_special">-->
+<!--                <el-switch-->
+<!--                  v-model="form.vip_special"-->
+<!--                  :active-value="1"-->
+<!--                  :inactive-value="0"-->
+<!--                >-->
+<!--                </el-switch>-->
+<!--              </el-form-item>-->
+<!--            </el-col>-->
             <el-col :span="8" :offset="6">
-              <el-form-item :label="`${$t('是否有会员价')}:`" prop="vip_special">
-                <el-switch
-                  v-model="form.vip_special"
-                  :active-value="1"
-                  :inactive-value="0"
-                >
-                </el-switch>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row :gutter="20">
-            <el-col :span="6">
               <el-form-item :label="`${$t('商品分类')}:`" prop="category_id">
                 <el-select
                   style="width:100%"
@@ -49,7 +47,9 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="8" :offset="6">
+          </el-row>
+          <el-row :gutter="20">
+            <el-col :span="6">
               <el-form-item :label="`${$t('商品图片')}:`" prop="cover">
                 <el-upload
                   class="upload-demo"
@@ -70,9 +70,7 @@
                 />
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row :gutter="20">
-            <el-col :span="6">
+            <el-col :span="8" :offset="6">
               <el-form-item :label="`${$t('分类标签')}:`" prop="label">
                 <el-select
                   v-model="form.label"
@@ -176,20 +174,20 @@
                 </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column
-              v-if="form.vip_special"
-              prop="vip_price"
-              :label="`*${$t('会员价')}`"
-            >
-              <template slot-scope="scope">
-                <el-form-item
-                  :prop="'spec.' + scope.$index + '.vip_price'"
-                  :rules="rulesSpec.vip_price"
-                >
-                  <el-input size="small" v-model="scope.row.vip_price"></el-input>
-                </el-form-item>
-              </template>
-            </el-table-column>
+<!--            <el-table-column-->
+<!--              v-if="form.vip_special"-->
+<!--              prop="vip_price"-->
+<!--              :label="`*${$t('会员价')}`"-->
+<!--            >-->
+<!--              <template slot-scope="scope">-->
+<!--                <el-form-item-->
+<!--                  :prop="'spec.' + scope.$index + '.vip_price'"-->
+<!--                  :rules="rulesSpec.vip_price"-->
+<!--                >-->
+<!--                  <el-input size="small" v-model="scope.row.vip_price"></el-input>-->
+<!--                </el-form-item>-->
+<!--              </template>-->
+<!--            </el-table-column>-->
             <el-table-column prop="tax_rate" :label="`*${$t('税率')}`" width="180">
               <template slot-scope="scope">
                 <!-- <el-form-item
@@ -596,7 +594,7 @@ export default {
   padding: 20px;
 }
 .shopImg {
-  position: absolute;
+  /*position: absolute;*/
   margin-top: 10px;
 }
 /deep/.table .el-form-item {

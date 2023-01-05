@@ -98,17 +98,17 @@
             </el-col>
           </el-row>
           <el-row :gutter="20">
+<!--            <el-col :span="6">-->
+<!--              <el-form-item :label="`${$t('是否有会员价')}:`" prop="vip_special">-->
+<!--                <el-switch-->
+<!--                  v-model="form.vip_special"-->
+<!--                  :active-value="1"-->
+<!--                  :inactive-value="0"-->
+<!--                >-->
+<!--                </el-switch>-->
+<!--              </el-form-item>-->
+<!--            </el-col>-->
             <el-col :span="6">
-              <el-form-item :label="`${$t('是否有会员价')}:`" prop="vip_special">
-                <el-switch
-                  v-model="form.vip_special"
-                  :active-value="1"
-                  :inactive-value="0"
-                >
-                </el-switch>
-              </el-form-item>
-            </el-col>
-            <el-col :span="6" :offset="6">
               <el-form-item :label="`${$t('商品图片')}:`" prop="cover">
                 <el-upload
                   class="upload-demo"
@@ -130,13 +130,13 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row :gutter="20" v-if="form.vip_special">
-            <el-col :span="6">
-              <el-form-item :label="`${$t('会员价/KG')}:`" prop="vip_price">
-                <el-input v-model="form.vip_price"></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
+<!--          <el-row :gutter="20" v-if="form.vip_special">-->
+<!--            <el-col :span="6">-->
+<!--              <el-form-item :label="`${$t('会员价/KG')}:`" prop="vip_price">-->
+<!--                <el-input v-model="form.vip_price"></el-input>-->
+<!--              </el-form-item>-->
+<!--            </el-col>-->
+<!--          </el-row>-->
         </el-form>
       </div>
       <div class="bottom-btn">
@@ -345,7 +345,7 @@ export default {
   padding: 20px 0 50px 15px;
 }
 .shopImg {
-  position: absolute;
+  /*position: absolute;*/
   margin-top: 10px;
 }
 </style>
