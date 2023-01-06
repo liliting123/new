@@ -6,7 +6,7 @@
         ref="form"
         :model="discountForm"
         :rules="discountRules"
-        label-width="90px">
+        label-width="160px">
         <el-form-item :label="`${$t('促销名称')}:`" prop="name">
           <el-input v-model="discountForm.name"></el-input>
         </el-form-item>
@@ -98,133 +98,133 @@
 </template>
 
 <script>
-  import promotionalProductsDialog from '../components/promotionalProductsDialog'
-  import batchUploadDialog from '../components/batchUploadDialog'
-  export default {
-    name: 'addCombination',
-    components: {
-      promotionalProductsDialog,
-      batchUploadDialog
-    },
-    data() {
-      var validateItem = (rule, value, callback) => {
-        if (this.tableData.length === 0) {
-          callback(new Error('请选择促销商品'))
-        } else {
-          callback()
-        }
-      }
-      return {
-        discountForm: {
-          name: '',
-          start_time: '',
-          over_time: '',
-          price: '',
-          item: []
-        },
-        tableData: [],
-        dialogPromontional: false, // 选择促销商品弹窗
-        dialogBatchUpload: false, // 批量上传弹窗
-        discountRules: {
-          name: [{ required: true, message: this.$t('请输入促销名称'), trigger: 'blur' }],
-          item: [{ required: true, validator: validateItem, trigger: 'blur' }],
-          start_time: [{ required: true, message: this.$t('请选择开始时间'), trigger: 'blur' }],
-          over_time: [{ required: true, message: this.$t('请选择结束时间'), trigger: 'blur' }],
-          price: [{ required: true, message: this.$t('请输入组合价格'), trigger: 'blur' }],
-        }
-      }
-    },
-    created() {
-      if (this.$route.params.id) {
-        this.getDetail()
-      }
-    },
-    methods: {
-      // 保存组合促销
-      saveDiscountProduct() {
-        this.$refs['form'].validate((valid) => {
-          if (valid) {
-            this.discountForm.item = this.tableData.map(table => {
-              return {
-                number: +table.number,
-                goods_id: this.$route.params.id ? table.goods_id : table.id
-              }
-            })
-            this.discountForm.price = +this.discountForm.price
-            let api
-            this.$route.params.id ? api = this.$http.put(`api/shop/discount_group/${this.$route.params.id}`, {
-              ...this.discountForm
-            }) : api = this.$http.post('api/shop/discount_group', {
-              ...this.discountForm
-            })
-            api.then(res => {
-              if (res.ret) {
-                this.$notify({
-                  title: this.$t('success'),
-                  message: res.msg,
-                  type: 'success'
-                })
-                this.$router.push({path: '/marketing_manage/combination_promotion'})
-              }
-            })
-          } else {
-            return false
-          }
-        })
-      },
-      // 获取活动详情
-      getDetail() {
-        this.$http.get(`api/shop/discount_group/${this.$route.params.id}`).then(res => {
-          if (res.ret) {
-            this.tableData = res.data.item
-            this.discountForm = {
-              name: res.data.name,
-              start_time: res.data.start_time,
-              over_time: res.data.over_time,
-              price: res.data.price,
-              item: []
-            }
-          }
-        })
-      },
-      // 删除促销商品
-      deleteSpec(index) {
-        this.tableData.splice(index, 1)
-      },
-      // 批量上传
-      batchUpload() {
-        this.dialogBatchUpload = true
-      },
-      // 选择促销商品
-      addProduct() {
-        this.dialogPromontional = true
-      },
-      // 接受子组件传过来的数据并赋值
-      addProductList(val) {
-        if (this.tableData.length) {
-          val.forEach(item => {
-            this.tableData.push(item)
-          })
-          this.tableData = this.filterProductId(this.tableData)
-        } else {
-          this.tableData = val
-        }
-        this.discountForm.item = []
-        this.tableData.forEach(item => {
-          val.forEach(val => {
-            if (item.id === val.id) {
-              item.goods_id = val.id
-            }
-          })
-        })
-      },
-      // 相同规格id去重
-      filterProductId(arr) {
-        const map = new Map()
-        return arr.filter((item) => !map.has(item.code) && map.set(item.code, 1))
+import promotionalProductsDialog from '../components/promotionalProductsDialog'
+import batchUploadDialog from '../components/batchUploadDialog'
+export default {
+  name: 'addCombination',
+  components: {
+    promotionalProductsDialog,
+    batchUploadDialog
+  },
+  data() {
+    var validateItem = (rule, value, callback) => {
+      if (this.tableData.length === 0) {
+        callback(new Error('请选择促销商品'))
+      } else {
+        callback()
       }
     }
+    return {
+      discountForm: {
+        name: '',
+        start_time: '',
+        over_time: '',
+        price: '',
+        item: []
+      },
+      tableData: [],
+      dialogPromontional: false, // 选择促销商品弹窗
+      dialogBatchUpload: false, // 批量上传弹窗
+      discountRules: {
+        name: [{ required: true, message: this.$t('请输入促销名称'), trigger: 'blur' }],
+        item: [{ required: true, validator: validateItem, trigger: 'blur' }],
+        start_time: [{ required: true, message: this.$t('请选择开始时间'), trigger: 'blur' }],
+        over_time: [{ required: true, message: this.$t('请选择结束时间'), trigger: 'blur' }],
+        price: [{ required: true, message: this.$t('请输入组合价格'), trigger: 'blur' }],
+      }
+    }
+  },
+  created() {
+    if (this.$route.params.id) {
+      this.getDetail()
+    }
+  },
+  methods: {
+    // 保存组合促销
+    saveDiscountProduct() {
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          this.discountForm.item = this.tableData.map(table => {
+            return {
+              number: +table.number,
+              goods_id: this.$route.params.id ? table.goods_id : table.id
+            }
+          })
+          this.discountForm.price = +this.discountForm.price
+          let api
+          this.$route.params.id ? api = this.$http.put(`api/shop/discount_group/${this.$route.params.id}`, {
+            ...this.discountForm
+          }) : api = this.$http.post('api/shop/discount_group', {
+            ...this.discountForm
+          })
+          api.then(res => {
+            if (res.ret) {
+              this.$notify({
+                title: this.$t('success'),
+                message: res.msg,
+                type: 'success'
+              })
+              this.$router.push({path: '/marketing_manage/combination_promotion'})
+            }
+          })
+        } else {
+          return false
+        }
+      })
+    },
+    // 获取活动详情
+    getDetail() {
+      this.$http.get(`api/shop/discount_group/${this.$route.params.id}`).then(res => {
+        if (res.ret) {
+          this.tableData = res.data.item
+          this.discountForm = {
+            name: res.data.name,
+            start_time: res.data.start_time,
+            over_time: res.data.over_time,
+            price: res.data.price,
+            item: []
+          }
+        }
+      })
+    },
+    // 删除促销商品
+    deleteSpec(index) {
+      this.tableData.splice(index, 1)
+    },
+    // 批量上传
+    batchUpload() {
+      this.dialogBatchUpload = true
+    },
+    // 选择促销商品
+    addProduct() {
+      this.dialogPromontional = true
+    },
+    // 接受子组件传过来的数据并赋值
+    addProductList(val) {
+      if (this.tableData.length) {
+        val.forEach(item => {
+          this.tableData.push(item)
+        })
+        this.tableData = this.filterProductId(this.tableData)
+      } else {
+        this.tableData = val
+      }
+      this.discountForm.item = []
+      this.tableData.forEach(item => {
+        val.forEach(val => {
+          if (item.id === val.id) {
+            item.goods_id = val.id
+          }
+        })
+      })
+    },
+    // 相同规格id去重
+    filterProductId(arr) {
+      const map = new Map()
+      return arr.filter((item) => !map.has(item.code) && map.set(item.code, 1))
+    }
   }
+}
 </script>
 
 <style lang="scss" scoped>

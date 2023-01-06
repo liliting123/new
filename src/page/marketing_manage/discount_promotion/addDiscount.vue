@@ -6,7 +6,7 @@
         ref="form"
         :model="discountForm"
         :rules="discountRules"
-        label-width="90px">
+        label-width="160px">
         <el-form-item :label="`${$t('促销名称')}:`" prop="name">
           <el-input v-model="discountForm.name"></el-input>
         </el-form-item>

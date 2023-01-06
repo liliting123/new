@@ -29,38 +29,38 @@
 </template>
 
 <script>
-  export default {
-    name: 'batchUploadDialog',
-    props: {
-      visible: {
-        type: Boolean,
-        require: true
-      }
-    },
-    data() {
-      return {
-      }
-    },
-    computed: {
-      dialogBatchUpload: {
-        get() {
-          return this.visible
-        },
-        set(val) {
-          this.$emit('update:visible', val)
-        }
-      }
-    },
-    methods: {
-      handleClose() {
-        this.dialogBatchUpload = false
+export default {
+  name: 'batchUploadDialog',
+  props: {
+    visible: {
+      type: Boolean,
+      require: true
+    }
+  },
+  data() {
+    return {
+    }
+  },
+  computed: {
+    dialogBatchUpload: {
+      get() {
+        return this.visible
       },
-      // 下载模板
-      downloadTemplate() {
-        // window.open('/static/goodsList.zip');
+      set(val) {
+        this.$emit('update:visible', val)
       }
     }
+  },
+  methods: {
+    handleClose() {
+      this.dialogBatchUpload = false
+    },
+    // 下载模板
+    downloadTemplate() {
+      // window.open('/static/goodsList.zip');
+    }
   }
+}
 </script>
 
 <style scoped>

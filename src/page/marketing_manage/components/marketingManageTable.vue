@@ -78,7 +78,7 @@
               type="text"
               size="small"
               @click="invalid(scope.row.id)"
-              v-if="scope.row.status_id != 4">{{$t('失效')}}</el-button>
+              v-if="scope.row.status_id === 1 || scope.row.status_id === 2">{{$t('失效')}}</el-button>
             <el-button type="text" size="small">{{$t('导出数据')}}</el-button>
           </template>
         </el-table-column>
@@ -87,56 +87,56 @@
 </template>
 
 <script>
-  export default {
-    name: 'marketingManageTable',
-    props: {
-      tableType: {
-        type: String
-      },
-      data: {
-        type: Array
-      }
+export default {
+  name: 'marketingManageTable',
+  props: {
+    tableType: {
+      type: String
     },
-    data() {
-      return {
-      }
-    },
-    methods: {
-      invalid(id) {
-        this.$confirm(this.$t('您确认要失效此活动吗？'), this.$t('提示'), {
-          confirmButtonText: this.$t('确定'),
-          cancelButtonText: this.$t('取消'),
-          type: 'warning'
-        }).then(() => {
-          let api
-          if (this.tableType === 'discount') {
-            api = `api/shop/discount_promotion/${id}`
-          } else if (this.tableType === 'pieceN') {
-            api = `api/shop/discount_plural/${id}`
-          } else {
-            api = `api/shop/discount_group/${id}`
-          }
-          this.$http.delete(api).then(res => {
-            this.$notify({
-              title: this.$t('success'),
-              message: res.msg,
-              type: 'success'
-            })
-          })
-          this.$emit('getList')
-        }).catch(() => {})
-      },
-      editActivity(tableType, id) {
-        if (tableType === 'discount') {
-          this.$router.push(`discount_promotion/edit_discount/${id}`)
-        } else if (tableType === 'pieceN') {
-          this.$router.push(`pieceN_foldN/edit_pieceN/${id}`)
+    data: {
+      type: Array
+    }
+  },
+  data() {
+    return {
+    }
+  },
+  methods: {
+    invalid(id) {
+      this.$confirm(this.$t('您确认要失效此活动吗？'), this.$t('提示'), {
+        confirmButtonText: this.$t('确定'),
+        cancelButtonText: this.$t('取消'),
+        type: 'warning'
+      }).then(() => {
+        let api
+        if (this.tableType === 'discount') {
+          api = `api/shop/discount_promotion/${id}`
+        } else if (this.tableType === 'pieceN') {
+          api = `api/shop/discount_plural/${id}`
         } else {
-          this.$router.push(`combination_promotion/edit_combination/${id}`)
+          api = `api/shop/discount_group/${id}`
         }
+        this.$http.delete(api).then(res => {
+          this.$notify({
+            title: this.$t('success'),
+            message: res.msg,
+            type: 'success'
+          })
+        })
+        this.$emit('getList')
+      }).catch(() => {})
+    },
+    editActivity(tableType, id) {
+      if (tableType === 'discount') {
+        this.$router.push(`discount_promotion/edit_discount/${id}`)
+      } else if (tableType === 'pieceN') {
+        this.$router.push(`pieceN_foldN/edit_pieceN/${id}`)
+      } else {
+        this.$router.push(`combination_promotion/edit_combination/${id}`)
       }
     }
   }
+}
 </script>
 
 <style scoped>
