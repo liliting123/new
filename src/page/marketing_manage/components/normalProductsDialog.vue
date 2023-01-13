@@ -1,8 +1,8 @@
 <template>
   <div>
     <el-dialog
-      :title="$t('商品列表')"
-      :visible="dialogPromontional"
+      :title="$t('普通商品列表')"
+      :visible="dialogNormalPromontional"
       width="60%"
       @open="getList"
       :before-close="handleClose">
@@ -79,7 +79,7 @@
       </el-table>
       <PaginationAndButtons :pageParams="page_params" />
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogPromontional = false">{{ $t('取消') }}</el-button>
+        <el-button @click="dialogNormalPromontional = false">{{ $t('取消') }}</el-button>
         <el-button type="primary" @click="addPromotionalProduct">{{ $t('确定') }}</el-button>
       </span>
     </el-dialog>
@@ -90,7 +90,7 @@
 import PaginationAndButtons from '@/components/pagination_and_buttons.vue'
 import pagination from '@/mixin/pagination'
 export default {
-  name: 'promotionalProductsDialog',
+  name: 'normalProductsDialog',
   components: {
     PaginationAndButtons
   },
@@ -114,7 +114,7 @@ export default {
     }
   },
   computed: {
-    dialogPromontional: {
+    dialogNormalPromontional: {
       get() {
         return this.visible
       },
@@ -124,7 +124,7 @@ export default {
     }
   },
   methods: {
-    // 获取商品列表
+    // 获取普通商品列表
     getList() {
       this.tableLoading = true
       this.selections = []
@@ -140,13 +140,16 @@ export default {
           if (res.ret) {
             res.data.data.forEach(item => {
               item.spec.forEach(spec => {
+                spec.goods_type = 'goods_spec_type'
                 if (item.id === spec.goods_id) {
-                  let spec_name = JSON.parse(JSON.stringify(spec.name))
+                  let specName = JSON.parse(JSON.stringify(spec.name))
                   spec.name = item.name
-                  spec.spec_name = spec_name
+                  spec.spec_name = specName
                   if (this.discountRate) {
                     spec.rate = this.discountRate
                   }
+                  spec.combination_price = 0
+                  spec.number = 0
                 }
               })
             })
@@ -157,14 +160,14 @@ export default {
     },
     // 添加促销商品
     addPromotionalProduct() {
-      this.dialogPromontional = false
+      this.dialogNormalPromontional = false
       this.searchValue = ''
       // 将选中的商品规格数据传给父组件
       this.$emit('addProductList', this.selectProductList)
       this.selectProductList = []
     },
     handleClose() {
-      this.dialogPromontional = false
+      this.dialogNormalPromontional = false
       this.searchValue = ''
     },
     handleSubCheckChange(subInfo) {

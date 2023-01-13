@@ -384,5 +384,14 @@ export default {
   未开始: 'Unstarted',
   已开始: 'Processing',
   已结束: 'Ended',
-  已失效: 'Expired'
+  已失效: 'Expired',
+  请输入促销名称: 'Please enter the promotion name',
+  请选择开始时间: 'Please select start time',
+  请选择结束时间: 'Please select end time',
+  件: '-piece ',
+  折: '-fold',
+  商品类型: 'Product Type',
+  普通商品: 'Product',
+  称重商品: 'Weighting Product',
+  组合单价: 'Unit Price'
 }

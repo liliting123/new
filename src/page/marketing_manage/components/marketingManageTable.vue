@@ -18,16 +18,30 @@
               </el-table-column>
               <el-table-column prop="name" :label="$t('商品名称')"></el-table-column>
               <el-table-column prop="code" :label="$t('商品编码')"></el-table-column>
-              <el-table-column prop="spec_name" :label="$t('规格')"></el-table-column>
-              <el-table-column prop="price" :label="$t('价格')"></el-table-column>
-              <el-table-column v-if="tableType === 'pieceN'" prop="name" :label="$t('N件N折')">
+              <el-table-column :label="$t('价格')">
                 <template slot-scope="scope">
-                  {{scope.row.number+'件'+scope.row.rate/10+'折'}}
+                  <span v-if="scope.row.goods_type && scope.row.goods_type === 'weigh_goods_type'">€ {{ scope.row.price }}/KG</span>
+                  <span v-else>€ {{ scope.row.price }}</span>
                 </template>
               </el-table-column>
-              <el-table-column v-if="tableType != 'combination'" prop="discount_price" :label="$t('促销价格')"></el-table-column>
+              <el-table-column v-if="tableType === 'pieceN'" prop="name" :label="$t('N件N折')">
+                <template slot-scope="scope">
+                  {{scope.row.number+$t('件') + scope.row.rate/10+$t('折')}}
+                </template>
+              </el-table-column>
+              <el-table-column v-if="tableType != 'combination'" :label="$t('促销价格')">
+                <template slot-scope="scope">
+                  <span v-if="scope.row.goods_type && scope.row.goods_type === 'weigh_goods_type'">€ {{ scope.row.discount_price }}/KG</span>
+                  <span v-else>€ {{ scope.row.discount_price }}</span>
+                </template>
+              </el-table-column>
               <el-table-column v-if="tableType === 'combination'" prop="number" :label="$t('组合数量')"></el-table-column>
-              <el-table-column prop="num" :label="$t('可售库存')"></el-table-column>
+              <el-table-column :label="$t('可售库存')">
+                <template slot-scope="scope">
+                  <span v-if="scope.row.goods_type && scope.row.goods_type === 'weigh_goods_type'">{{ scope.row.num }}/KG</span>
+                  <span v-else>{{ scope.row.num }}</span>
+                </template>
+              </el-table-column>
             </el-table>
           </template>
         </el-table-column>
@@ -79,7 +93,10 @@
               size="small"
               @click="invalid(scope.row.id)"
               v-if="scope.row.status_id === 1 || scope.row.status_id === 2">{{$t('失效')}}</el-button>
-            <el-button type="text" size="small">{{$t('导出数据')}}</el-button>
+            <el-button
+              type="text"
+              size="small"
+              @click="exportProduct(scope.row.id)">{{$t('导出数据')}}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -134,6 +151,26 @@ export default {
       } else {
         this.$router.push(`combination_promotion/edit_combination/${id}`)
       }
+    },
+    exportProduct(id) {
+      let api
+      if (this.tableType === 'discount') {
+        api = `api/shop/discount_promotion/export/${id}`
+      } else if (this.tableType === 'pieceN') {
+        api = `api/shop/discount_plural/export/${id}`
+      } else {
+        api = `api/shop/discount_group/export/${id}`
+      }
+      this.$http.post(api).then(res => {
+        if (res.ret) {
+          this.$notify({
+            title: this.$t('success'),
+            message: res.msg,
+            type: 'success'
+          })
+          window.open(res.data)
+        }
+      })
     }
   }
 }

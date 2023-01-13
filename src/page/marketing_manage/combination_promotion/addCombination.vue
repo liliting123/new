@@ -38,7 +38,19 @@
                 style="width: 90%"
                 type="number"
                 min="1"
-                v-model="scope.row.number">
+                v-model="scope.row.number"
+                @input="calculatePrice(scope.row.combination_price, scope.row.number)">
+              </el-input>
+            </template>
+          </el-table-column>
+          <el-table-column prop="combination_price" :label="$t('组合单价')">
+            <template slot-scope="scope">
+              <el-input
+                style="width: 90%"
+                type="number"
+                min="0"
+                v-model="scope.row.combination_price"
+                @input="calculatePrice(scope.row.combination_price, scope.row.number)">
               </el-input>
             </template>
           </el-table-column>
@@ -52,11 +64,10 @@
             </template>
           </el-table-column>
         </el-table>
-        <el-form-item :label="`${$t('组合价格')}:`" prop="price">
+        <el-form-item :label="`${$t('组合价格')}:`">
           <el-input
+            disabled
             v-model="discountForm.price"
-            type="number"
-            min="0"
           >
             <i slot="suffix" style="line-height: 40px;margin-left:10px">€</i>
           </el-input>
@@ -85,25 +96,27 @@
         </el-form-item>
       </el-form>
       <!--      选择促销商品弹窗-->
-      <promotionalProductsDialog
-        :visible.sync="dialogPromontional"
+      <normalProductsDialog
+        :visible.sync="dialogNormalPromontional"
         @addProductList="addProductList"
       />
       <!--      批量上传弹窗-->
       <batchUploadDialog
         :visible.sync="dialogBatchUpload"
+        tableType="combination"
+        @getData="addProductList"
       />
     </div>
   </div>
 </template>
 
 <script>
-import promotionalProductsDialog from '../components/promotionalProductsDialog'
+import normalProductsDialog from '../components/normalProductsDialog'
 import batchUploadDialog from '../components/batchUploadDialog'
 export default {
   name: 'addCombination',
   components: {
-    promotionalProductsDialog,
+    normalProductsDialog,
     batchUploadDialog
   },
   data() {
@@ -123,14 +136,13 @@ export default {
         item: []
       },
       tableData: [],
-      dialogPromontional: false, // 选择促销商品弹窗
+      dialogNormalPromontional: false, // 选择促销商品弹窗
       dialogBatchUpload: false, // 批量上传弹窗
       discountRules: {
         name: [{ required: true, message: this.$t('请输入促销名称'), trigger: 'blur' }],
         item: [{ required: true, validator: validateItem, trigger: 'blur' }],
         start_time: [{ required: true, message: this.$t('请选择开始时间'), trigger: 'blur' }],
-        over_time: [{ required: true, message: this.$t('请选择结束时间'), trigger: 'blur' }],
-        price: [{ required: true, message: this.$t('请输入组合价格'), trigger: 'blur' }],
+        over_time: [{ required: true, message: this.$t('请选择结束时间'), trigger: 'blur' }]
       }
     }
   },
@@ -140,6 +152,13 @@ export default {
     }
   },
   methods: {
+    calculatePrice(combinationPrice, number) {
+      if (combinationPrice && number) {
+        this.discountForm.price = this.tableData.reduce((total, item) => {
+          return total + item.combination_price * item.number
+        }, 0).toFixed(2)
+      }
+    },
     // 保存组合促销
     saveDiscountProduct() {
       this.$refs['form'].validate((valid) => {
@@ -147,10 +166,11 @@ export default {
           this.discountForm.item = this.tableData.map(table => {
             return {
               number: +table.number,
-              goods_id: this.$route.params.id ? table.goods_id : table.id
+              goods_id: this.$route.params.id ? table.goods_id : table.id,
+              combination_price: table.combination_price
             }
           })
-          this.discountForm.price = +this.discountForm.price
+          return
           let api
           this.$route.params.id ? api = this.$http.put(`api/shop/discount_group/${this.$route.params.id}`, {
             ...this.discountForm
@@ -197,7 +217,7 @@ export default {
     },
     // 选择促销商品
     addProduct() {
-      this.dialogPromontional = true
+      this.dialogNormalPromontional = true
     },
     // 接受子组件传过来的数据并赋值
     addProductList(val) {

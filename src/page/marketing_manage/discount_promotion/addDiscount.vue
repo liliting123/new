@@ -29,9 +29,11 @@
           </el-table-column>
           <el-table-column prop="name" :label="$t('商品名称')"></el-table-column>
           <el-table-column prop="code" :label="$t('商品编码')"></el-table-column>
-          <el-table-column prop="spec_name" :label="$t('规格')"> </el-table-column>
           <el-table-column :label="$t('价格')">
-            <template slot-scope="scope"> €{{ scope.row.price }} </template>
+            <template slot-scope="scope">
+              <span v-if="scope.row.goods_type === 'goods_spec_type'">€ {{ scope.row.price }}</span>
+              <span v-else>€ {{ scope.row.price }}/KG</span>
+            </template>
           </el-table-column>
           <el-table-column prop="rate" :label="$t('折扣率')">
             <template slot-scope="scope">
@@ -50,12 +52,19 @@
               <el-input
                 style="width: 90%"
                 v-model="scope.row.discount_price"
+                type="number"
+                :min="0"
                 @input="calculateDiscountRate(scope.row.discount_price, scope.row.price, scope.row.id)">
                 <i slot="prefix" style="line-height: 40px;margin-left:10px">€</i>
               </el-input>
             </template>
           </el-table-column>
-          <el-table-column prop="num" :label="$t('可售库存')"> </el-table-column>
+          <el-table-column prop="num" :label="$t('可售库存')">
+            <template slot-scope="scope">
+              <span v-if="scope.row.goods_type && scope.row.goods_type === 'weigh_goods_type'">{{ scope.row.num }}/KG</span>
+              <span v-else>{{ scope.row.num }}</span>
+            </template>
+          </el-table-column>
           <el-table-column :label="$t('操作')">
             <template slot-scope="scope">
               <el-button
@@ -98,13 +107,16 @@
           label-position="right"
           label-width="150px"
           style="margin-left: 10%">
+          <el-form-item :label="`${$t('商品类型')}:`">
+            <el-select v-model="productType">
+              <el-option :value="1" :label="$t('普通商品')"></el-option>
+              <el-option :value="2" :label="$t('称重商品')"></el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item :label="`${$t('折扣类型')}:`">
             <el-select v-model="rateType">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"/>
+              <el-option :value="1" :label="$t('统一折扣')"></el-option>
+              <el-option :value="2" :label="$t('单个折扣')"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item :label="`${$t('折扣率')}:`" v-show="rateType == 1">
@@ -121,28 +133,40 @@
           <el-button type="primary" @click="selectDiscount">{{$t('确定')}}</el-button>
         </span>
       </el-dialog>
-<!--      促销商品弹窗-->
-      <promotionalProductsDialog
-        :visible.sync="dialogPromontional"
+<!--      添加普通商品弹窗-->
+      <normalProductsDialog
+        :visible.sync="dialogNormalPromontional"
         @addProductList="addProductList"
         :discountRate="discountRate"
+        :productType="productType"
+      />
+<!--      添加称重商品弹窗-->
+      <weightProductsDialog
+        :visible.sync="dialogWeightPromontional"
+        @addProductList="addProductList"
+        :discountRate="discountRate"
+        :productType="productType"
       />
 <!--      批量上传弹窗-->
       <batchUploadDialog
         :visible.sync="dialogBatchUpload"
+        tableType="discount"
+        @getData="addProductList"
       />
     </div>
   </div>
 </template>
 
 <script>
-import promotionalProductsDialog from '../components/promotionalProductsDialog'
+import normalProductsDialog from '../components/normalProductsDialog'
+import weightProductsDialog from '../components/weightProductsDialog'
 import batchUploadDialog from '../components/batchUploadDialog'
 export default {
   name: 'addDiscount',
   components: {
-    promotionalProductsDialog,
-    batchUploadDialog
+    normalProductsDialog,
+    batchUploadDialog,
+    weightProductsDialog
   },
   data() {
     var validateItem = (rule, value, callback) => {
@@ -161,18 +185,12 @@ export default {
       },
       tableData: [],
       dialogDiscountType: false, // 选择折扣类型弹窗
-      dialogPromontional: false, // 选择促销商品弹窗
+      dialogNormalPromontional: false, // 选择普通商品弹窗
+      dialogWeightPromontional: false, // 选择称重商品弹窗
       dialogBatchUpload: false, // 批量上传弹窗
       discountRate: '', // 折扣率
-      options: [{
-        value: 1,
-        label: this.$t('统一折扣')
-      },
-        {
-          value: 2,
-          label: this.$t('单个折扣')
-        }],
       rateType: 1, // 折扣类型
+      productType: 1, // 商品类型
       discountRules: {
         name: [{ required: true, message: this.$t('请输入促销名称'), trigger: 'blur' }],
         item: [{ required: true, validator: validateItem, trigger: 'blur' }],
@@ -218,7 +236,7 @@ export default {
         if (valid) {
           this.discountForm.item = this.tableData.map(table => {
             return {
-              goods_type: 'goods_spec_type',
+              goods_type: table.goods_type,
               goods_id: table.goods_id,
               rate: table.rate ? +table.rate : ''
             }
@@ -275,12 +293,11 @@ export default {
       if (this.rateType === 1 && this.discountRate === '') {
         this.$message.error(this.$t('请输入折扣率'))
         return
-      }
-      if (this.rateType === 2) {
+      } else if (this.rateType === 2) {
         this.discountRate = ''
       }
       this.dialogDiscountType = false
-      this.dialogPromontional = true
+      this.productType === 1 ? this.dialogNormalPromontional = true : this.dialogWeightPromontional = true
     },
     // 接受子组件传过来的数据并赋值
     addProductList(val) {
@@ -288,7 +305,7 @@ export default {
         val.forEach(item => {
           this.tableData.push(item)
         })
-        this.tableData = this.filterProductId(this.tableData)
+        this.tableData = this.productType === 1 ? this.filterProductCode(this.tableData) : this.filterProductId(this.tableData)
       } else {
         this.tableData = val
       }
@@ -311,10 +328,15 @@ export default {
       this.dialogDiscountType = false
       this.discountRate = ''
     },
-    // 相同规格id去重
-    filterProductId(arr) {
+    // 普通商品规格id去重
+    filterProductCode(arr) {
       const map = new Map()
       return arr.filter((item) => !map.has(item.code) && map.set(item.code, 1))
+    },
+    // 称重商品id去重
+    filterProductId(arr) {
+      const map = new Map()
+      return arr.filter((item) => !map.has(item.id) && map.set(item.id, 1))
     }
   }
 }

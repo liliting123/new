@@ -37,6 +37,8 @@
               <el-input
                 style="width: 90%"
                 v-model="scope.row.number"
+                type="number"
+                :min="0"
                 @input="calculateNpiece(scope.row.number, scope.row.price, scope.row.id, scope.row.discount_price, scope.row.rate)">
               </el-input>
             </template>
@@ -46,6 +48,8 @@
               <el-input
                 style="width: 90%"
                 v-model="scope.row.rate"
+                type="number"
+                :min="0"
                 @input="calculateNFold(scope.row.number, scope.row.price, scope.row.id, scope.row.discount_price, scope.row.rate)">
                 <i slot="suffix" style="line-height: 40px;margin-left:10px">%</i>
               </el-input>
@@ -95,25 +99,27 @@
         </el-form-item>
       </el-form>
 <!--      选择促销商品弹窗-->
-      <promotionalProductsDialog
-        :visible.sync="dialogPromontional"
+      <normalProductsDialog
+        :visible.sync="dialogNormalPromontional"
         @addProductList="addProductList"
       />
       <!--      批量上传弹窗-->
       <batchUploadDialog
         :visible.sync="dialogBatchUpload"
+        tableType="pieceN"
+        @getData="addProductList"
       />
     </div>
   </div>
 </template>
 
 <script>
-import promotionalProductsDialog from '../components/promotionalProductsDialog'
+import normalProductsDialog from '../components/normalProductsDialog'
 import batchUploadDialog from '../components/batchUploadDialog'
 export default {
   name: 'addPieceN',
   components: {
-    promotionalProductsDialog,
+    normalProductsDialog,
     batchUploadDialog
   },
   data() {
@@ -132,7 +138,7 @@ export default {
         item: []
       },
       tableData: [],
-      dialogPromontional: false, // 选择促销商品弹窗
+      dialogNormalPromontional: false, // 选择促销商品弹窗
       dialogBatchUpload: false, // 批量上传弹窗
       discountRules: {
         name: [{ required: true, message: this.$t('请输入促销名称'), trigger: 'blur' }],
@@ -239,7 +245,7 @@ export default {
     },
     // 选择促销商品
     addProduct() {
-      this.dialogPromontional = true
+      this.dialogNormalPromontional = true
     },
     // 接受子组件传过来的数据并赋值
     addProductList(val) {
