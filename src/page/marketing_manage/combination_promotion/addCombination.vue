@@ -37,9 +37,9 @@
               <el-input
                 style="width: 90%"
                 type="number"
-                min="1"
+                min="0"
                 v-model="scope.row.number"
-                @input="calculatePrice(scope.row.combination_price, scope.row.number)">
+                @input="calculatePrice(scope.row.price, scope.row.combination_price, scope.row.number)">
               </el-input>
             </template>
           </el-table-column>
@@ -50,7 +50,7 @@
                 type="number"
                 min="0"
                 v-model="scope.row.combination_price"
-                @input="calculatePrice(scope.row.combination_price, scope.row.number)">
+                @input="calculatePrice(scope.row.price, scope.row.combination_price, scope.row.number)">
               </el-input>
             </template>
           </el-table-column>
@@ -152,8 +152,18 @@ export default {
     }
   },
   methods: {
-    calculatePrice(combinationPrice, number) {
+    calculatePrice(price, combinationPrice, number) {
       if (combinationPrice && number) {
+        if (combinationPrice > price) {
+          this.$notify({
+            title: this.$t('error'),
+            message: '组合单价不能大于原价！',
+            type: 'error'
+          })
+          combinationPrice = 0
+          this.discountForm.price = 0
+          return
+        }
         this.discountForm.price = this.tableData.reduce((total, item) => {
           return total + item.combination_price * item.number
         }, 0).toFixed(2)
@@ -170,8 +180,7 @@ export default {
               combination_price: table.combination_price
             }
           })
-          return
-          let api
+          let api = ''
           this.$route.params.id ? api = this.$http.put(`api/shop/discount_group/${this.$route.params.id}`, {
             ...this.discountForm
           }) : api = this.$http.post('api/shop/discount_group', {
