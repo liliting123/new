@@ -39,18 +39,18 @@
                 type="number"
                 min="0"
                 v-model="scope.row.number"
-                @input="calculatePrice(scope.row.price, scope.row.combination_price, scope.row.number)">
+                @input="calculatePrice(scope.row.price, scope.row.discount_price, scope.row.number)">
               </el-input>
             </template>
           </el-table-column>
-          <el-table-column prop="combination_price" :label="$t('组合单价')">
+          <el-table-column prop="discount_price" :label="$t('组合单价')">
             <template slot-scope="scope">
               <el-input
                 style="width: 90%"
                 type="number"
                 min="0"
-                v-model="scope.row.combination_price"
-                @input="calculatePrice(scope.row.price, scope.row.combination_price, scope.row.number)">
+                v-model="scope.row.discount_price"
+                @input="calculatePrice(scope.row.price, scope.row.discount_price, scope.row.number)">
               </el-input>
             </template>
           </el-table-column>
@@ -152,20 +152,20 @@ export default {
     }
   },
   methods: {
-    calculatePrice(price, combinationPrice, number) {
-      if (combinationPrice && number) {
-        if (combinationPrice > price) {
+    calculatePrice(price, discountPrice, number) {
+      if (discountPrice && number) {
+        if (discountPrice > price) {
           this.$notify({
             title: this.$t('error'),
             message: '组合单价不能大于原价！',
             type: 'error'
           })
-          combinationPrice = 0
+          discountPrice = 0
           this.discountForm.price = 0
           return
         }
         this.discountForm.price = this.tableData.reduce((total, item) => {
-          return total + item.combination_price * item.number
+          return total + item.discount_price * item.number
         }, 0).toFixed(2)
       }
     },
@@ -177,7 +177,7 @@ export default {
             return {
               number: +table.number,
               goods_id: this.$route.params.id ? table.goods_id : table.id,
-              combination_price: table.combination_price
+              discount_price: table.discount_price
             }
           })
           let api = ''

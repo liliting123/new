@@ -148,7 +148,7 @@ export default {
                   if (this.discountRate) {
                     spec.rate = this.discountRate
                   }
-                  spec.combination_price = 0
+                  spec.discount_price = 0
                   spec.number = 0
                 }
               })

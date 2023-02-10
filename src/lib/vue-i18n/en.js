@@ -370,7 +370,7 @@ export default {
   编辑N件N折: 'Edit N-piece N-fold',
   N件: 'N-Pieces',
   N折: 'N-Fold',
-  组合促销: 'Combination Promotion',
+  组合促销: 'Combination',
   添加组合促销: 'Add Portfolio Promotion',
   编辑组合促销: 'Edit Portfolio Promotion',
   组合价格: 'Combination Price',

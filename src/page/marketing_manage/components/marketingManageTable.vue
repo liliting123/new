@@ -36,6 +36,7 @@
                 </template>
               </el-table-column>
               <el-table-column v-if="tableType === 'combination'" prop="number" :label="$t('组合数量')"></el-table-column>
+              <el-table-column v-if="tableType === 'combination'" prop="discount_price" :label="$t('组合价格')"></el-table-column>
               <el-table-column :label="$t('可售库存')">
                 <template slot-scope="scope">
                   <span v-if="scope.row.goods_type && scope.row.goods_type === 'weigh_goods_type'">{{ scope.row.num }}/KG</span>
@@ -58,12 +59,6 @@
             scope.row.status_id === 2 ? $t('已开始'):
             scope.row.status_id === 3  ? $t('已结束') : $t('已失效') }}
           </template>
-        </el-table-column>
-        <el-table-column
-          v-if="tableType === 'combination'"
-          prop="price"
-          :label="$t('组合价格')"
-          width="180">
         </el-table-column>
         <el-table-column
           prop="start_time"

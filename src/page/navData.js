@@ -109,7 +109,7 @@ export default [
     subRoutes: [
       {
         name: '店铺设置',
-        path: 'configuration_manage/store_settings',
+        path: '/configuration_manage/store_settings',
         subname: 'shop'
       },
       {
